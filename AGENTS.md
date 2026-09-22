@@ -112,6 +112,7 @@ sh/push.sh "short message" # stages all, commits, pushes; no-op if nothing chang
 ```
 
 - Commit messages: short, imperative, say what changed (`add lazygit with catppuccin theme`, `bump nvim plugins`).
+- **No AI attribution:** never add `Co-Authored-By: Claude …` or any other AI/agent trailer to commits. Commits are authored as the owner only.
 - `push.sh` runs `git add -A`, so make sure no stray files are in the tree first.
 - Don't force-push, rewrite history, or change the remote. History is the version record every Mac relies on for `make rollback`.
 - `main` must always be installable, because every Mac's `make update` applies it. Run the checks in "Verify before committing" first.
