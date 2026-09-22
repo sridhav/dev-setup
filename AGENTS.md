@@ -27,7 +27,7 @@ Changes reach the other machines by git: `make push` on one, `make update` on ea
 | `ghostty/config` → `~/.config/ghostty/config` | Ghostty settings shared by all OSes. Includes `platform.conf` at the end. |
 | `ghostty/{macos,linux}.conf` → `~/.config/ghostty/platform.conf` | Per-OS keybindings and window settings. Keep both files' actions in sync; on Linux Cmd becomes Ctrl+Shift and Cmd+Shift becomes Ctrl+Shift+Alt. |
 | (Ghostty font) | **Requires the JetBrainsMono Nerd Font Mono font** (macOS: cask `font-jetbrains-mono-nerd-font`; Linux: Nerd Fonts release → `~/.local/share/fonts`); step 04 fails if it's missing. Check with `ghostty +validate-config --config-file=ghostty/config`. |
-| `nvim/` → `~/.config/nvim` | Neovim (lazy.nvim). `nvim/lazy-lock.json` pins plugin versions for every machine. `nvim/CHEATSHEET.md` is the keymap cheat sheet opened by `<leader>k`, so update it when you change a keymap. External tools the plugins need (`lazygit`, `ripgrep`, `tree-sitter-cli`) go in `sh/packages.sh`. |
+| `nvim/` → `~/.config/nvim` | Neovim (lazy.nvim). `nvim/lazy-lock.json` pins plugin versions for every machine. `nvim/CHEATSHEET.md` (opened by `<leader>k`) is the **one cheat sheet for every key**: Neovim, tmux and Ghostty (Mac and Linux columns). Update it whenever you change a keymap in any of them. External tools the plugins need (`lazygit`, `ripgrep`, `tree-sitter-cli`) go in `sh/packages.sh`. |
 | `tmux/tmux.conf` → `~/.tmux.conf` | tmux + tpm. Its `set -g @plugin` lines are the source of truth for tmux plugins; step 11 installs any that are missing. |
 | `lazygit/config.yml` → `$LAZYGIT_CONFIG` (macOS `~/Library/Application Support/lazygit/`, Linux `~/.config/lazygit/`) | lazygit, Catppuccin Mocha (blue accent). Used by Neovim's `<leader>gg`. |
 
@@ -76,6 +76,7 @@ Changes reach the other machines by git: `make push` on one, `make update` on ea
 
 **Add a tmux plugin**
 - Add `set -g @plugin 'owner/name'` to `tmux/tmux.conf`. Step 11 installs it on every machine.
+- If it adds or changes keys, update the tmux section of `nvim/CHEATSHEET.md`. The same goes for Ghostty keybindings: change both `ghostty/macos.conf` and `ghostty/linux.conf`, plus the Ghostty table in the cheat sheet.
 
 **Add an install step**
 - Create `sh/steps/NN-name.sh` using the header in rule 7 and make it executable (`chmod +x`).

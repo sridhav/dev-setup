@@ -43,6 +43,8 @@ The same numbered steps in the same order on every machine. Where macOS and Linu
 
 The JetBrains Mono Nerd Font is required, because the Ghostty config uses it. Step 04 fails if it's missing.
 
+**All keys in one place:** press `<leader>k` (Space, then k) in Neovim to open `nvim/CHEATSHEET.md`, which covers Neovim, tmux and Ghostty.
+
 **Ghostty keys:** the shared settings are in `ghostty/config`. Keybindings are per OS, in `ghostty/macos.conf` and `ghostty/linux.conf`. On Linux, Cmd becomes Ctrl+Shift, and Cmd+Shift becomes Ctrl+Shift+Alt. For example, a split is Cmd+D on a Mac and Ctrl+Shift+D on Linux.
 
 Anything already installed is skipped, so it's safe to re-run.

@@ -1,8 +1,25 @@
-# Neovim cheat sheet
+# Keys cheat sheet
+
+Every key in this setup, in one place: **Neovim**, then **tmux**, then **Ghostty** at the bottom.
+`<leader>k` opens this sheet (`Ctrl-d` / `Ctrl-u` scroll it, `/` searches it). `q` or `Esc` closes it.
 
 `<leader>` = Space. Press Space and wait: which-key shows what comes next.
-`<leader>k` opens this sheet. `q` or `Esc` closes it.
-`<leader>fk` searches every keymap. `<leader>?` lists keys for this buffer.
+`<leader>fk` searches every Neovim keymap. `<leader>?` lists keys for this buffer.
+
+## Modes
+
+Mode is shown bottom-left. When lost, press `Esc` (twice if needed) to get back to Normal.
+
+| Mode | Get in | For |
+|---|---|---|
+| Normal | `Esc` | Moving and commands (the default) |
+| Insert | `i` `a` before/after cursor, `I` `A` line start/end, `o` `O` new line below/above | Typing text |
+| Visual | `v` chars, `V` lines, `Ctrl-v` block/column | Select, then `d` `y` `>` `gc` … |
+| Command | `:` (commands), `/` `?` (search down/up) | `:w` save, `:q` quit, `:%s/a/b/g` replace |
+| Replace | `R` (overtype), `r` + key (one char) | Overwriting text |
+| Terminal | `:terminal` | A shell inside Neovim; `Esc Esc` leaves it |
+
+Commands are verb + object: `d` delete, `c` change, `y` copy + `w` word, `iw` inner word, `i"` inside quotes, `ap` paragraph. So `ciw` = change word, `yap` = copy paragraph. `.` repeats.
 
 ## Moving around
 
@@ -17,6 +34,17 @@
 | `*` | Search word under cursor |
 | `Esc` | Clear search highlight |
 | `Ctrl-o` / `Ctrl-i` | Jump back / forward (after gd, search, etc.) |
+
+## Scrolling (Neovim)
+
+| Key | Does |
+|---|---|
+| `Ctrl-d` / `Ctrl-u` | Half page down / up |
+| `Ctrl-f` / `Ctrl-b` | Full page down / up (also scrolls completion docs) |
+| `Ctrl-e` / `Ctrl-y` | One line down / up, cursor stays |
+| `zz` / `zt` / `zb` | Put cursor line mid / top / bottom of screen |
+| `42G` or `:42` | Go to line 42 |
+| Mouse wheel | Scrolls too |
 
 ## Files and search (Telescope)
 
@@ -119,3 +147,53 @@
 | `:Mason` | Installed LSPs, linters, formatters |
 | `:ConformInfo` | Formatter for this file |
 | `:checkhealth` | Diagnose problems |
+
+## tmux
+
+Prefix is **`Ctrl-s`**: press it, let go, then the key. The mouse works for everything (click panes, drag borders, wheel to scroll).
+
+| Key | Does |
+|---|---|
+| `Ctrl-s c` | New window (tab) |
+| `Ctrl-s n` / `p` / `0-9` | Next / previous / numbered window |
+| `Ctrl-s w` / `s` | Pick a window / session from a list |
+| `Ctrl-s ,` | Rename window |
+| `Ctrl-s %` / `"` | Split side by side / top and bottom |
+| `Ctrl-h/j/k/l` | Move between panes (and Neovim splits), no prefix |
+| `Ctrl-s z` | Zoom pane full screen (again to restore) |
+| `Ctrl-s x` / `&` | Close pane / window (asks first) |
+| `Ctrl-s d` | Detach (session keeps running; `tmux attach` to return) |
+| `Ctrl-s r` | Reload tmux config |
+| `Ctrl-s ?` | List every tmux key |
+
+**Scrolling back through output (copy mode):**
+
+| Key | Does |
+|---|---|
+| Mouse wheel | Scroll up (enters copy mode; scroll to bottom to leave) |
+| `Ctrl-s [` | Enter copy mode (`Ctrl-s PageUp` = enter and page up) |
+| `↑` `↓` / `PageUp` `PageDown` | Line / page |
+| `Alt-<` / `Alt->` | Top / bottom of history |
+| `Ctrl-r` / `Ctrl-s` | Search up / down |
+| `Ctrl-Space`, move, `Alt-w` | Select and copy |
+| `q` or `Esc` | Leave copy mode |
+
+## Ghostty
+
+Mac and Linux differ: on Linux, `Cmd` becomes `Ctrl+Shift`, and `Cmd+Shift` becomes `Ctrl+Shift+Alt`.
+
+| Mac | Linux | Does |
+|---|---|---|
+| `Cmd-t` | `Ctrl+Shift+t` | New tab |
+| `Cmd-Shift-←` / `→` | `Ctrl+Shift+Alt+←` / `→` | Previous / next tab |
+| `Cmd-w` | `Ctrl+Shift+w` | Close tab / split |
+| `Cmd-d` | `Ctrl+Shift+d` | Split right |
+| `Cmd-Shift-d` | `Ctrl+Shift+Alt+d` | Split down |
+| `Cmd-Alt-arrows` | `Ctrl+Alt+arrows` | Move between splits |
+| `Cmd-Shift-e` | `Ctrl+Shift+Alt+e` | Equalize splits |
+| `Cmd-Shift-f` | `Ctrl+Shift+Alt+f` | Zoom split |
+| `Cmd-+` / `-` / `0` | `Ctrl-+` / `-` / `0` | Font bigger / smaller / reset |
+| `` Ctrl-` `` | `` Ctrl-` `` | Quick terminal drop-down (global) |
+| `Cmd-Shift-,` | `Ctrl+Shift+,` | Reload Ghostty config |
+| `Cmd-c` / `Cmd-v` | `Ctrl+Shift+c` / `v` | Copy / paste (selecting text also copies) |
+| Trackpad / wheel | Wheel | Scroll output (25 MB history) |
