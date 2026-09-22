@@ -123,7 +123,7 @@ sh/
 ghostty/config            → ~/.config/ghostty/config
 nvim/                     → ~/.config/nvim
 zsh/zshrc                 → ~/.zshrc
-zsh/p10k.zsh              → ~/.p10k.zsh   (rainbow, Catppuccin Mocha)
+zsh/p10k.zsh              → ~/.p10k.zsh   (loads p10k-classic.zsh or p10k-rainbow.zsh, Catppuccin Mocha)
 zsh/zsh.d/*.zsh           → ~/.zsh.d/
 zsh/catppuccin-syntax-highlighting.zsh → ~/.config/zsh/
 tmux/tmux.conf            → ~/.tmux.conf

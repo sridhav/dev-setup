@@ -21,7 +21,7 @@ Changes reach the other machines by git: `make push` on one, `make update` on ea
 | `zsh/zsh.d/dev-setup.zsh` | Daily background `git fetch`; shows "N update(s) available" after the first prompt. Must never print during shell startup (Powerlevel10k instant prompt) and must never apply updates itself. |
 | `Makefile` | One-line wrappers around `sh/`. No logic lives here. |
 | `zsh/zshrc` → `~/.zshrc` | `plugins=(...)` here is the **source of truth** for zsh plugins. |
-| `zsh/p10k.zsh` → `~/.p10k.zsh` | Prompt: Rainbow Catppuccin Mocha. |
+| `zsh/p10k.zsh` → `~/.p10k.zsh` | Prompt loader: sources `zsh/p10k-<theme>.zsh` (`classic` or `rainbow`, both Catppuccin Mocha) for the `zstyle ':catppuccin:p10k' theme` in the zshrc. |
 | `zsh/zsh.d/*.zsh` → `~/.zsh.d/` | Shell snippets, sourced by the zshrc via a glob. |
 | `zsh/catppuccin-syntax-highlighting.zsh` → `~/.config/zsh/` | zsh-syntax-highlighting colors. Must load *before* oh-my-zsh. |
 | `ghostty/config` → `~/.config/ghostty/config` | Ghostty settings shared by all OSes. Includes `platform.conf` at the end. |
@@ -84,7 +84,8 @@ Changes reach the other machines by git: `make push` on one, `make update` on ea
 - Update the step list in `README.md`.
 
 **Change the prompt**
-- `zsh/p10k.zsh` is the catppuccin-powerlevel10k-themes rainbow-mocha file.
+- Switch style with `zstyle ':catppuccin:p10k' 'theme'` in `zsh/zshrc` (`classic` is active; `rainbow` is kept). Edit `zsh/p10k-classic.zsh` / `zsh/p10k-rainbow.zsh` for the prompt itself.
+- Never run `p10k configure`: it overwrites `~/.p10k.zsh` (the loader) with stock 256-color output. If a new wizard layout is wanted, save it as `zsh/p10k-<name>.zsh` and swap every color for the `P10K_COLOR_*` Mocha palette.
 - The `zstyle ':catppuccin:p10k'` lines in `zsh/zshrc` must stay *above* `source $ZSH/oh-my-zsh.sh`, because the plugin reads them while oh-my-zsh loads.
 
 ## Verify before committing
