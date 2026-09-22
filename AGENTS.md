@@ -30,6 +30,7 @@ Changes reach the other machines by git: `make push` on one, `make update` on ea
 | `nvim/` → `~/.config/nvim` | Neovim (lazy.nvim). `nvim/lazy-lock.json` pins plugin versions for every machine. `nvim/CHEATSHEET.md` (opened by `<leader>k`) is the **one cheat sheet for every key**: Neovim, tmux and Ghostty (Mac and Linux columns). Update it whenever you change a keymap in any of them. External tools the plugins need (`lazygit`, `ripgrep`, `tree-sitter-cli`) go in `sh/packages.sh`. |
 | `tmux/tmux.conf` → `~/.tmux.conf` | tmux + tpm. Its `set -g @plugin` lines are the source of truth for tmux plugins; step 11 installs any that are missing. |
 | `lazygit/config.yml` → `$LAZYGIT_CONFIG` (macOS `~/Library/Application Support/lazygit/`, Linux `~/.config/lazygit/`) | lazygit, Catppuccin Mocha (blue accent). Used by Neovim's `<leader>gg`. |
+| `opencode/tui.json` → `~/.config/opencode/tui.json` | opencode TUI theme (`catppuccin` = Mocha). Do not put `opencode.json` here: providers and MCP tokens stay machine-only. |
 
 ## Rules (don't break these)
 

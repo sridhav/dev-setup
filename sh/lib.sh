@@ -113,6 +113,7 @@ LINKS=(
   "nvim|$HOME/.config/nvim"
   "tmux/tmux.conf|$HOME/.tmux.conf"
   "lazygit/config.yml|$LAZYGIT_CONFIG"
+  "opencode/tui.json|$HOME/.config/opencode/tui.json"
 )
 
 # Everything backup.sh copies. Symlinks are followed, so the backup holds real
@@ -125,6 +126,7 @@ BACKUP_PATHS=(
   "$HOME/.config/ghostty" "$HOME/.config/nvim"
   "$HOME/.tmux.conf"
   "$LAZYGIT_CONFIG"
+  "$HOME/.config/opencode/tui.json"
   "$HOME/.gitconfig" "$HOME/.config/git"
 )
 

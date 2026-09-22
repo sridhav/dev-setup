@@ -128,6 +128,7 @@ zsh/zsh.d/*.zsh           → ~/.zsh.d/
 zsh/catppuccin-syntax-highlighting.zsh → ~/.config/zsh/
 tmux/tmux.conf            → ~/.tmux.conf
 lazygit/config.yml        → ~/Library/Application Support/lazygit/config.yml
+opencode/tui.json         → ~/.config/opencode/tui.json
 ```
 
 To re-run one step, e.g. after a failed plugin clone: `sh/steps/07-omz-plugins.sh`
