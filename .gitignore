@@ -1,0 +1,4 @@
+.DS_Store
+# Never commit secrets: machine-only zsh files live in ~/.zsh.d, not here.
+*.local.zsh
+*.key
