@@ -166,16 +166,17 @@ Prefix is **`Ctrl-s`**: press it, let go, then the key. The mouse works for ever
 | `Ctrl-s r` | Reload tmux config |
 | `Ctrl-s ?` | List every tmux key |
 
-**Scrolling back through output (copy mode):**
+**Scrolling back through output (copy mode):** vi keys, like Neovim. 50,000 lines of history per pane, and a thin scrollbar on the right while scrolled back.
 
 | Key | Does |
 |---|---|
 | Mouse wheel | Scroll up (enters copy mode; scroll to bottom to leave) |
 | `Ctrl-s [` | Enter copy mode (`Ctrl-s PageUp` = enter and page up) |
-| `↑` `↓` / `PageUp` `PageDown` | Line / page |
-| `Alt-<` / `Alt->` | Top / bottom of history |
-| `Ctrl-r` / `Ctrl-s` | Search up / down |
-| `Ctrl-Space`, move, `Alt-w` | Select and copy |
+| `Ctrl-u` / `Ctrl-d` | Half page up / down |
+| `k` / `j`, `Ctrl-b` / `Ctrl-f` | Line / full page |
+| `g` / `G` | Top / bottom of history |
+| `/` / `?` then `n` / `N` | Search down / up, next / previous match |
+| `v`, move, `y` | Select and copy (goes to the system clipboard) |
 | `q` or `Esc` | Leave copy mode |
 
 ## Ghostty

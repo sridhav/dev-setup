@@ -34,4 +34,6 @@ require("lazy").setup({
   },
   install = { colorscheme = { "habamax" } },
   checker = { enabled = true, notify = false },
+  -- No plugin here needs luarocks; without this, :checkhealth reports an error.
+  rocks = { enabled = false },
 })

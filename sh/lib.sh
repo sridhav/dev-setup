@@ -106,6 +106,7 @@ LINKS=(
   "zsh/zsh.d/path.zsh|$HOME/.zsh.d/path.zsh"
   "zsh/zsh.d/tmux.zsh|$HOME/.zsh.d/tmux.zsh"
   "zsh/zsh.d/dev-setup.zsh|$HOME/.zsh.d/dev-setup.zsh"
+  "zsh/zsh.d/nvm.zsh|$HOME/.zsh.d/nvm.zsh"
   "ghostty/config|$HOME/.config/ghostty/config"
   # Keybindings etc. that differ per OS; the shared config includes platform.conf.
   "$GHOSTTY_PLATFORM|$HOME/.config/ghostty/platform.conf"

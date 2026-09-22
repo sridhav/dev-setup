@@ -2,6 +2,13 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
+-- No remote plugins use the Python/Ruby/Perl/Node hosts. Disabling them skips
+-- their startup probing and the :checkhealth warnings about missing modules.
+vim.g.loaded_python3_provider = 0
+vim.g.loaded_ruby_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_node_provider = 0
+
 local opt = vim.opt
 
 -- Indentation
