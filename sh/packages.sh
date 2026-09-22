@@ -8,7 +8,7 @@
 FORMULAE=(
   neovim tmux tree-sitter-cli gh direnv
   lazygit ripgrep   # Neovim: <leader>gg (lazygit), <leader>fg (Telescope live grep)
-  kubernetes-cli libpq mkcert ollama poppler
+  kubernetes-cli libpq
 )
 
 # macOS only: Docker runs in a colima VM there. Linux gets native Docker Engine
