@@ -120,9 +120,22 @@ If you changed anything Linux-related (a step's `is_linux` branch, `APT_PACKAGES
 
 ## Pushing changes
 
+The remote is HTTPS (`https://github.com/sridhav/dev-setup.git`). GitHub credentials are stored machine-only in `~/.zsh.d/personal.zsh` as `PERSONAL_GITHUB_USER` and `PERSONAL_GITHUB_TOKEN` — never committed to this repo.
+
+To push from any machine (or as an AI agent):
+
 ```bash
-git -C <repo> diff              # review everything first, secrets especially
-sh/push.sh "short message" # stages all, commits, pushes; no-op if nothing changed
+source ~/.zsh.d/personal.zsh
+git add <files>
+git commit -m "short message"
+git push "https://${PERSONAL_GITHUB_USER}:${PERSONAL_GITHUB_TOKEN}@github.com/sridhav/dev-setup.git" main
+```
+
+Git identity for this repo: `Sridhar Vemula <thewarrior.316@gmail.com>` — set it locally if needed:
+
+```bash
+git config user.name "Sridhar Vemula"
+git config user.email "thewarrior.316@gmail.com"
 ```
 
 - Commit messages: short, imperative, say what changed (`add lazygit with catppuccin theme`, `bump nvim plugins`).
