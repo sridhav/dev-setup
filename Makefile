@@ -10,7 +10,7 @@ SHELL := /bin/bash
 
 S := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))/sh
 
-.PHONY: help install force-install dry-run backup update plugins upgrade push status brew-diff version history rollback release
+.PHONY: help install force-install dry-run backup update plugins upgrade push status brew-diff version history rollback release personal
 
 help: ## Show this help
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  \033[35m%-14s\033[0m %s\n", $$1, $$2}'
@@ -56,3 +56,6 @@ rollback: ## Put this machine back on an earlier version: make rollback to=<comm
 
 release: ## Tag the current version (vYYYY.MM.DD, or name=...) and push the tag
 	@$(S)/release.sh $(if $(name),"$(name)")
+
+personal: ## Generate ~/.zsh.d/personal.zsh with GitHub credentials (re-run with force=1 to overwrite)
+	@$(S)/personal.sh $(if $(filter 1,$(force)),--force)
