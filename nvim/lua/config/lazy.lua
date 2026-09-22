@@ -11,6 +11,17 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
     vim.fn.getchar()
     os.exit(1)
   end
+  -- Start lazy.nvim at the commit pinned in lazy-lock.json, not the latest
+  -- release, so a fresh machine matches the others and the lockfile stays
+  -- unchanged. (lazy.nvim records the version it's running as, and doesn't
+  -- move itself during :Lazy restore.)
+  local lockfile = vim.fn.stdpath("config") .. "/lazy-lock.json"
+  local ok, lock = pcall(function()
+    return vim.json.decode(table.concat(vim.fn.readfile(lockfile), "\n"))
+  end)
+  if ok and lock["lazy.nvim"] then
+    vim.fn.system({ "git", "-C", lazypath, "checkout", "--quiet", lock["lazy.nvim"].commit })
+  end
 end
 vim.opt.rtp:prepend(lazypath)
 

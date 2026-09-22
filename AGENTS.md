@@ -4,16 +4,16 @@ Guide for AI agents working in this repo. Read it before changing anything.
 
 ## What this repo is
 
-One dev setup shared across all of the owner's Macs: Ghostty, Neovim, oh-my-zsh + Powerlevel10k, and tmux, all themed **Catppuccin Mocha**. Each Mac clones this repo and runs `make install`. The configs are **symlinked** into `~`, so editing `~/.zshrc`, `~/.config/nvim/…` and so on edits this repo directly.
+One dev setup shared across all of the owner's machines (**macOS**, **Ubuntu**, **Linux Mint** desktops): Ghostty, Neovim, oh-my-zsh + Powerlevel10k, and tmux, all themed **Catppuccin Mocha**. Each machine clones this repo and runs `make install`. The configs are **symlinked** into `~`, so editing `~/.zshrc`, `~/.config/nvim/…` and so on edits this repo directly.
 
-Changes reach the other Macs by git: `make push` on one Mac, `make update` on each of the others.
+Changes reach the other machines by git: `make push` on one, `make update` on each of the others.
 
 ## Layout
 
 | Path | Purpose |
 | --- | --- |
-| `sh/packages.sh` | Homebrew `FORMULAE` and `CASKS` arrays. The only package list. |
-| `sh/lib.sh` | Shared settings (`OMZ_PLUGINS`, `OMZ_THEMES`, `LINKS`, `BACKUP_PATHS`, `NVM_VERSION`, `NODE_VERSION`) and helpers (`step`, `ok`, `skip`, `info`, `warn`, `run`, `set_aside`, `git_clone`). |
+| `sh/packages.sh` | The only package lists: `FORMULAE` (Homebrew, macOS + Linux), `MACOS_FORMULAE`, `CASKS` (macOS apps/fonts), `APT_PACKAGES` (Ubuntu/Mint basics). |
+| `sh/lib.sh` | Shared settings (`OMZ_PLUGINS`, `OMZ_THEMES`, `LINKS`, `BACKUP_PATHS`, `NVM_VERSION`, `NODE_VERSION`), OS detection and per-OS paths (`OS`, `is_macos`, `is_linux`, `FONT_DIR`, `JETBRAINS_FONT`, `LAZYGIT_CONFIG`, `GHOSTTY_PLATFORM`, `BREW_FORMULAE`), and helpers (`step`, `ok`, `skip`, `info`, `warn`, `run`, `as_root`, `apt_installed`, `set_aside`, `git_clone`). |
 | `sh/install.sh` | Runs `sh/steps/[0-9][0-9]-*.sh` in filename order. Flags: `--dry-run`, `--force`. |
 | `sh/steps/NN-name.sh` | One install step per file. Each one can run on its own. |
 | `sh/{update,plugins,upgrade,push,backup,status,brew-diff}.sh` | The day-to-day commands. |
@@ -24,19 +24,22 @@ Changes reach the other Macs by git: `make push` on one Mac, `make update` on ea
 | `zsh/p10k.zsh` → `~/.p10k.zsh` | Prompt: Rainbow Catppuccin Mocha. |
 | `zsh/zsh.d/*.zsh` → `~/.zsh.d/` | Shell snippets, sourced by the zshrc via a glob. |
 | `zsh/catppuccin-syntax-highlighting.zsh` → `~/.config/zsh/` | zsh-syntax-highlighting colors. Must load *before* oh-my-zsh. |
-| `ghostty/config` → `~/.config/ghostty/config` | Ghostty terminal. **Requires the JetBrainsMono Nerd Font Mono font** (cask `font-jetbrains-mono-nerd-font`); step 04 fails if it's missing. Check with `ghostty +validate-config --config-file=ghostty/config`. |
-| `nvim/` → `~/.config/nvim` | Neovim (lazy.nvim). `nvim/lazy-lock.json` pins plugin versions for every Mac. `nvim/CHEATSHEET.md` is the keymap cheat sheet opened by `<leader>k`, so update it when you change a keymap. External tools the plugins need (`lazygit`, `ripgrep`, `tree-sitter-cli`) go in `sh/packages.sh`. |
+| `ghostty/config` → `~/.config/ghostty/config` | Ghostty settings shared by all OSes. Includes `platform.conf` at the end. |
+| `ghostty/{macos,linux}.conf` → `~/.config/ghostty/platform.conf` | Per-OS keybindings and window settings. Keep both files' actions in sync; on Linux Cmd becomes Ctrl+Shift and Cmd+Shift becomes Ctrl+Shift+Alt. |
+| (Ghostty font) | **Requires the JetBrainsMono Nerd Font Mono font** (macOS: cask `font-jetbrains-mono-nerd-font`; Linux: Nerd Fonts release → `~/.local/share/fonts`); step 04 fails if it's missing. Check with `ghostty +validate-config --config-file=ghostty/config`. |
+| `nvim/` → `~/.config/nvim` | Neovim (lazy.nvim). `nvim/lazy-lock.json` pins plugin versions for every machine. `nvim/CHEATSHEET.md` is the keymap cheat sheet opened by `<leader>k`, so update it when you change a keymap. External tools the plugins need (`lazygit`, `ripgrep`, `tree-sitter-cli`) go in `sh/packages.sh`. |
 | `tmux/tmux.conf` → `~/.tmux.conf` | tmux + tpm. Its `set -g @plugin` lines are the source of truth for tmux plugins; step 11 installs any that are missing. |
-| `lazygit/config.yml` → `~/Library/Application Support/lazygit/config.yml` | lazygit, Catppuccin Mocha (blue accent). Used by Neovim's `<leader>gg`. |
+| `lazygit/config.yml` → `$LAZYGIT_CONFIG` (macOS `~/Library/Application Support/lazygit/`, Linux `~/.config/lazygit/`) | lazygit, Catppuccin Mocha (blue accent). Used by Neovim's `<leader>gg`. |
 
 ## Rules (don't break these)
 
-1. **Never commit secrets.** No passwords, tokens, keys, hostnames tied to credentials, or files from `~/.zsh.d/` that aren't already in `zsh/zsh.d/`. Machine-only settings stay as unlinked files in `~/.zsh.d/` on that Mac. Before every commit, check the staged diff for anything secret-looking.
-2. **No git identity.** `~/.gitconfig` is deliberately not managed, because each Mac uses a different git user. Don't add it back.
+1. **Never commit secrets.** No passwords, tokens, keys, hostnames tied to credentials, or files from `~/.zsh.d/` that aren't already in `zsh/zsh.d/`. Machine-only settings stay as unlinked files in `~/.zsh.d/` on that machine. Before every commit, check the staged diff for anything secret-looking.
+2. **No git identity.** `~/.gitconfig` is deliberately not managed, because each machine uses a different git user. Don't add it back.
 3. **Idempotent.** Every step checks first and prints `skip` if the thing already exists. A re-run must change nothing. Only `--force` reinstalls, and it must `set_aside` (back up) before replacing.
 4. **Fixed order.** Steps run by their numeric prefix. A new step gets a number that puts it where it belongs, and anything it depends on must run in an earlier step. For example, brew is 02, so anything using `brew` goes after it.
 5. **Dry-run safe.** Anything that changes the system goes through `run …`, so `--dry-run` changes nothing.
-6. **macOS bash 3.2.** Scripts run under `/bin/bash` 3.2: no associative arrays, no `mapfile`, no `${var,,}`. Each step script starts with:
+6. **Cross-platform.** Every step must work on macOS *and* Ubuntu/Linux Mint. Branch with `is_macos` / `is_linux`, and take paths from `lib.sh` (`FONT_DIR`, `LAZYGIT_CONFIG`, …), never hard-coded `~/Library` or `/opt/homebrew`. On Linux, root commands go through `run as_root …`. Mint reports `ID=linuxmint` and `UBUNTU_CODENAME` (use that for Ubuntu repos). Linux Docker is native Docker Engine (step 14), not colima.
+7. **macOS bash 3.2.** Scripts run under `/bin/bash` 3.2: no associative arrays, no `mapfile`, no `${var,,}`. Each step script starts with:
    ```bash
    #!/usr/bin/env bash
    # <one-line description>
@@ -44,15 +47,17 @@ Changes reach the other Macs by git: `make push` on one Mac, `make update` on ea
    parse_flags "$@"
    ```
    (Top-level scripts in `sh/` use `/lib.sh` instead of `/../lib.sh`.)
-7. **Catppuccin Mocha everywhere.** Any new tool gets Mocha colors (the official `catppuccin/<tool>` port, if one exists).
-8. **Single source of truth.** Packages only in `sh/packages.sh`. Plugins, links and versions only in `sh/lib.sh`. Don't copy these lists into the Makefile, README, or other scripts; read them from those files.
+8. **Catppuccin Mocha everywhere.** Any new tool gets Mocha colors (the official `catppuccin/<tool>` port, if one exists).
+9. **Single source of truth.** Packages only in `sh/packages.sh`. Plugins, links and versions only in `sh/lib.sh`. Don't copy these lists into the Makefile, README, or other scripts; read them from those files.
 
 ## Common tasks
 
-**Add a Homebrew package or app**
-- Add it to `FORMULAE` or `CASKS` in `sh/packages.sh`.
+**Add a package or app**
+- Command-line tool for every OS: `FORMULAE` in `sh/packages.sh` (Homebrew has Linux builds for nearly everything; check `https://formulae.brew.sh/api/formula/<name>.json` for `x86_64_linux`).
+- macOS-only formula: `MACOS_FORMULAE`. macOS app or font: `CASKS`, plus a Linux equivalent in step 04 if it's needed there.
+- Linux system package (needs apt, e.g. a library or desktop app): `APT_PACKAGES`.
 - If a cask's app might already be installed outside Homebrew, add its `/Applications/…` path to `cask_app_path` in `sh/lib.sh` so it isn't reinstalled.
-- `sh/brew-diff.sh` lists what's on this Mac but missing from the list.
+- `sh/brew-diff.sh` lists what's on this machine but missing from the list.
 
 **Add a zsh plugin**
 - Add its name to `plugins=(...)` in `zsh/zshrc`.
@@ -70,10 +75,10 @@ Changes reach the other Macs by git: `make push` on one Mac, `make update` on ea
 - Run `nvim --headless "+Lazy! sync" +qa` so `nvim/lazy-lock.json` records the version, and commit the lockfile with it.
 
 **Add a tmux plugin**
-- Add `set -g @plugin 'owner/name'` to `tmux/tmux.conf`. Step 11 installs it on every Mac.
+- Add `set -g @plugin 'owner/name'` to `tmux/tmux.conf`. Step 11 installs it on every machine.
 
 **Add an install step**
-- Create `sh/steps/NN-name.sh` using the header in rule 6 and make it executable (`chmod +x`).
+- Create `sh/steps/NN-name.sh` using the header in rule 7 and make it executable (`chmod +x`).
 - Use `skip`/`run`/`ok`, and call `set_aside <path>` before the existence check if `--force` should reinstall it.
 - Update the step list in `README.md`.
 
@@ -104,6 +109,12 @@ T=$(mktemp -d) && mkdir -p "$T/.config/zsh" "$T/.zsh.d" \
 
 Expect `ok` with no errors or "plugin not found" warnings.
 
+If you changed anything Linux-related (a step's `is_linux` branch, `APT_PACKAGES`, `ghostty/linux.conf`), test it in an `ubuntu:24.04` container as a normal user with passwordless sudo: `sh/install.sh --dry-run`, then a real `make install` twice (the second run must change nothing, and `git status` must stay clean). From a Mac with colima:
+- Reach the daemon with `DOCKER_HOST=unix://$HOME/.colima/<profile>/docker.sock` and an empty `DOCKER_CONFIG` dir if the credential helper fails.
+- colima only shares `$HOME`, so stream the repo in (`tar … | docker run -i … 'cat > /repo.tgz'`), with `COPYFILE_DISABLE=1 tar --no-xattrs`.
+- The `linuxmintd/*` images are plain Ubuntu (`ID=ubuntu`). To test Mint, write a real Mint `/etc/os-release` (`ID=linuxmint`, `ID_LIKE="ubuntu debian"`, `UBUNTU_CODENAME=noble`) into the container.
+- Containers have no systemd, so step 14 skips enabling the Docker service there. That's expected.
+
 ## Pushing changes
 
 ```bash
@@ -114,10 +125,10 @@ sh/push.sh "short message" # stages all, commits, pushes; no-op if nothing chang
 - Commit messages: short, imperative, say what changed (`add lazygit with catppuccin theme`, `bump nvim plugins`).
 - **No AI attribution:** never add `Co-Authored-By: Claude …` or any other AI/agent trailer to commits. Commits are authored as the owner only.
 - `push.sh` runs `git add -A`, so make sure no stray files are in the tree first.
-- Don't force-push, rewrite history, or change the remote. History is the version record every Mac relies on for `make rollback`.
-- `main` must always be installable, because every Mac's `make update` applies it. Run the checks in "Verify before committing" first.
+- Don't force-push, rewrite history, or change the remote. History is the version record every machine relies on for `make rollback`.
+- `main` must always be installable, because every machine's `make update` applies it. Run the checks in "Verify before committing" first.
 - Only tag (`sh/release.sh`) when the owner asks.
-- After pushing, the owner runs `make update` on each other Mac. Don't do this for them over SSH or similar.
+- After pushing, the owner runs `make update` on each other machine. Don't do this for them over SSH or similar.
 
 ## Don't
 

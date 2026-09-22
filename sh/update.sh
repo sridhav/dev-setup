@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Run this on every Mac: move to the latest version on the remote and apply it.
-# Stops (changing nothing) if this Mac has uncommitted config edits, so local
+# Run this on every machine: move to the latest version on the remote and apply it.
+# Stops (changing nothing) if this machine has uncommitted config edits, so local
 # work is never overwritten. Only fast-forwards: no merge commits.
 . "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/lib.sh"
 parse_flags "$@"
@@ -9,7 +9,7 @@ g() { git -C "$DOTFILES" "$@"; }
 step "Check for local changes"
 if [[ -n "$(g status --porcelain)" ]]; then
   g status --short
-  warn "This Mac has config changes that aren't pushed. Run 'make push' first (or 'git -C $DOTFILES stash' to set them aside)."
+  warn "This machine has config changes that aren't pushed. Run 'make push' first (or 'git -C $DOTFILES stash' to set them aside)."
   exit 1
 fi
 ok "clean"
@@ -33,7 +33,7 @@ else
   printf '%s\n' "$incoming" | sed 's/^/    /'
   ((DRY_RUN)) && info "dry run: not moving to these"
   ((DRY_RUN)) || g merge --ff-only --quiet '@{upstream}' || {
-    warn "This Mac has commits the remote doesn't. Run 'make push' first."
+    warn "This machine has commits the remote doesn't. Run 'make push' first."
     exit 1
   }
   ((DRY_RUN)) || ok "now on $(g rev-parse --short HEAD)"

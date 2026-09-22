@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Commit and push local config changes.
-#   sh/push.sh                   default message names this Mac
+#   sh/push.sh                   default message names this machine
 #   sh/push.sh "add lazygit"
 . "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/lib.sh"
 

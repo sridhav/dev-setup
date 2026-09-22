@@ -1,30 +1,49 @@
 # dev-setup
 
-Ghostty, Neovim, oh-my-zsh + Powerlevel10k, and tmux, all in Catppuccin Mocha, set up the same way on every Mac.
+Ghostty, Neovim, oh-my-zsh + Powerlevel10k, and tmux, all in Catppuccin Mocha, set up the same way on every machine: **macOS**, **Ubuntu** and **Linux Mint** (desktop).
 
 ## New Mac
 
 ```sh
-xcode-select --install            # needed for git; re-run after the dialog finishes
-git clone <this-repo-url> ~/dev-setup   # any location works
+xcode-select --install            # needed for git and make; re-run after the dialog finishes
+git clone git@github.com:sridhav/dev-setup.git ~/dev-setup   # any location works
 cd ~/dev-setup && make install
 ```
 
-`make install` runs the same numbered steps in the same order every time:
+## New Ubuntu / Linux Mint machine
 
-1. Xcode Command Line Tools
-2. Homebrew
-3. Homebrew formulae (`sh/packages.sh`)
-4. Apps and fonts: Ghostty, JetBrains Mono Nerd Font (required by the Ghostty config; the step fails without it), …
-5. MesloLGS NF font
-6. oh-my-zsh
-7. oh-my-zsh plugins and themes: powerlevel10k, zsh-autosuggestions, zsh-syntax-highlighting, catppuccin-powerlevel10k-themes
-8. tmux plugin manager (tpm)
-9. nvm and Node 24
-10. Symlink configs into `~` (anything already there is moved to `~/.dev-setup-backup/<timestamp>/`)
-11. tmux plugins (catppuccin/tmux)
-12. Neovim plugins, pinned by `nvim/lazy-lock.json`
-13. zsh as login shell
+```sh
+sudo apt update && sudo apt install -y git make
+git clone git@github.com:sridhav/dev-setup.git ~/dev-setup   # or https://github.com/sridhav/dev-setup.git
+cd ~/dev-setup && make install
+```
+
+It asks for your password (sudo) for apt, Docker and the login shell. **Log out and back in afterwards** so zsh becomes your shell and `docker` works without sudo.
+
+## What `make install` does
+
+The same numbered steps in the same order on every machine. Where macOS and Linux differ, the step does the right thing for each:
+
+| Step | macOS | Ubuntu / Linux Mint |
+| --- | --- | --- |
+| 01 System basics | Xcode Command Line Tools | apt: build tools, git, curl, **zsh**, clipboard (xclip, wl-clipboard), LibreOffice |
+| 02 Homebrew | ✓ | ✓ (Homebrew on Linux, `/home/linuxbrew`) |
+| 03 Formulae (`sh/packages.sh`) | shared list + colima/docker | shared list (same versions as the Macs) |
+| 04 Apps and fonts | casks: Ghostty, JetBrains Mono Nerd Font, LibreOffice | Ghostty (.deb from ghostty-ubuntu), JetBrains Mono Nerd Font → `~/.local/share/fonts` |
+| 05 MesloLGS NF font | ✓ | ✓ |
+| 06 oh-my-zsh | ✓ | ✓ |
+| 07 zsh plugins and themes | ✓ | ✓ |
+| 08 tmux plugin manager | ✓ | ✓ |
+| 09 nvm and Node 24 | ✓ | ✓ |
+| 10 Link configs into `~` | ✓ | ✓ (Ghostty keybindings: `ghostty/linux.conf`) |
+| 11 tmux plugins | ✓ | ✓ |
+| 12 Neovim plugins (`lazy-lock.json`) | ✓ | ✓ |
+| 13 zsh as login shell | ✓ | ✓ |
+| 14 Docker | runs via colima (`colima start`) | Docker Engine from Docker's apt repo, service enabled, you're added to the `docker` group |
+
+The JetBrains Mono Nerd Font is required, because the Ghostty config uses it. Step 04 fails if it's missing.
+
+**Ghostty keys:** the shared settings are in `ghostty/config`. Keybindings are per OS, in `ghostty/macos.conf` and `ghostty/linux.conf`. On Linux, Cmd becomes Ctrl+Shift, and Cmd+Shift becomes Ctrl+Shift+Alt. For example, a split is Cmd+D on a Mac and Ctrl+Shift+D on Linux.
 
 Anything already installed is skipped, so it's safe to re-run.
 
@@ -46,28 +65,28 @@ Force install asks for confirmation. Brew packages and Node are still skipped if
 
 Configs are symlinked, so editing `~/.zshrc`, `~/.config/nvim/...` and so on edits the repo directly.
 
-| On the Mac where you changed something | On every other Mac |
+| On the machine where you changed something | On every other machine |
 | --- | --- |
 | `make push` (or `make push msg="add lazygit"`) | `make update` |
 
-- **New tool:** add it to `sh/packages.sh`, then `make push`. `make brew-diff` lists what this Mac has that the list doesn't.
+- **New tool:** add it to `sh/packages.sh`, then `make push`. `make brew-diff` lists what this machine has that the list doesn't.
 - **New zsh plugin:** add it to `plugins=(...)` in `zsh/zshrc`. If it doesn't ship with oh-my-zsh, also add `"name|git-url"` to `OMZ_PLUGINS` in `sh/lib.sh`. Step 07 stops with an error if any plugin in the zshrc isn't installed.
 - **Newer versions:** `make upgrade` (brew + Neovim plugins, which rewrites `lazy-lock.json`), then `make push`.
-- **Check this Mac:** `make status`.
+- **Check this machine:** `make status`.
 
 ## Version control
 
-Git is the version history, and a private GitHub repo is the copy every Mac pulls from. Every commit is a version.
+Git is the version history, and a private GitHub repo is the copy every machine pulls from. Every commit is a version.
 
 | Command | What it does |
 | --- | --- |
-| `make update` | Moves to the latest version on GitHub and applies it. Shows what's incoming. Stops without changing anything if this Mac has unpushed edits, and only fast-forwards (never merges). |
-| `make version` | Shows which version this Mac is on and how far behind or ahead it is. |
+| `make update` | Moves to the latest version on GitHub and applies it. Shows what's incoming. Stops without changing anything if this machine has unpushed edits, and only fast-forwards (never merges). |
+| `make version` | Shows which version this machine is on and how far behind or ahead it is. |
 | `make history` | Lists recent versions. |
-| `make rollback to=<commit or tag>` | Puts **this Mac only** back on an earlier version and re-applies it. `make update` returns it to the latest. |
+| `make rollback to=<commit or tag>` | Puts **this machine only** back on an earlier version and re-applies it. `make update` returns it to the latest. |
 | `make release` (optional `name=v1.2`) | Tags the current version, for example `v2026.09.21`, so you can roll back to a known-good point by name. |
 
-**Update notice:** once a day, each Mac quietly checks GitHub in the background (`~/.zsh.d/dev-setup.zsh`). If there are new versions, the next prompt shows `dev-setup: N update(s) available`. It never applies them by itself, because an install can add apps or ask for your password.
+**Update notice:** once a day, each machine quietly checks GitHub in the background (`~/.zsh.d/dev-setup.zsh`). If there are new versions, the next prompt shows `dev-setup: N update(s) available`. It never applies them by itself, because an install can add apps or ask for your password.
 
 ### First-time setup (once)
 
@@ -76,11 +95,11 @@ git add -A && git commit -m "initial dev setup"
 gh repo create dev-setup --private --source . --push   # or add any private remote and push
 ```
 
-On each other Mac: `git clone <url> ~/dev-setup && cd ~/dev-setup && make install`.
+On each other machine: `git clone <url> ~/dev-setup && cd ~/dev-setup && make install`.
 
 ## Secrets and machine-only settings
 
-Put them in `~/.zsh.d/<name>.zsh`. The zshrc sources every `*.zsh` file there, and only the files linked by `sh/install.sh` come from this repo, so anything else stays on that Mac. Never commit secrets here.
+Put them in `~/.zsh.d/<name>.zsh`. The zshrc sources every `*.zsh` file there, and only the files linked by `sh/install.sh` come from this repo, so anything else stays on that machine. Never commit secrets here.
 
 ## Layout
 

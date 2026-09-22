@@ -11,7 +11,7 @@
 . "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/lib.sh"
 parse_flags "$@"
 
-[[ "$(uname -s)" == "Darwin" ]] || { echo "This setup is for macOS only." >&2; exit 1; }
+check_supported_os
 ((DRY_RUN)) && warn "dry run: nothing will be changed"
 
 if ((FORCE)); then

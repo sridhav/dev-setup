@@ -12,6 +12,8 @@ export BACKUP_DIR="${BACKUP_DIR:-$HOME/.dev-setup-backup/$(date +%Y%m%d-%H%M%S)}
 export DRY_RUN="${DRY_RUN:-0}"
 export FORCE="${FORCE:-0}"
 DEFAULT_BRANCH="main"
+# Not always set on Linux (containers, some sudo setups); steps rely on it.
+export USER="${USER:-$(id -un)}"
 
 parse_flags() {
   local arg
@@ -27,8 +29,52 @@ parse_flags() {
 # shellcheck source=packages.sh
 . "$SCRIPTS/packages.sh"
 
+# ---------------------------------------------------------------------- OS ---
+# macOS, or Ubuntu / Linux Mint (desktop). Everything OS-specific is decided
+# here so the steps only ask is_macos / is_linux.
+case "$(uname -s)" in
+  Darwin) OS=macos ;;
+  Linux) OS=linux ;;
+  *) OS=unknown ;;
+esac
+is_macos() { [[ "$OS" == macos ]]; }
+is_linux() { [[ "$OS" == linux ]]; }
+
+check_supported_os() {
+  if is_macos; then return 0; fi
+  if is_linux && [[ -r /etc/os-release ]]; then
+    local id like
+    id="$(. /etc/os-release && echo "${ID:-}")"
+    like="$(. /etc/os-release && echo "${ID_LIKE:-}")"
+    if [[ "$id" == ubuntu || "$id" == linuxmint || " $like " == *" ubuntu "* ]]; then return 0; fi
+  fi
+  echo "Supported: macOS, Ubuntu, Linux Mint." >&2
+  exit 1
+}
+
+# Run a command as root: directly if we already are, otherwise through sudo.
+as_root() { if [[ "$(id -u)" == 0 ]]; then "$@"; else sudo "$@"; fi; }
+
+apt_installed() { dpkg-query -W -f='${Status}' "$1" 2>/dev/null | grep -q "install ok installed"; }
+
+if is_macos; then
+  FONT_DIR="$HOME/Library/Fonts"
+  JETBRAINS_FONT="$FONT_DIR/JetBrainsMonoNerdFontMono-Regular.ttf"
+  LAZYGIT_CONFIG="$HOME/Library/Application Support/lazygit/config.yml"
+  GHOSTTY_PLATFORM="ghostty/macos.conf"
+else
+  FONT_DIR="$HOME/.local/share/fonts"
+  JETBRAINS_FONT="$FONT_DIR/JetBrainsMonoNerdFont/JetBrainsMonoNerdFontMono-Regular.ttf"
+  LAZYGIT_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/lazygit/config.yml"
+  GHOSTTY_PLATFORM="ghostty/linux.conf"
+fi
+
+# Formulae for this OS: the shared list, plus the macOS-only ones on a Mac.
+BREW_FORMULAE=("${FORMULAE[@]}")
+if is_macos; then BREW_FORMULAE+=("${MACOS_FORMULAE[@]}"); fi
+
 # ------------------------------------------------------------------ config ---
-# Where each cask lands, so apps installed outside Homebrew aren't reinstalled.
+# (macOS) Where each cask lands, so apps installed outside Homebrew aren't reinstalled.
 cask_app_path() {
   case "$1" in
     ghostty) echo "/Applications/Ghostty.app" ;;
@@ -47,8 +93,6 @@ OMZ_PLUGINS=(
 OMZ_THEMES=(
   "powerlevel10k|https://github.com/romkatv/powerlevel10k.git"
 )
-# Ghostty's font-family is "JetBrainsMono Nerd Font Mono"; this is one of its files.
-JETBRAINS_FONT="$HOME/Library/Fonts/JetBrainsMonoNerdFontMono-Regular.ttf"
 NVM_VERSION="v0.40.4"
 NODE_VERSION="24"
 
@@ -63,9 +107,11 @@ LINKS=(
   "zsh/zsh.d/tmux.zsh|$HOME/.zsh.d/tmux.zsh"
   "zsh/zsh.d/dev-setup.zsh|$HOME/.zsh.d/dev-setup.zsh"
   "ghostty/config|$HOME/.config/ghostty/config"
+  # Keybindings etc. that differ per OS; the shared config includes platform.conf.
+  "$GHOSTTY_PLATFORM|$HOME/.config/ghostty/platform.conf"
   "nvim|$HOME/.config/nvim"
   "tmux/tmux.conf|$HOME/.tmux.conf"
-  "lazygit/config.yml|$HOME/Library/Application Support/lazygit/config.yml"
+  "lazygit/config.yml|$LAZYGIT_CONFIG"
 )
 
 # Everything backup.sh copies. Symlinks are followed, so the backup holds real
@@ -77,7 +123,7 @@ BACKUP_PATHS=(
   "$HOME/.oh-my-zsh/custom"
   "$HOME/.config/ghostty" "$HOME/.config/nvim"
   "$HOME/.tmux.conf"
-  "$HOME/Library/Application Support/lazygit/config.yml"
+  "$LAZYGIT_CONFIG"
   "$HOME/.gitconfig" "$HOME/.config/git"
 )
 
@@ -99,7 +145,7 @@ run()  { if ((DRY_RUN)); then info "would run: $*"; else "$@"; fi; }
 # Each script runs in its own process, so put Homebrew on PATH here.
 load_brew() {
   local b
-  for b in /opt/homebrew/bin/brew /usr/local/bin/brew; do
+  for b in /opt/homebrew/bin/brew /usr/local/bin/brew /home/linuxbrew/.linuxbrew/bin/brew "$HOME/.linuxbrew/bin/brew"; do
     if [[ -x "$b" ]]; then eval "$("$b" shellenv)"; return 0; fi
   done
   return 1

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Which version this Mac is on, and whether it's behind the remote.
+# Which version this machine is on, and whether it's behind the remote.
 . "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/lib.sh"
 g() { git -C "$DOTFILES" "$@"; }
 

@@ -25,15 +25,20 @@ return {
 			{ "<leader>fw", "<cmd>Telescope grep_string<cr>", desc = "Grep word under cursor" },
 			{ "<leader>/", "<cmd>Telescope current_buffer_fuzzy_find<cr>", desc = "Search in buffer" },
 		},
-		opts = {
-			defaults = {
-				path_display = { "truncate" },
-				mappings = { i = { ["<C-u>"] = false, ["<C-d>"] = false } },
-			},
-			extensions = {
-				["ui-select"] = { require("telescope.themes").get_dropdown({}) },
-			},
-		},
+		-- A function, so telescope.themes is required when the plugin loads. As a
+		-- plain table it runs while lazy.nvim reads the spec, which fails on a
+		-- fresh machine where telescope isn't installed yet.
+		opts = function()
+			return {
+				defaults = {
+					path_display = { "truncate" },
+					mappings = { i = { ["<C-u>"] = false, ["<C-d>"] = false } },
+				},
+				extensions = {
+					["ui-select"] = { require("telescope.themes").get_dropdown({}) },
+				},
+			}
+		end,
 		config = function(_, opts)
 			local telescope = require("telescope")
 			telescope.setup(opts)
