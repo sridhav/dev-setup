@@ -14,6 +14,7 @@ return {
 			treesitter = true,
 			native_lsp = { enabled = true, underlines = { errors = { "undercurl" } } },
 			mason = true,
+			render_markdown = true,
 		},
 	},
 	config = function(_, opts)

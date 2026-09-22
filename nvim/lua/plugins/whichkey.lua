@@ -12,6 +12,7 @@ return {
 			{ "<leader>h", group = "git hunks" },
 			{ "<leader>x", group = "trouble" },
 			{ "<leader>S", group = "session" },
+			{ "<leader>m", group = "markdown" },
 		},
 	},
 	keys = {

@@ -91,6 +91,18 @@
 | `qa` ... `q`, then `@a` | Record macro into a, replay it |
 | `:%s/old/new/g` | Replace in file (live preview) |
 
+## Markdown
+
+`.md` files render in place (render-markdown). The cursor line shows raw text, so you can still edit it.
+
+| Key | Does |
+|---|---|
+| `<leader>tm` | Toggle rendered / raw for this buffer |
+| `<leader>mp` | Rendered preview in a side split |
+| `gd` | Follow a link to that file or heading (marksman) |
+| `<leader>ds` | Jump to a heading (outline) |
+| `<leader>rn` | Rename heading and update links to it |
+
 ## Sessions
 
 | Key | Does |
