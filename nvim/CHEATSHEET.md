@@ -114,10 +114,25 @@ Commands are verb + object: `d` delete, `c` change, `y` copy + `w` word, `iw` in
 | `dap` / `yap` | Delete / copy paragraph |
 | `.` | Repeat last change |
 | `u` / `Ctrl-r` | Undo / redo (undo survives restarts) |
+| `<leader>u` | Undo *tree* — browse branches the plain undo hides |
+| `cs"'` / `ds(` | Change "quotes"→'quotes' / delete surrounding parens |
+| `ysiw)` | Wrap the word in ( ) — `ys` + motion + char |
+| `gs)` / `gS)` (visual) | Wrap the selection / whole lines |
 | `gcc` / `gc` + motion | Toggle comment line / range |
 | `>` / `<` (visual) | Indent / unindent selection |
 | `qa` ... `q`, then `@a` | Record macro into a, replay it |
 | `:%s/old/new/g` | Replace in file (live preview) |
+
+## Select by syntax (treesitter)
+
+| Key | Does |
+|---|---|
+| `vif` / `vaf` | Select inside / around a function |
+| `vic` / `vac` | The same for a class |
+| `via` / `vaa` | An argument |
+| `]f` / `[f` | Jump to next / previous function |
+
+Works with any operator, not just `v`: `daf` deletes a function, `yaf` copies one.
 
 ## Markdown
 
