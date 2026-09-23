@@ -15,6 +15,7 @@ FORMULAE=(
 # from Docker's apt repo instead (step 14).
 MACOS_FORMULAE=(
   colima docker docker-buildx docker-compose
+  duti   # step 15: sets Ghostty as the handler for shell scripts
 )
 
 # macOS apps and fonts (Homebrew casks). On Linux, step 04 installs Ghostty and

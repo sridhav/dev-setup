@@ -17,6 +17,7 @@ Changes reach the other machines by git: `make push` on one, `make update` on ea
 | `sh/install.sh` | Runs `sh/steps/[0-9][0-9]-*.sh` in filename order. Flags: `--dry-run`, `--force`. |
 | `sh/steps/NN-name.sh` | One install step per file. Each one can run on its own. |
 | `sh/{update,plugins,upgrade,push,backup,status,brew-diff}.sh` | The day-to-day commands. |
+| `sh/remove-iterm2.sh` | `make remove-iterm2`. Deliberately **not** an install step: it removes an app the setup never installed, so it only runs when asked. Moves iTerm2 into `~/.dev-setup-backup/<timestamp>/removed/`, never deletes. |
 | `sh/{version,history,rollback,release}.sh` | Version control: git is the history and GitHub `origin/main` is the latest. `update.sh` refuses to run on a dirty tree and only fast-forwards. |
 | `zsh/zsh.d/dev-setup.zsh` | Daily background `git fetch`; shows "N update(s) available" after the first prompt. Must never print during shell startup (Powerlevel10k instant prompt) and must never apply updates itself. |
 | `Makefile` | One-line wrappers around `sh/`. No logic lives here. |

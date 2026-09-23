@@ -10,10 +10,10 @@ SHELL := /bin/bash
 
 S := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))/sh
 
-.PHONY: help install force-install dry-run backup update plugins upgrade push status brew-diff version history rollback release personal
+.PHONY: help install force-install dry-run backup update plugins upgrade push status brew-diff version history rollback release personal remove-iterm2
 
 help: ## Show this help
-	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  \033[35m%-14s\033[0m %s\n", $$1, $$2}'
+	@grep -E '^[a-z0-9-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  \033[35m%-14s\033[0m %s\n", $$1, $$2}'
 
 install: ## First-time setup: install everything missing, link configs
 	@$(S)/install.sh
@@ -59,3 +59,6 @@ release: ## Tag the current version (vYYYY.MM.DD, or name=...) and push the tag
 
 personal: ## Generate ~/.zsh.d/personal.zsh with GitHub credentials (re-run with force=1 to overwrite)
 	@$(S)/personal.sh $(if $(filter 1,$(force)),--force)
+
+remove-iterm2: ## macOS: move iTerm2 and its settings into ~/.dev-setup-backup/ (not run by make install)
+	@$(S)/remove-iterm2.sh
