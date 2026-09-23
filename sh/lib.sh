@@ -61,11 +61,14 @@ if is_macos; then
   FONT_DIR="$HOME/Library/Fonts"
   JETBRAINS_FONT="$FONT_DIR/JetBrainsMonoNerdFontMono-Regular.ttf"
   LAZYGIT_CONFIG="$HOME/Library/Application Support/lazygit/config.yml"
+  # k9s follows XDG when it is set, otherwise the macOS app-support dir.
+  K9S_CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/Library/Application Support}/k9s"
   GHOSTTY_PLATFORM="ghostty/macos.conf"
 else
   FONT_DIR="$HOME/.local/share/fonts"
   JETBRAINS_FONT="$FONT_DIR/JetBrainsMonoNerdFont/JetBrainsMonoNerdFontMono-Regular.ttf"
   LAZYGIT_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/lazygit/config.yml"
+  K9S_CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/k9s"
   GHOSTTY_PLATFORM="ghostty/linux.conf"
 fi
 
@@ -107,12 +110,17 @@ LINKS=(
   "zsh/zsh.d/tmux.zsh|$HOME/.zsh.d/tmux.zsh"
   "zsh/zsh.d/dev-setup.zsh|$HOME/.zsh.d/dev-setup.zsh"
   "zsh/zsh.d/nvm.zsh|$HOME/.zsh.d/nvm.zsh"
+  "zsh/zsh.d/k9s.zsh|$HOME/.zsh.d/k9s.zsh"
   "ghostty/config|$HOME/.config/ghostty/config"
   # Keybindings etc. that differ per OS; the shared config includes platform.conf.
   "$GHOSTTY_PLATFORM|$HOME/.config/ghostty/platform.conf"
   "nvim|$HOME/.config/nvim"
   "tmux/tmux.conf|$HOME/.tmux.conf"
   "lazygit/config.yml|$LAZYGIT_CONFIG"
+  # Only the skin: k9s rewrites its own config.yaml with the current context,
+  # which would dirty the tree on every machine and leak cluster names.
+  # zsh/zsh.d/k9s.zsh points K9S_SKIN at this file instead.
+  "k9s/skins/catppuccin-mocha.yaml|$K9S_CONFIG_DIR/skins/catppuccin-mocha.yaml"
   "opencode/tui.json|$HOME/.config/opencode/tui.json"
 )
 
@@ -126,6 +134,7 @@ BACKUP_PATHS=(
   "$HOME/.config/ghostty" "$HOME/.config/nvim"
   "$HOME/.tmux.conf"
   "$LAZYGIT_CONFIG"
+  "$K9S_CONFIG_DIR/skins"
   "$HOME/.config/opencode/tui.json"
   "$HOME/.gitconfig" "$HOME/.config/git"
 )

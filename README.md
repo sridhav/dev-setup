@@ -130,6 +130,7 @@ zsh/zsh.d/*.zsh           → ~/.zsh.d/
 zsh/catppuccin-syntax-highlighting.zsh → ~/.config/zsh/
 tmux/tmux.conf            → ~/.tmux.conf
 lazygit/config.yml        → ~/Library/Application Support/lazygit/config.yml
+k9s/skins/*.yaml          → ~/Library/Application Support/k9s/skins/  (Linux: ~/.config/k9s/)
 opencode/tui.json         → ~/.config/opencode/tui.json
 ```
 
