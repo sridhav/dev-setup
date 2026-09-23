@@ -27,7 +27,6 @@ Commands are verb + object: `d` delete, `c` change, `y` copy + `w` word, `iw` in
 |---|---|
 | `s` + 2 chars + label | Jump anywhere on screen (flash) |
 | `Ctrl-h/j/k/l` | Move between splits, neo-tree and tmux panes |
-| `Ctrl-Shift-arrows` | Same, on arrow keys (`Cmd-Alt-arrows` sends this) |
 | `Ctrl-\` | Back to previous split/pane |
 | `Ctrl-d` / `Ctrl-u` | Half page down / up |
 | `gg` / `G` | Top / bottom of file |
@@ -161,7 +160,6 @@ Prefix is **`Ctrl-s`**: press it, let go, then the key. The mouse works for ever
 | `Ctrl-s ,` | Rename window |
 | `Ctrl-s %` / `"` | Split side by side / top and bottom |
 | `Ctrl-h/j/k/l` | Move between panes (and Neovim splits), no prefix |
-| `Ctrl-Shift-arrows` | Same, on arrow keys, no prefix (`Cmd-Alt-arrows` sends this) |
 | `Ctrl-s z` | Zoom pane full screen (again to restore) |
 | `Ctrl-s x` / `&` | Close pane / window (asks first) |
 | `Ctrl-s d` | Detach (session keeps running; `tmux attach` to return) |
@@ -192,7 +190,7 @@ Mac and Linux differ: on Linux, `Cmd` becomes `Ctrl+Shift`, and `Cmd+Shift` beco
 | `Cmd-w` | `Ctrl+Shift+w` | Close tab / split |
 | `Cmd-d` | `Ctrl+Shift+d` | Split right |
 | `Cmd-Shift-d` | `Ctrl+Shift+Alt+d` | Split down |
-| `Cmd-Alt-arrows` | `Ctrl+Alt+arrows` | Move between tmux panes and Neovim splits (sends `Ctrl-Shift-arrow`) |
+| `Cmd-Alt-arrows` | `Ctrl+Alt+arrows` | Move between splits |
 | `Cmd-Shift-e` | `Ctrl+Shift+Alt+e` | Equalize splits |
 | `Cmd-Shift-f` | `Ctrl+Shift+Alt+f` | Zoom split |
 | `Cmd-+` / `-` / `0` | `Ctrl-+` / `-` / `0` | Font bigger / smaller / reset |
