@@ -154,7 +154,7 @@ Prefix is **`Ctrl-s`**: press it, let go, then the key. The mouse works for ever
 
 | Key | Does |
 |---|---|
-| `Ctrl-s c` | New window (tab) |
+| `Ctrl-s c` | New window (tab), same directory |
 | `Ctrl-s n` / `p` / `0-9` | Next / previous / numbered window |
 | `Ctrl-s w` / `s` | Pick a window / session from a list |
 | `Ctrl-s ,` | Rename window |
