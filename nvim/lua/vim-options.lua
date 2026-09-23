@@ -102,3 +102,27 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 		vim.hl.on_yank()
 	end,
 })
+
+-- Pick up files changed on disk by something else (Claude, opencode, git).
+-- 'autoread' is on by default, but it only acts when Neovim actually stats the
+-- file; a buffer sitting on screen never does. These events make it check.
+-- tmux's `focus-events on` is what lets FocusGained fire inside a pane.
+vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold", "CursorHoldI", "TermClose", "TermLeave" }, {
+	desc = "Reload buffers changed on disk",
+	group = vim.api.nvim_create_augroup("checktime_on_change", { clear = true }),
+	callback = function()
+		-- checktime is invalid while the command line or cmdwin is open.
+		if vim.fn.mode() ~= "c" and vim.fn.getcmdwintype() == "" then
+			vim.cmd("checktime")
+		end
+	end,
+})
+
+-- Say so when a buffer was swapped out from under the cursor.
+vim.api.nvim_create_autocmd("FileChangedShellPost", {
+	desc = "Notify when a buffer was reloaded from disk",
+	group = vim.api.nvim_create_augroup("checktime_notify", { clear = true }),
+	callback = function()
+		vim.notify("File changed on disk, buffer reloaded", vim.log.levels.WARN)
+	end,
+})
