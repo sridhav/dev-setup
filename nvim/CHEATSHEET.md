@@ -159,6 +159,7 @@ Prefix is **`Ctrl-s`**: press it, let go, then the key. The mouse works for ever
 | `Ctrl-s w` / `s` | Pick a window / session from a list |
 | `Ctrl-s ,` | Rename window |
 | `Ctrl-s %` / `"` | Split side by side / top and bottom |
+| `Ctrl-s arrows` | Split, new pane in the arrow's direction, same directory |
 | `Ctrl-h/j/k/l` | Move between panes (and Neovim splits), no prefix |
 | `Ctrl-s z` | Zoom pane full screen (again to restore) |
 | `Ctrl-s x` / `&` | Close pane / window (asks first) |
