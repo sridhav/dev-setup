@@ -21,7 +21,12 @@ return {
 			hijack_netrw_behavior = "open_default",
 			follow_current_file = { enabled = true },
 			use_libuv_file_watcher = true,
-			filtered_items = { hide_dotfiles = false, hide_gitignored = true },
+			filtered_items = {
+				visible = true,
+				hide_dotfiles = false,
+				hide_gitignored = false,
+				show_hidden_count = false,
+			},
 		},
 	},
 }
