@@ -26,6 +26,7 @@ Commands are verb + object: `d` delete, `c` change, `y` copy + `w` word, `iw` in
 | Key | Does |
 |---|---|
 | `s` + 2 chars + label | Jump anywhere on screen (flash) |
+| `Ctrl-s` while in `/` search | Toggle flash labels on the matches (outside tmux only: there `Ctrl-s` is the prefix) |
 | `Ctrl-h/j/k/l` | Move between splits, neo-tree and tmux panes |
 | `Ctrl-\` | Back to previous split/pane |
 | `Ctrl-d` / `Ctrl-u` | Half page down / up |
@@ -61,6 +62,7 @@ Searches start at the **project root** (the language server's root, else the nea
 | `<leader>fb` | Open buffers |
 | `<leader>/` | Fuzzy search this file |
 | `<leader>ft` | TODO / FIXME comments |
+| `<leader>fd` | Problems (diagnostics) list |
 | `<leader>fu` | Undo history (with diffs) |
 | `<leader>fc` | Neovim config files |
 | `<leader>fh` | Search Neovim help |
@@ -129,6 +131,10 @@ Open files show as tabs along the top once there are two or more.
 | `<leader>xx` | All problems in project (Trouble) |
 | `<leader>xX` | All problems in this file |
 | `<leader>xt` | All TODO / FIXME comments (Trouble) |
+| `<leader>xs` | Symbols outline of this file (Trouble) |
+| `<leader>xl` | Definitions / references of the symbol under cursor (Trouble) |
+| `<leader>xq` / `<leader>xL` | Quickfix / location list (Trouble) |
+| `<leader>q` | This file's problems into the location list |
 | `<leader>td` | Toggle diagnostics on / off |
 | `:LintInfo` | Which linters run here |
 
@@ -137,6 +143,7 @@ Open files show as tabs along the top once there are two or more.
 | Key | Does |
 |---|---|
 | `<leader>gg` | LazyGit |
+| `<leader>gf` | LazyGit for the repo this file is in (when it's not the cwd's repo) |
 | `<leader>gl` | Commits touching this file |
 | `<leader>gB` | Open this line (or selection) on GitHub |
 | `]c` / `[c` | Next / previous change |
@@ -236,6 +243,7 @@ Markdown and commit messages wrap and spell check by themselves. Files reopen wh
 | `<leader>Ss` | Restore this directory's session (also `s` on the start screen) |
 | `<leader>Sl` | Restore last session |
 | `<leader>SS` | Pick a session |
+| `<leader>Sd` | Don't save a session for this run |
 
 ## Housekeeping
 
