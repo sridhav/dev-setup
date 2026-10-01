@@ -1,0 +1,5 @@
+# Base config for markdownlint-cli2 in Neovim (nvim-lint passes it with
+# --config). A project's own .markdownlint* config still applies on top.
+config:
+  MD013: false # line length: prose and tables are not wrapped at 80 columns
+  MD060: false # table pipe spacing: compact tables are fine

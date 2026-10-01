@@ -5,6 +5,10 @@ return {
 		preset = "helix",
 		spec = {
 			{ "<leader>f", group = "find" },
+			{ "<leader>b", group = "buffer" },
+			{ "<leader>s", group = "search/replace" },
+			{ "<leader>n", group = "notifications" },
+			{ "<leader>D", group = "debug" },
 			{ "<leader>c", group = "code" },
 			{ "<leader>t", group = "toggle" },
 			{ "<leader>w", group = "workspace" },

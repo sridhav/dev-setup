@@ -21,7 +21,12 @@ return {
 		},
 		signature = { enabled = true },
 		sources = {
-			default = { "lsp", "path", "snippets", "buffer" },
+			default = { "lazydev", "lsp", "path", "snippets", "buffer" },
+			providers = {
+				-- Neovim API completion in this config's Lua files (lazydev.lua),
+				-- ranked above lua_ls's own suggestions.
+				lazydev = { name = "LazyDev", module = "lazydev.integrations.blink", score_offset = 100 },
+			},
 		},
 	},
 }

@@ -9,6 +9,8 @@ return {
 			dockerfile = { "hadolint" },
 			yaml = { "yamllint" },
 			terraform = { "tflint" },
+			go = { "golangcilint" },
+			markdown = { "markdownlint-cli2" },
 			sh = { "shellcheck" },
 			bash = { "shellcheck" },
 			javascript = { "eslint_d" },
@@ -16,6 +18,21 @@ return {
 			javascriptreact = { "eslint_d" },
 			typescriptreact = { "eslint_d" },
 		}
+
+		-- markdownlint's defaults flag every line over 80 characters and every
+		-- compact table. markdownlint.yaml (next to init.lua) turns those two
+		-- off; a project's own .markdownlint* config still applies on top.
+		lint.linters["markdownlint-cli2"].args = {
+			"--config",
+			vim.fn.stdpath("config") .. "/markdownlint.yaml",
+			"-",
+		}
+
+		-- Without a selene.toml, selene checks plain Lua 5.1: `vim` is unknown and
+		-- every lazy.nvim spec is a warning. Run it only where a project set it up.
+		local function has_selene_config(path)
+			return vim.fs.find({ "selene.toml" }, { path = vim.fs.dirname(path), upward = true })[1] ~= nil
+		end
 
 		-- GitHub workflow files get the compound filetype `yaml.github`, not
 		-- `githubaction`, and nvim-lint resolves that to the `yaml` entry above.
@@ -25,6 +42,11 @@ return {
 			local path = vim.api.nvim_buf_get_name(0)
 			if path:match("%.github/workflows/.*%.ya?ml$") then
 				names = vim.list_extend(vim.list_slice(names), { "actionlint" })
+			end
+			if vim.tbl_contains(names, "selene") and not has_selene_config(path) then
+				names = vim.tbl_filter(function(name)
+					return name ~= "selene"
+				end, names)
 			end
 			return names
 		end

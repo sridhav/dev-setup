@@ -34,6 +34,8 @@ Commands are verb + object: `d` delete, `c` change, `y` copy + `w` word, `iw` in
 | `*` | Search word under cursor |
 | `Esc` | Clear search highlight |
 | `Ctrl-o` / `Ctrl-i` | Jump back / forward (after gd, search, etc.) |
+| `]]` / `[[` | Next / previous use of the word under the cursor |
+| `]t` / `[t` | Next / previous TODO / FIXME comment |
 
 ## Scrolling (Neovim)
 
@@ -46,18 +48,49 @@ Commands are verb + object: `d` delete, `c` change, `y` copy + `w` word, `iw` in
 | `42G` or `:42` | Go to line 42 |
 | Mouse wheel | Scrolls too |
 
-## Files and search (Telescope)
+## Files and search (snacks picker)
+
+Searches start at the **project root** (the language server's root, else the nearest `.git`), even if Neovim was opened in a subfolder. The capital-letter versions search from the current directory instead.
 
 | Key | Does |
 |---|---|
-| `Ctrl-p` or `<leader>ff` | Find file |
-| `<leader>fg` | Grep the project |
-| `<leader>fw` | Grep word under cursor |
+| `Ctrl-p` or `<leader>ff` | Find file (`<leader>fF` = current directory) |
+| `<leader>fg` | Grep the project (`<leader>fG` = current directory) |
+| `<leader>fw` | Grep word under cursor (or the selection) |
 | `<leader>fr` | Recent files |
 | `<leader>fb` | Open buffers |
 | `<leader>/` | Fuzzy search this file |
+| `<leader>ft` | TODO / FIXME comments |
+| `<leader>fu` | Undo history (with diffs) |
+| `<leader>fc` | Neovim config files |
 | `<leader>fh` | Search Neovim help |
 | `<leader>fk` | Search all keymaps |
+| `<leader>fR` | Reopen the last picker |
+| in picker: `Ctrl-j/k`, `Enter`, `Esc Esc` | Move, open, close (after one `Esc`, `?` lists every picker key) |
+
+## Search and replace (grug-far)
+
+| Key | Does |
+|---|---|
+| `<leader>sr` | Search and replace across the project, live preview (starts filtered to this file type) |
+| in grug-far: `<localleader>r` | Replace all (`\r`; `g?` shows all keys, `q` closes) |
+
+## Buffers and windows
+
+Open files show as tabs along the top once there are two or more.
+
+| Key | Does |
+|---|---|
+| `]b` / `[b` | Next / previous buffer |
+| `]B` / `[B` | Move buffer tab right / left |
+| `<leader>bb` | Previous buffer (toggle between two) |
+| `<leader>bd` | Close buffer (keeps the window) |
+| `<leader>bo` | Close all other buffers |
+| `<leader>bp` / `<leader>bP` | Pin buffer / close every unpinned one |
+| `<leader>-` / `<leader>\|` | Split below / right |
+| `Ctrl-/` | Toggle terminal (`Ctrl-/` again hides it) |
+| `<leader>Q` | Quit everything |
+| `q` | Closes help, quickfix, `:checkhealth` and other helper windows |
 
 ## File tree (neo-tree)
 
@@ -79,18 +112,24 @@ Commands are verb + object: `d` delete, `c` change, `y` copy + `w` word, `iw` in
 | `<leader>ca` or `gra` | **Fixes / code actions** |
 | `<leader>rn` | Rename symbol everywhere |
 | `<leader>f` | Format file (also runs on save) |
-| `<leader>tf` | Toggle format on save |
+| `<leader>tf` / `<leader>tF` | Toggle format on save (everywhere / this buffer) |
 | `<leader>ds` / `<leader>ws` | Symbols in file / workspace |
+| `<leader>th` | Toggle inlay hints (parameter names, types) |
+| `Ctrl-f` / `Ctrl-b` | Scroll the hover docs popup |
 
 ## Errors and warnings
 
 | Key | Does |
 |---|---|
 | `]d` / `[d` | Next / previous problem |
+| `]e` / `[e` | Next / previous **error** only |
+| `]w` / `[w` | Next / previous **warning** only |
 | `Ctrl-w d` | Show full message (instant) |
 | `<leader>d` | Same, after a short pause |
 | `<leader>xx` | All problems in project (Trouble) |
 | `<leader>xX` | All problems in this file |
+| `<leader>xt` | All TODO / FIXME comments (Trouble) |
+| `<leader>td` | Toggle diagnostics on / off |
 | `:LintInfo` | Which linters run here |
 
 ## Git
@@ -99,6 +138,7 @@ Commands are verb + object: `d` delete, `c` change, `y` copy + `w` word, `iw` in
 |---|---|
 | `<leader>gg` | LazyGit |
 | `<leader>gl` | Commits touching this file |
+| `<leader>gB` | Open this line (or selection) on GitHub |
 | `]c` / `[c` | Next / previous change |
 | `<leader>hp` | Preview change |
 | `<leader>hs` / `<leader>hr` | Stage / reset change (works on a selection too) |
@@ -113,13 +153,15 @@ Commands are verb + object: `d` delete, `c` change, `y` copy + `w` word, `iw` in
 | `ciw` / `ci"` / `ci(` | Change word / inside quotes / inside parens |
 | `dap` / `yap` | Delete / copy paragraph |
 | `.` | Repeat last change |
-| `u` / `Ctrl-r` | Undo / redo (undo survives restarts) |
+| `u` / `Ctrl-r` | Undo / redo (undo survives restarts; `,` `.` `;` in insert mode are undo points) |
 | `<leader>u` | Undo *tree* — browse branches the plain undo hides |
 | `cs"'` / `ds(` | Change "quotes"→'quotes' / delete surrounding parens |
 | `ysiw)` | Wrap the word in ( ) — `ys` + motion + char |
 | `gs)` / `gS)` (visual) | Wrap the selection / whole lines |
 | `gcc` / `gc` + motion | Toggle comment line / range |
-| `>` / `<` (visual) | Indent / unindent selection |
+| `gco` / `gcO` | Add a comment line below / above |
+| `>` / `<` (visual) | Indent / unindent selection (stays selected, press again) |
+| `Alt-j` / `Alt-k` | Move line or selection down / up (Mac: left Option) |
 | `qa` ... `q`, then `@a` | Record macro into a, replay it |
 | `:%s/old/new/g` | Replace in file (live preview) |
 
@@ -134,6 +176,34 @@ Commands are verb + object: `d` delete, `c` change, `y` copy + `w` word, `iw` in
 
 Works with any operator, not just `v`: `daf` deletes a function, `yaf` copies one.
 
+## Folding and context
+
+Code folds by syntax. Everything starts open. The enclosing function's signature stays pinned at the top while you scroll its body.
+
+| Key | Does |
+|---|---|
+| `za` | Toggle fold under cursor |
+| `zc` / `zo` | Close / open fold |
+| `zM` / `zR` | Close / open every fold |
+| `<leader>tc` | Toggle the pinned signature (treesitter context) |
+
+## Debugging (nvim-dap)
+
+Go (delve), Python (debugpy) and JS/TS (js-debug-adapter). The panels open when a session starts and close when it ends.
+
+| Key | Does |
+|---|---|
+| `<leader>Db` | Toggle breakpoint (`<leader>DB` = with a condition) |
+| `<leader>Dc` | Start / continue |
+| `<leader>DO` / `<leader>Di` / `<leader>Do` | Step over / into / out |
+| `<leader>DC` | Run to cursor |
+| `<leader>De` | Evaluate expression (or the selection) |
+| `<leader>Du` | Toggle debugger panels |
+| `<leader>Dr` | Toggle REPL |
+| `<leader>Dl` / `<leader>Dp` / `<leader>Dt` | Run last / pause / stop |
+| `<leader>Dg` | Debug the Go test under cursor |
+| `<leader>Dm` / `<leader>Dk` | Debug the Python test method / class under cursor |
+
 ## Markdown
 
 `.md` files render in place (render-markdown). The cursor line shows raw text, so you can still edit it.
@@ -146,11 +216,24 @@ Works with any operator, not just `v`: `daf` deletes a function, `yaf` copies on
 | `<leader>ds` | Jump to a heading (outline) |
 | `<leader>rn` | Rename heading and update links to it |
 
+## Toggles and messages
+
+| Key | Does |
+|---|---|
+| `<leader>tw` / `<leader>ts` | Toggle line wrap / spell check |
+| `<leader>ti` | Toggle indent guides |
+| `<leader>nn` | Notification history |
+| `<leader>nl` / `<leader>nh` | Last message / all messages |
+| `<leader>nd` | Dismiss all pop-ups |
+| `Shift-Enter` (in `:`) | Send the command's output to a split |
+
+Markdown and commit messages wrap and spell check by themselves. Files reopen where the cursor was last time.
+
 ## Sessions
 
 | Key | Does |
 |---|---|
-| `<leader>Ss` | Restore this directory's session |
+| `<leader>Ss` | Restore this directory's session (also `s` on the start screen) |
 | `<leader>Sl` | Restore last session |
 | `<leader>SS` | Pick a session |
 
@@ -158,7 +241,7 @@ Works with any operator, not just `v`: `daf` deletes a function, `yaf` copies on
 
 | Command | Does |
 |---|---|
-| `:Lazy` | Plugins: update, check, profile |
+| `:Lazy` or `<leader>l` | Plugins: update, check, profile |
 | `:Mason` | Installed LSPs, linters, formatters |
 | `:ConformInfo` | Formatter for this file |
 | `:checkhealth` | Diagnose problems |

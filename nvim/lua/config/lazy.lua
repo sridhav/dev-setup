@@ -25,8 +25,6 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- vim-options.lua sets mapleader; it must run before lazy.setup()
-require("vim-options")
 require("lazy").setup({
   spec = {
     -- import your plugins

@@ -27,50 +27,69 @@ return {
 	"nvim-lualine/lualine.nvim",
 	dependencies = { "nvim-tree/nvim-web-devicons" },
 	event = "VeryLazy",
-	opts = {
-		options = {
-			theme = "auto", -- follows the active colorscheme (catppuccin ships its own)
-			globalstatus = true,
-			-- "Bubble" style: rounded ends, matching the rounded tmux window tabs.
-			section_separators = { left = round_r, right = round_l },
-			component_separators = "",
-		},
-		sections = {
-			lualine_a = {
-				{ "mode", icon = "\u{e7c5}", separator = { left = round_l }, padding = { left = 0, right = 1 } },
+	opts = function()
+		-- Breadcrumbs: where the cursor is in the code (module > class > function),
+		-- from trouble's LSP symbols.
+		local symbols = require("trouble").statusline({
+			mode = "symbols",
+			groups = {},
+			title = false,
+			filter = { range = true },
+			format = "{kind_icon}{symbol.name:Normal}",
+			hl_group = "lualine_c_normal",
+		})
+
+		return {
+			options = {
+				theme = "auto", -- follows the active colorscheme (catppuccin ships its own)
+				globalstatus = true,
+				-- "Bubble" style: rounded ends, matching the rounded tmux window tabs.
+				section_separators = { left = round_r, right = round_l },
+				component_separators = "",
 			},
-			lualine_b = {
-				{ "branch", icon = "\u{e725}" },
-				{
-					"diff",
-					source = gitsigns_diff,
-					symbols = { added = "\u{f0fe} ", modified = "\u{f14b} ", removed = "\u{f146} " },
+			sections = {
+				lualine_a = {
+					{ "mode", icon = "\u{e7c5}", separator = { left = round_l }, padding = { left = 0, right = 1 } },
+				},
+				lualine_b = {
+					{ "branch", icon = "\u{e725}" },
+					{
+						"diff",
+						source = gitsigns_diff,
+						symbols = { added = "\u{f0fe} ", modified = "\u{f14b} ", removed = "\u{f146} " },
+					},
+				},
+				lualine_c = {
+					{ "filetype", icon_only = true, separator = "", padding = { left = 1, right = 0 } },
+					{
+						"filename",
+						path = 1,
+						symbols = { modified = " \u{25cf}", readonly = " \u{f023}", unnamed = "[No Name]" },
+					},
+					{
+						"diagnostics",
+						symbols = {
+							error = "\u{f015a} ",
+							warn = "\u{f002a} ",
+							info = "\u{f02fd} ",
+							hint = "\u{f0336} ",
+						},
+					},
+					{ symbols.get, cond = symbols.has },
+				},
+				lualine_x = {
+					{ macro_recording, color = { fg = "#f38ba8", gui = "bold" } },
+					{ lsp_clients },
+				},
+				lualine_y = {
+					{ "progress" },
+				},
+				lualine_z = {
+					{ "location", separator = { right = round_r }, padding = { left = 1, right = 0 } },
 				},
 			},
-			lualine_c = {
-				{ "filetype", icon_only = true, separator = "", padding = { left = 1, right = 0 } },
-				{
-					"filename",
-					path = 1,
-					symbols = { modified = " \u{25cf}", readonly = " \u{f023}", unnamed = "[No Name]" },
-				},
-				{
-					"diagnostics",
-					symbols = { error = "\u{f015a} ", warn = "\u{f002a} ", info = "\u{f02fd} ", hint = "\u{f0336} " },
-				},
-			},
-			lualine_x = {
-				{ macro_recording, color = { fg = "#f38ba8", gui = "bold" } },
-				{ lsp_clients },
-			},
-			lualine_y = {
-				{ "progress" },
-			},
-			lualine_z = {
-				{ "location", separator = { right = round_r }, padding = { left = 1, right = 0 } },
-			},
-		},
-		-- Tailored bars when neo-tree, lazy, mason or trouble has focus.
-		extensions = { "neo-tree", "lazy", "mason", "trouble" },
-	},
+			-- Tailored bars when neo-tree, lazy, mason or trouble has focus.
+			extensions = { "neo-tree", "lazy", "mason", "trouble" },
+		}
+	end,
 }

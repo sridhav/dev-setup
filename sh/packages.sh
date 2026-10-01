@@ -7,7 +7,7 @@
 # (apt's Neovim is too old for this config, which needs 0.11+).
 FORMULAE=(
   neovim tmux tree-sitter-cli gh direnv
-  lazygit ripgrep   # Neovim: <leader>gg (lazygit), <leader>fg (Telescope live grep)
+  lazygit ripgrep fd   # Neovim: <leader>gg (lazygit), the snacks picker's grep (rg) and file search (fd)
   kubernetes-cli k9s libpq
 )
 

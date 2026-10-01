@@ -19,6 +19,14 @@ return {
 			end,
 			desc = "Toggle format on save",
 		},
+		{
+			"<leader>tF",
+			function()
+				vim.b.disable_autoformat = not vim.b.disable_autoformat
+				vim.notify("Format on save (this buffer): " .. (vim.b.disable_autoformat and "off" or "on"))
+			end,
+			desc = "Toggle format on save (buffer)",
+		},
 	},
 	opts = {
 		formatters_by_ft = {
@@ -31,8 +39,8 @@ return {
 			jsonc = { "jq" },
 			sh = { "shfmt" },
 			bash = { "shfmt" },
-			go = { "gofmt" },
-			python = { "isort", "black" },
+			go = { "goimports" }, -- gofmt plus adding/removing imports
+			python = { "ruff_organize_imports", "ruff_format" },
 			rust = { "rustfmt" },
 			-- prefer prettierd, fall back to prettier if the daemon isn't installed
 			javascript = { "prettierd", "prettier", stop_after_first = true },
