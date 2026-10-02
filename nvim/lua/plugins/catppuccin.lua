@@ -8,7 +8,6 @@ return {
 		transparent_background = false,
 		integrations = {
 			blink_cmp = true,
-			neotree = true,
 			snacks = { enabled = true },
 			noice = true,
 			grug_far = true,

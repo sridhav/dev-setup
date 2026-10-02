@@ -17,12 +17,19 @@ return {
 		input = { enabled = true }, -- vim.ui.input as a float (LSP rename, …)
 		notifier = { enabled = true }, -- vim.notify pop-ups, with history
 		words = { enabled = true }, -- highlight the word under the cursor across the buffer
+		-- File tree sidebar (replaced neo-tree). Also opens for `nvim .` instead of netrw.
+		explorer = { enabled = true },
+		-- Uses your lazygit/config.yml as is: `configure` would recolor it from
+		-- the Neovim theme and drop its blue accent.
+		lazygit = { configure = false },
 		picker = {
 			enabled = true, -- also takes over vim.ui.select
 			sources = {
 				-- Dotfiles are shown (this repo is mostly dotfiles); .git never is.
 				files = { hidden = true },
 				grep = { hidden = true },
+				-- Show dotfiles and gitignored files in the tree too (H / I toggle them).
+				explorer = { hidden = true, ignored = true },
 			},
 		},
 		dashboard = {
@@ -155,6 +162,50 @@ return {
 				Snacks.picker.lines()
 			end,
 			desc = "Search in buffer",
+		},
+
+		-- File tree
+		{
+			"<C-n>",
+			function()
+				local explorer = Snacks.picker.get({ source = "explorer" })[1]
+				if explorer then
+					explorer:close()
+				else
+					Snacks.explorer()
+				end
+			end,
+			desc = "Toggle file tree",
+		},
+		{
+			"<leader>e",
+			function()
+				Snacks.explorer.reveal()
+			end,
+			desc = "Reveal file in tree",
+		},
+
+		-- Git
+		{
+			"<leader>gg",
+			function()
+				Snacks.lazygit()
+			end,
+			desc = "LazyGit",
+		},
+		{
+			"<leader>gf",
+			function()
+				Snacks.lazygit({ cwd = Snacks.git.get_root() })
+			end,
+			desc = "LazyGit (current file's repo)",
+		},
+		{
+			"<leader>gl",
+			function()
+				Snacks.lazygit.log_file()
+			end,
+			desc = "Commits touching current file",
 		},
 
 		-- Buffers

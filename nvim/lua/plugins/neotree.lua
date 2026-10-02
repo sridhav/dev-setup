@@ -1,5 +1,8 @@
+-- Replaced by the snacks explorer (snacks.lua). Kept, switched off, so it can
+-- be turned back on by deleting `enabled = false`.
 return {
 	"nvim-neo-tree/neo-tree.nvim",
+	enabled = false,
 	branch = "v3.x",
 	dependencies = {
 		"nvim-lua/plenary.nvim",

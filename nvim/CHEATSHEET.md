@@ -27,7 +27,7 @@ Commands are verb + object: `d` delete, `c` change, `y` copy + `w` word, `iw` in
 |---|---|
 | `s` + 2 chars + label | Jump anywhere on screen (flash) |
 | `Ctrl-s` while in `/` search | Toggle flash labels on the matches (outside tmux only: there `Ctrl-s` is the prefix) |
-| `Ctrl-h/j/k/l` | Move between splits, neo-tree and tmux panes |
+| `Ctrl-h/j/k/l` | Move between splits, the file tree and tmux panes |
 | `Ctrl-\` | Back to previous split/pane |
 | `Ctrl-d` / `Ctrl-u` | Half page down / up |
 | `gg` / `G` | Top / bottom of file |
@@ -94,13 +94,24 @@ Open files show as tabs along the top once there are two or more.
 | `<leader>Q` | Quit everything |
 | `q` | Closes help, quickfix, `:checkhealth` and other helper windows |
 
-## File tree (neo-tree)
+## File tree (snacks explorer)
+
+It's a picker: start typing in the tree to filter it, `Esc` to stop.
 
 | Key | Does |
 |---|---|
 | `Ctrl-n` | Show / hide tree |
 | `<leader>e` | Reveal current file in tree |
-| in tree: `a` / `d` / `r` | Add / delete / rename |
+| in tree: `Enter` or `l` / `h` | Open file or folder / close folder |
+| in tree: `Backspace` / `.` | Go up a directory / make this folder the root |
+| in tree: `Z` | Close every folder |
+| in tree: `a` / `d` / `r` | Add (end with `/` for a folder) / delete (to trash) / rename |
+| in tree: `Tab` then `m` / `c` | Mark files, then move / copy them into the folder under the cursor |
+| in tree: `y` then `p` | Copy file(s), then paste into the folder under the cursor |
+| in tree: `H` / `I` | Show / hide dotfiles / gitignored files |
+| in tree: `P` | Preview file |
+| in tree: `o` | Open with the system app |
+| in tree: `]g` / `[g`, `]d` / `[d` | Next / previous git change, diagnostic |
 | in tree: `?` | All tree keys |
 
 ## Code (LSP)

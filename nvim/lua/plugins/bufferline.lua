@@ -27,9 +27,9 @@ return {
 				end,
 				diagnostics = "nvim_lsp",
 				always_show_bufferline = false,
-				-- Start the tabs after neo-tree instead of drawing over it.
+				-- Start the tabs after the file tree instead of drawing over it.
 				offsets = {
-					{ filetype = "neo-tree", text = "Explorer", highlight = "Directory", text_align = "left" },
+					{ filetype = "snacks_layout_box", text = "Explorer", highlight = "Directory", text_align = "left" },
 				},
 			},
 		}

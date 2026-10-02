@@ -1,5 +1,8 @@
+-- Replaced by Snacks.lazygit (snacks.lua). Kept, switched off, so it can be
+-- turned back on by deleting `enabled = false`.
 return {
 	"kdheepak/lazygit.nvim",
+	enabled = false,
 	dependencies = { "nvim-lua/plenary.nvim" },
 	cmd = {
 		"LazyGit",

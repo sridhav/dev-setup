@@ -4,13 +4,15 @@ return {
 	event = "BufReadPre",
 	opts = {},
 	init = function()
-		-- A saved neo-tree window restores as an empty, broken buffer, so close
+		-- A saved file-tree window restores as an empty, broken buffer, so close
 		-- the tree before persistence writes the session.
 		vim.api.nvim_create_autocmd("User", {
 			pattern = "PersistenceSavePre",
-			group = vim.api.nvim_create_augroup("persistence_neotree", { clear = true }),
+			group = vim.api.nvim_create_augroup("persistence_explorer", { clear = true }),
 			callback = function()
-				pcall(vim.cmd, "Neotree close")
+				for _, explorer in ipairs(Snacks.picker.get({ source = "explorer" })) do
+					explorer:close()
+				end
 			end,
 		})
 	end,

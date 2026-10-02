@@ -88,8 +88,8 @@ return {
 					{ "location", separator = { right = round_r }, padding = { left = 1, right = 0 } },
 				},
 			},
-			-- Tailored bars when neo-tree, lazy, mason or trouble has focus.
-			extensions = { "neo-tree", "lazy", "mason", "trouble" },
+			-- Tailored bars when lazy, mason or trouble has focus.
+			extensions = { "lazy", "mason", "trouble" },
 		}
 	end,
 }
