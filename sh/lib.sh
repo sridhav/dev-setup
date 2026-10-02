@@ -112,6 +112,7 @@ LINKS=(
   "zsh/zsh.d/nvm.zsh|$HOME/.zsh.d/nvm.zsh"
   "zsh/zsh.d/k9s.zsh|$HOME/.zsh.d/k9s.zsh"
   "zsh/zsh.d/zoxide.zsh|$HOME/.zsh.d/zoxide.zsh"
+  "zsh/zsh.d/sesh.zsh|$HOME/.zsh.d/sesh.zsh"
   "ghostty/config|$HOME/.config/ghostty/config"
   # Keybindings etc. that differ per OS; the shared config includes platform.conf.
   "$GHOSTTY_PLATFORM|$HOME/.config/ghostty/platform.conf"
