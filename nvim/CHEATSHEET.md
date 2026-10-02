@@ -91,6 +91,7 @@ Open files show as tabs along the top once there are two or more.
 | `<leader>bp` / `<leader>bP` | Pin buffer / close every unpinned one |
 | `<leader>-` / `<leader>\|` | Split below / right |
 | `Ctrl-/` | Toggle terminal (`Ctrl-/` again hides it) |
+| in terminal: `Esc Esc` / `i` | Stop typing to scroll and copy (bar shows SCROLL) / type again |
 | `<leader>Q` | Quit everything |
 | `q` | Closes help, quickfix, `:checkhealth` and other helper windows |
 

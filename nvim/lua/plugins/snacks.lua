@@ -53,7 +53,9 @@ return {
 				},
 			},
 		},
-		terminal = {},
+		-- No "1: user@host:dir" bar above the terminal: the status line shows
+		-- the command, directory and terminal number instead (lualine.lua).
+		terminal = { win = { wo = { winbar = "" } } },
 	},
 	keys = {
 		-- Find (same keys Telescope had)
