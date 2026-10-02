@@ -1,0 +1,16 @@
+#:schema https://github.com/joshmedeski/sesh/raw/main/sesh.schema.json
+# sesh: tmux session picker, opened with Ctrl-s o (tmux/tmux.conf). It lists
+# running tmux sessions, then folders zoxide remembers; picking a folder opens
+# (or switches to) a session there, named after the git repo or folder.
+# Colors come from the terminal, so it's Catppuccin Mocha via Ghostty.
+
+# Built-in picker; no fzf needed.
+[tui]
+prompt = "\uf0e7 "
+placeholder = "Find a session or project..."
+show_icons = true
+show_windows = true # window names, dimmed, after each running session
+group_separator = true # a faint rule between running sessions and folders
+preview = true # live view of the session (or folder listing) beside the list
+preview_width = 55
+preview_border = "rounded"

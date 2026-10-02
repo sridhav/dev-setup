@@ -111,6 +111,7 @@ LINKS=(
   "zsh/zsh.d/dev-setup.zsh|$HOME/.zsh.d/dev-setup.zsh"
   "zsh/zsh.d/nvm.zsh|$HOME/.zsh.d/nvm.zsh"
   "zsh/zsh.d/k9s.zsh|$HOME/.zsh.d/k9s.zsh"
+  "zsh/zsh.d/zoxide.zsh|$HOME/.zsh.d/zoxide.zsh"
   "ghostty/config|$HOME/.config/ghostty/config"
   # Keybindings etc. that differ per OS; the shared config includes platform.conf.
   "$GHOSTTY_PLATFORM|$HOME/.config/ghostty/platform.conf"
@@ -122,6 +123,7 @@ LINKS=(
   # zsh/zsh.d/k9s.zsh points K9S_SKIN at this file instead.
   "k9s/skins/catppuccin-mocha.yaml|$K9S_CONFIG_DIR/skins/catppuccin-mocha.yaml"
   "opencode/tui.json|$HOME/.config/opencode/tui.json"
+  "sesh/sesh.toml|$HOME/.config/sesh/sesh.toml"
 )
 
 # Everything backup.sh copies. Symlinks are followed, so the backup holds real
@@ -136,6 +138,7 @@ BACKUP_PATHS=(
   "$LAZYGIT_CONFIG"
   "$K9S_CONFIG_DIR/skins"
   "$HOME/.config/opencode/tui.json"
+  "$HOME/.config/sesh"
   "$HOME/.gitconfig" "$HOME/.config/git"
 )
 

@@ -9,6 +9,7 @@ FORMULAE=(
   neovim tmux tree-sitter-cli gh direnv
   lazygit ripgrep fd   # Neovim: <leader>gg (lazygit), the snacks picker's grep (rg) and file search (fd)
   kubernetes-cli k9s libpq
+  sesh zoxide   # tmux project picker (Ctrl-s o); zoxide remembers the folders you visit for it
 )
 
 # macOS only: Docker runs in a colima VM there. Linux gets native Docker Engine

@@ -276,6 +276,9 @@ Prefix is **`Ctrl-s`**: press it, let go, then the key. The mouse works for ever
 | `Ctrl-s c` | New window (tab), same directory |
 | `Ctrl-s n` / `p` / `1-9` | Next / previous / numbered window (numbered from 1) |
 | `Ctrl-s w` / `s` | Pick a window / session from a list |
+| `Ctrl-s o` | sesh: open a session or project folder (type to filter, `Enter` opens, `Ctrl-x` kills/forgets, `#` + digit jumps) |
+| `Ctrl-s L` | Back to the previous session |
+| `z <name>` (shell) | Jump to a folder you've visited before (zoxide) |
 | `Ctrl-s ,` | Rename window |
 | `Ctrl-s %` / `"` | Split side by side / top and bottom |
 | `Ctrl-s arrows` | Split, new pane in the arrow's direction, same directory |
