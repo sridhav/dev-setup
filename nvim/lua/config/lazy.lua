@@ -11,16 +11,28 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
     vim.fn.getchar()
     os.exit(1)
   end
-  -- Start lazy.nvim at the commit pinned in lazy-lock.json, not the latest
-  -- release, so a fresh machine matches the others and the lockfile stays
-  -- unchanged. (lazy.nvim records the version it's running as, and doesn't
-  -- move itself during :Lazy restore.)
-  local lockfile = vim.fn.stdpath("config") .. "/lazy-lock.json"
+end
+
+-- Keep lazy.nvim itself at the commit pinned in lazy-lock.json, on every start.
+-- lazy.nvim writes the version it's running as into the lockfile, and
+-- `:Lazy restore` doesn't move it, so a machine with an older or newer copy
+-- rewrites the lockfile and leaves the repo dirty (make update then refuses).
+-- Reading .git/HEAD is cheap; git only runs when it's on the wrong commit.
+do
   local ok, lock = pcall(function()
-    return vim.json.decode(table.concat(vim.fn.readfile(lockfile), "\n"))
+    return vim.json.decode(table.concat(vim.fn.readfile(vim.fn.stdpath("config") .. "/lazy-lock.json"), "\n"))
   end)
-  if ok and lock["lazy.nvim"] then
-    vim.fn.system({ "git", "-C", lazypath, "checkout", "--quiet", lock["lazy.nvim"].commit })
+  local want = ok and lock["lazy.nvim"] and lock["lazy.nvim"].commit
+  local head = vim.fn.readfile(lazypath .. "/.git/HEAD")[1]
+  if want and head ~= want then
+    local function checkout()
+      vim.fn.system({ "git", "-C", lazypath, "checkout", "--quiet", want })
+      return vim.v.shell_error == 0
+    end
+    if not checkout() then
+      vim.fn.system({ "git", "-C", lazypath, "fetch", "--quiet", "origin" })
+      checkout()
+    end
   end
 end
 vim.opt.rtp:prepend(lazypath)

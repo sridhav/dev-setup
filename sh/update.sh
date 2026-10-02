@@ -7,6 +7,15 @@ parse_flags "$@"
 g() { git -C "$DOTFILES" "$@"; }
 
 step "Check for local changes"
+# lazy-lock.json changes on its own when Neovim records the plugin versions this
+# machine happens to have. Those aren't edits worth keeping: put it back and
+# let the plugin sync below install the pinned versions. (After `make upgrade`,
+# run `make push` before `make update`, or the upgrade is undone here.)
+lock="nvim/lazy-lock.json"
+if [[ "$(g status --porcelain)" == " M $lock" ]]; then
+  info "resetting $lock (local plugin versions; the pinned ones are installed next)"
+  run g checkout -- "$lock"
+fi
 if [[ -n "$(g status --porcelain)" ]]; then
   g status --short
   warn "This machine has config changes that aren't pushed. Run 'make push' first (or 'git -C $DOTFILES stash' to set them aside)."
