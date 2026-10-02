@@ -17,7 +17,7 @@ return {
 		input = { enabled = true }, -- vim.ui.input as a float (LSP rename, …)
 		notifier = { enabled = true }, -- vim.notify pop-ups, with history
 		words = { enabled = true }, -- highlight the word under the cursor across the buffer
-		-- File tree sidebar (replaced neo-tree). Also opens for `nvim .` instead of netrw.
+		-- File tree sidebar. Also opens for `nvim .` instead of netrw.
 		explorer = { enabled = true },
 		-- Uses your lazygit/config.yml as is: `configure` would recolor it from
 		-- the Neovim theme and drop its blue accent.
