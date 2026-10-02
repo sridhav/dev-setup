@@ -318,6 +318,7 @@ Mac and Linux differ: on Linux, `Cmd` becomes `Ctrl+Shift`, and `Cmd+Shift` beco
 | `Cmd-Shift-f` | `Ctrl+Shift+Alt+f` | Zoom split |
 | `Cmd-+` / `-` / `0` | `Ctrl-+` / `-` / `0` | Font bigger / smaller / reset |
 | `` Ctrl-` `` | `` Ctrl-` `` | Quick terminal drop-down (global) |
+| `Cmd-k` | `Ctrl+Shift+k` | sesh session picker (same as `Ctrl-s o`; inside tmux only) |
 | `Cmd-Shift-,` | `Ctrl+Shift+,` | Reload Ghostty config |
 | `Cmd-c` / `Cmd-v` | `Ctrl+Shift+c` / `v` | Copy / paste (selecting text also copies) |
 | Trackpad / wheel | Wheel | Scroll output (25 MB history) |
