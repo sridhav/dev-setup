@@ -18,6 +18,8 @@ map("i", "<A-k>", "<esc><cmd>m .-2<cr>==gi", { desc = "Move line up" })
 map("x", "<A-j>", ":<C-u>execute \"'<,'>move '>+\" . v:count1<cr>gv=gv", { desc = "Move selection down" })
 map("x", "<A-k>", ":<C-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<cr>gv=gv", { desc = "Move selection up" })
 
+map("n", "<leader>a", "ggVG", { desc = "Select all" })
+
 -- Keep the selection after indenting so > can be pressed again.
 map("x", "<", "<gv", { desc = "Unindent" })
 map("x", ">", ">gv", { desc = "Indent" })

@@ -178,6 +178,7 @@ It's a picker: start typing in the tree to filter it, `Esc` to stop.
 | `gs)` / `gS)` (visual) | Wrap the selection / whole lines |
 | `gcc` / `gc` + motion | Toggle comment line / range |
 | `gco` / `gcO` | Add a comment line below / above |
+| `<leader>a` | Select the whole file (then `y` copies it, `d` deletes it) |
 | `>` / `<` (visual) | Indent / unindent selection (stays selected, press again) |
 | `Alt-j` / `Alt-k` | Move line or selection down / up (Mac: left Option) |
 | `qa` ... `q`, then `@a` | Record macro into a, replay it |
