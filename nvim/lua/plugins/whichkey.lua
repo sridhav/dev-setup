@@ -9,7 +9,7 @@ return {
 			{ "<leader>s", group = "search/replace" },
 			{ "<leader>n", group = "notifications" },
 			{ "<leader>D", group = "debug" },
-			{ "<leader>c", group = "code" },
+			{ "<leader>c", group = "code/claude" },
 			{ "<leader>t", group = "toggle" },
 			{ "<leader>w", group = "workspace" },
 			{ "<leader>g", group = "git" },
@@ -17,6 +17,7 @@ return {
 			{ "<leader>x", group = "trouble" },
 			{ "<leader>S", group = "session" },
 			{ "<leader>m", group = "markdown" },
+			{ "<leader>o", group = "opencode" },
 		},
 	},
 	keys = {

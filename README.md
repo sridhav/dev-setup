@@ -41,6 +41,7 @@ The same numbered steps in the same order on every machine. Where macOS and Linu
 | 13 zsh as login shell | ✓ | ✓ |
 | 14 Docker | runs via colima (`colima start`) | Docker Engine from Docker's apt repo, service enabled, you're added to the `docker` group |
 | 15 Default terminal | Ghostty opens shell scripts (`duti`) | `x-terminal-emulator` + the GNOME/Cinnamon default-terminal setting |
+| 16 Claude Code CLI | Anthropic's installer → `~/.local/bin/claude` | same installer, same path |
 
 The JetBrains Mono Nerd Font is required, because the Ghostty config uses it. Step 04 fails if it's missing.
 
@@ -112,7 +113,7 @@ sh/
   packages.sh             brew formulae + casks
   lib.sh                  shared settings (plugins, links, backup paths) + helpers
   install.sh              runs steps/ in order (--dry-run, --force)
-  steps/01-…15-*.sh       one script per install step, each re-runnable alone
+  steps/01-…16-*.sh       one script per install step, each re-runnable alone
   update.sh               latest version from git + install + plugins   (make update)
   plugins.sh              sync oh-my-zsh, zsh/tmux/Neovim plugins
   upgrade.sh              newer brew + Neovim plugin versions
