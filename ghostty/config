@@ -43,6 +43,16 @@
   quick-terminal-animation-duration = 0.15
 
   # --- Security ---
+  # Never answer OSC 52 clipboard *reads*. A program can ask the terminal for
+  # the clipboard with ESC]52;c;? and the terminal replies on the program's
+  # own stdin as ESC]52;c;<base64>. A program that does not consume that reply
+  # shows the base64 as if it had been typed: Claude Code does this, so after
+  # a mouse selection (copy-on-select above puts it on the clipboard) a click
+  # filled its prompt with a screenful of base64. Writes stay allowed, which
+  # is what copying out of a terminal program needs; only reads are refused.
+  # The cost is that a program that legitimately reads the clipboard this way
+  # (Neovim over SSH) no longer can.
+  clipboard-read = deny
   clipboard-paste-protection = true
   clipboard-paste-bracketed-safe = true
 
