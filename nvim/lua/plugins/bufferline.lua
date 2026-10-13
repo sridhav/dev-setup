@@ -1,4 +1,34 @@
 -- Open buffers as tabs along the top. Hidden while only one buffer is open.
+
+-- Rebuilt whenever the colourscheme changes, so the tab bar follows
+-- `make light` / `make dark` and a profile switch in an open Neovim.
+local function make_opts()
+	return {
+		-- Colours for whichever theme is active: Catppuccin's bufferline port
+		-- under that profile, a palette-built set under any other
+		-- (lua/config/theme.lua). Taking Catppuccin's unconditionally is what
+		-- painted a Mocha-black tab bar over the light scleral theme:
+		-- no-clown-fiesta light leaves 'background' on "dark", so the port
+		-- handed back its dark flavour.
+		highlights = require("config.theme").bufferline(),
+		options = {
+			-- Snacks.bufdelete keeps the window layout when a buffer closes.
+			close_command = function(n)
+				Snacks.bufdelete(n)
+			end,
+			right_mouse_command = function(n)
+				Snacks.bufdelete(n)
+			end,
+			diagnostics = "nvim_lsp",
+			always_show_bufferline = false,
+			-- Start the tabs after the file tree instead of drawing over it.
+			offsets = {
+				{ filetype = "snacks_layout_box", text = "Explorer", highlight = "Directory", text_align = "left" },
+			},
+		},
+	}
+end
+
 return {
 	"akinsho/bufferline.nvim",
 	version = "*",
@@ -14,24 +44,15 @@ return {
 		{ "<leader>bp", "<cmd>BufferLineTogglePin<cr>", desc = "Pin buffer" },
 		{ "<leader>bP", "<cmd>BufferLineGroupClose ungrouped<cr>", desc = "Delete unpinned buffers" },
 	},
-	opts = function()
-		return {
-			highlights = require("catppuccin.special.bufferline").get_theme(),
-			options = {
-				-- Snacks.bufdelete keeps the window layout when a buffer closes.
-				close_command = function(n)
-					Snacks.bufdelete(n)
-				end,
-				right_mouse_command = function(n)
-					Snacks.bufdelete(n)
-				end,
-				diagnostics = "nvim_lsp",
-				always_show_bufferline = false,
-				-- Start the tabs after the file tree instead of drawing over it.
-				offsets = {
-					{ filetype = "snacks_layout_box", text = "Explorer", highlight = "Directory", text_align = "left" },
-				},
-			},
-		}
+	opts = make_opts,
+	config = function(_, opts)
+		require("bufferline").setup(opts)
+		vim.api.nvim_create_autocmd("ColorScheme", {
+			group = vim.api.nvim_create_augroup("dev_setup_bufferline", { clear = true }),
+			desc = "Rebuild the tab bar's colours after a theme switch",
+			callback = function()
+				require("bufferline").setup(make_opts())
+			end,
+		})
 	end,
 }

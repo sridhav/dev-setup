@@ -229,7 +229,15 @@ def main():
                 % (c["BLUE"], c["OVERLAY0"], c["TEXT"]))
         f.write("    logs:\n      fgColor: '%s'\n      bgColor: '%s'\n" % (c["TEXT"], c["BASE"]))
 
-    # 5. lazygit
+    # 5. Neovim palette, keyed like catppuccin.palettes.get_palette() so one
+    #    consumer (nvim/lua/config/theme.lua) serves every profile.
+    with open(os.path.join(root, "nvim", "lua", "themes", "%s.lua" % slug), "w") as f:
+        f.write(hdr.replace("#", "--") + "-- Read by nvim/lua/config/theme.lua.\n\nreturn {\n")
+        for k in ORDER:
+            f.write('  %s = "%s",\n' % (k.lower(), c[k]))
+        f.write("}\n")
+
+    # 6. lazygit
     with open(os.path.join(root, "lazygit", "theme-%s.yml" % slug), "w") as f:
         f.write(hdr + "# Layered over lazygit/config.yml via $LG_CONFIG_FILE.\n\n")
         f.write("gui:\n  theme:\n")
@@ -244,7 +252,7 @@ def main():
             f.write("    %s:\n      - '%s'%s\n" % (k, v, bold))
         f.write("\n  authorColors:\n    '*': '%s'\n" % c["LAVENDER"])
 
-    print("generated for %-24s -> p10k-palette-%s.zsh, theme-%s.conf, syntax-%s.zsh, %s.yaml, theme-%s.yml"
-          % (name, slug, slug, slug, slug, slug))
+    print("generated for %-24s -> p10k-palette-%s.zsh, theme-%s.conf, syntax-%s.zsh, %s.yaml, %s.lua, theme-%s.yml"
+          % (name, slug, slug, slug, slug, slug, slug))
 
 main()

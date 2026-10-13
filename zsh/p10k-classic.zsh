@@ -150,9 +150,9 @@
   typeset -g POWERLEVEL9K_MULTILINE_NEWLINE_PROMPT_PREFIX=
   typeset -g POWERLEVEL9K_MULTILINE_LAST_PROMPT_PREFIX=
   # Connect right prompt lines with these symbols.
-  typeset -g POWERLEVEL9K_MULTILINE_FIRST_PROMPT_SUFFIX='%F{#45475a}─╮'
-  typeset -g POWERLEVEL9K_MULTILINE_NEWLINE_PROMPT_SUFFIX='%F{#45475a}─┤'
-  typeset -g POWERLEVEL9K_MULTILINE_LAST_PROMPT_SUFFIX='%F{#45475a}─╯'
+  typeset -g POWERLEVEL9K_MULTILINE_FIRST_PROMPT_SUFFIX="%F{$P10K_COLOR_SURFACE1}─╮"
+  typeset -g POWERLEVEL9K_MULTILINE_NEWLINE_PROMPT_SUFFIX="%F{$P10K_COLOR_SURFACE1}─┤"
+  typeset -g POWERLEVEL9K_MULTILINE_LAST_PROMPT_SUFFIX="%F{$P10K_COLOR_SURFACE1}─╯"
 
   # Filler between left and right prompt on the first prompt line. You can set it to ' ', '·' or
   # '─'. The last two make it easier to see the alignment between left and right prompt and to
@@ -175,9 +175,9 @@
   typeset -g POWERLEVEL9K_BACKGROUND=$P10K_COLOR_SURFACE0
 
   # Separator between same-color segments on the left.
-  typeset -g POWERLEVEL9K_LEFT_SUBSEGMENT_SEPARATOR='%F{#6c7086}\uE0B1'
+  typeset -g POWERLEVEL9K_LEFT_SUBSEGMENT_SEPARATOR="%F{$P10K_COLOR_OVERLAY0}\uE0B1"
   # Separator between same-color segments on the right.
-  typeset -g POWERLEVEL9K_RIGHT_SUBSEGMENT_SEPARATOR='%F{#6c7086}\uE0B3'
+  typeset -g POWERLEVEL9K_RIGHT_SUBSEGMENT_SEPARATOR="%F{$P10K_COLOR_OVERLAY0}\uE0B3"
   # Separator between different-color segments on the left.
   typeset -g POWERLEVEL9K_LEFT_SEGMENT_SEPARATOR='\uE0B0'
   # Separator between different-color segments on the right.
@@ -387,19 +387,23 @@
     fi
 
     if (( $1 )); then
-      # Styling for up-to-date Git status.
-      local       meta='%F{#cba6f7}'     # default foreground
-      local      clean='%F{#cba6f7}'   # green foreground
-      local   modified='%F{#f9e2af}'  # yellow foreground
-      local  untracked='%F{#89b4fa}'   # blue foreground
-      local conflicted='%F{#f38ba8}'  # red foreground
+      # Styling for up-to-date Git status. Named through the palette, never as
+      # a hex: these are drawn as *text* on $P10K_COLOR_SURFACE0, which the
+      # generator holds at 6:1 for every theme. The Mocha hexes that used to
+      # be here were 1.1:1 on the light scleral surface -- the invisible
+      # branch name.
+      local       meta="%F{$P10K_COLOR_MAUVE}"
+      local      clean="%F{$P10K_COLOR_MAUVE}"
+      local   modified="%F{$P10K_COLOR_YELLOW}"
+      local  untracked="%F{$P10K_COLOR_BLUE}"
+      local conflicted="%F{$P10K_COLOR_RED}"
     else
       # Styling for incomplete and stale Git status.
-      local       meta='%F{#9399b2}'  # grey foreground
-      local      clean='%F{#9399b2}'  # grey foreground
-      local   modified='%F{#9399b2}'  # grey foreground
-      local  untracked='%F{#9399b2}'  # grey foreground
-      local conflicted='%F{#9399b2}'  # grey foreground
+      local       meta="%F{$P10K_COLOR_OVERLAY2}"
+      local      clean="%F{$P10K_COLOR_OVERLAY2}"
+      local   modified="%F{$P10K_COLOR_OVERLAY2}"
+      local  untracked="%F{$P10K_COLOR_OVERLAY2}"
+      local conflicted="%F{$P10K_COLOR_OVERLAY2}"
     fi
 
     local res

@@ -98,96 +98,119 @@ local function terminal(branch_color, folder_color, end_color)
 	}
 end
 
+-- Built fresh every time the colourscheme changes, so `make light` / `make
+-- dark` and a profile switch recolour the bar in an open Neovim.
+local function make_opts()
+	-- Breadcrumbs: where the cursor is in the code (module > class > function),
+	-- from trouble's LSP symbols.
+	-- One color per kind of item, the same in the tmux bar: branch mauve,
+	-- folder peach, position teal. Only the mode bubble follows the mode.
+	-- The palette of whichever theme is active, under any profile -- not
+	-- catppuccin.palettes, which would hand a Catppuccin flavour's colours
+	-- to a bar drawn over No Clown Fiesta or Kanagawa (lua/config/theme.lua).
+	local dev_theme = require("config.theme")
+	local C = dev_theme.palette()
+	local branch_color = { fg = C.mauve }
+	local folder_color = { fg = C.peach }
+	local end_color = { fg = C.crust, bg = C.teal, gui = "bold" }
+
+	local symbols = require("trouble").statusline({
+		mode = "symbols",
+		groups = {},
+		title = false,
+		filter = { range = true },
+		format = "{kind_icon}{symbol.name:Normal}",
+		hl_group = "lualine_c_normal",
+	})
+
+	return {
+		options = {
+			-- Catppuccin ships a lualine theme of its own and "auto" finds it.
+			-- Nothing else does, and "auto" then falls back to a *dark*
+			-- default whenever 'background' says dark -- which no-clown-fiesta
+			-- light leaves it saying. Hence the explicit table: a black bar
+			-- with light gaps showing through between its sections was that
+			-- fallback, not the colourscheme.
+			theme = dev_theme.profile() == "catppuccin" and "auto" or dev_theme.lualine_theme(),
+			globalstatus = true,
+			-- "Bubble" style: rounded ends, the same bubbles as the tmux bar.
+			section_separators = { left = round_r, right = round_l },
+			component_separators = "",
+		},
+		sections = {
+			lualine_a = {
+				{ "mode", icon = "\u{e7c5}", separator = { left = round_l }, padding = { left = 0, right = 1 } },
+			},
+			lualine_b = {
+				{ "branch", icon = "\u{e725}", color = branch_color },
+				{
+					"diff",
+					source = gitsigns_diff,
+					symbols = { added = "\u{f0fe} ", modified = "\u{f14b} ", removed = "\u{f146} " },
+				},
+			},
+			lualine_c = {
+				{ "filetype", icon_only = true, separator = "", padding = { left = 1, right = 0 } },
+				{
+					"filename",
+					path = 1,
+					symbols = { modified = " \u{25cf}", readonly = " \u{f023}", unnamed = "[No Name]" },
+				},
+				{
+					"diagnostics",
+					symbols = {
+						error = "\u{f015a} ",
+						warn = "\u{f002a} ",
+						info = "\u{f02fd} ",
+						hint = "\u{f0336} ",
+					},
+				},
+				{ symbols.get, cond = symbols.has },
+			},
+			lualine_x = {
+				{ macro_recording, color = { fg = C.red, gui = "bold" } },
+				{ lsp_clients, color = { fg = C.lavender } },
+			},
+			-- The project folder, like the directory bubble in the tmux bar.
+			lualine_y = {
+				{
+					function()
+						return vim.fn.fnamemodify(require("config.root").get(), ":t")
+					end,
+					icon = "\u{f07b}",
+					color = folder_color,
+				},
+			},
+			lualine_z = {
+				{
+					function() -- line:column, without lualine's padding
+						return vim.fn.line(".") .. ":" .. vim.fn.virtcol(".")
+					end,
+					icon = "\u{e0a1}",
+					color = end_color,
+					separator = { right = round_r },
+					padding = { left = 1, right = 0 },
+				},
+			},
+		},
+		-- Tailored bars when lazy, mason, trouble or the terminal has focus.
+		extensions = { "lazy", "mason", "trouble", terminal(branch_color, folder_color, end_color) },
+	}
+end
+
 return {
 	"nvim-lualine/lualine.nvim",
 	dependencies = { "nvim-tree/nvim-web-devicons" },
 	event = "VeryLazy",
-	opts = function()
-		-- Breadcrumbs: where the cursor is in the code (module > class > function),
-		-- from trouble's LSP symbols.
-		-- One color per kind of item, the same in the tmux bar: branch mauve,
-		-- folder peach, position teal. Only the mode bubble follows the mode.
-		-- No argument: the palette of whichever flavour is active (Latte or Mocha).
-		local C = require("catppuccin.palettes").get_palette()
-		local branch_color = { fg = C.mauve }
-		local folder_color = { fg = C.peach }
-		local end_color = { fg = C.crust, bg = C.teal, gui = "bold" }
-
-		local symbols = require("trouble").statusline({
-			mode = "symbols",
-			groups = {},
-			title = false,
-			filter = { range = true },
-			format = "{kind_icon}{symbol.name:Normal}",
-			hl_group = "lualine_c_normal",
+	opts = make_opts,
+	config = function(_, opts)
+		require("lualine").setup(opts)
+		vim.api.nvim_create_autocmd("ColorScheme", {
+			group = vim.api.nvim_create_augroup("dev_setup_lualine", { clear = true }),
+			desc = "Rebuild the bar's colours after a theme switch",
+			callback = function()
+				require("lualine").setup(make_opts())
+			end,
 		})
-
-		return {
-			options = {
-				theme = "auto", -- follows the active colorscheme (catppuccin ships its own)
-				globalstatus = true,
-				-- "Bubble" style: rounded ends, the same bubbles as the tmux bar.
-				section_separators = { left = round_r, right = round_l },
-				component_separators = "",
-			},
-			sections = {
-				lualine_a = {
-					{ "mode", icon = "\u{e7c5}", separator = { left = round_l }, padding = { left = 0, right = 1 } },
-				},
-				lualine_b = {
-					{ "branch", icon = "\u{e725}", color = branch_color },
-					{
-						"diff",
-						source = gitsigns_diff,
-						symbols = { added = "\u{f0fe} ", modified = "\u{f14b} ", removed = "\u{f146} " },
-					},
-				},
-				lualine_c = {
-					{ "filetype", icon_only = true, separator = "", padding = { left = 1, right = 0 } },
-					{
-						"filename",
-						path = 1,
-						symbols = { modified = " \u{25cf}", readonly = " \u{f023}", unnamed = "[No Name]" },
-					},
-					{
-						"diagnostics",
-						symbols = {
-							error = "\u{f015a} ",
-							warn = "\u{f002a} ",
-							info = "\u{f02fd} ",
-							hint = "\u{f0336} ",
-						},
-					},
-					{ symbols.get, cond = symbols.has },
-				},
-				lualine_x = {
-					{ macro_recording, color = { fg = "#f38ba8", gui = "bold" } },
-					{ lsp_clients, color = { fg = C.lavender } },
-				},
-				-- The project folder, like the directory bubble in the tmux bar.
-				lualine_y = {
-					{
-						function()
-							return vim.fn.fnamemodify(require("config.root").get(), ":t")
-						end,
-						icon = "\u{f07b}",
-						color = folder_color,
-					},
-				},
-				lualine_z = {
-					{
-						function() -- line:column, without lualine's padding
-							return vim.fn.line(".") .. ":" .. vim.fn.virtcol(".")
-						end,
-						icon = "\u{e0a1}",
-						color = end_color,
-						separator = { right = round_r },
-						padding = { left = 1, right = 0 },
-					},
-				},
-			},
-			-- Tailored bars when lazy, mason, trouble or the terminal has focus.
-			extensions = { "lazy", "mason", "trouble", terminal(branch_color, folder_color, end_color) },
-		}
 	end,
 }

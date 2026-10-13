@@ -110,6 +110,12 @@ On each other machine: `git clone <url> ~/dev-setup && cd ~/dev-setup && make in
 
 Put them in `~/.zsh.d/<name>.zsh`. The zshrc sources every `*.zsh` file there, and only the files linked by `sh/install.sh` come from this repo, so anything else stays on that machine. Never commit secrets here.
 
+## Themes
+
+`make theme` shows the active mode, profile and theme. `make light` / `make dark` switch mode; `make light-scleral` / `make dark-scleral` switch to the low-scatter profile as well.
+
+**[THEMES.md](THEMES.md)** is the guide to the rest: how mode, profile and slug fit together, how to swap a profile's themes for different ones, how to add a profile, and what to check before pushing one.
+
 ## Layout
 
 ```

@@ -137,12 +137,12 @@
   typeset -g POWERLEVEL9K_PROMPT_ADD_NEWLINE=true
 
   # Connect left prompt lines with these symbols.
-  typeset -g POWERLEVEL9K_MULTILINE_FIRST_PROMPT_PREFIX='%F{#45475a}╭─'
-  typeset -g POWERLEVEL9K_MULTILINE_NEWLINE_PROMPT_PREFIX='%F{#45475a}├─'
-  typeset -g POWERLEVEL9K_MULTILINE_LAST_PROMPT_PREFIX='%F{#45475a}╰─'
-  typeset -g POWERLEVEL9K_MULTILINE_FIRST_PROMPT_SUFFIX='%F{#45475a}─╮'
-  typeset -g POWERLEVEL9K_MULTILINE_NEWLINE_PROMPT_SUFFIX='%F{#45475a}─┤'
-  typeset -g POWERLEVEL9K_MULTILINE_LAST_PROMPT_SUFFIX='%F{#45475a}─╯'
+  typeset -g POWERLEVEL9K_MULTILINE_FIRST_PROMPT_PREFIX="%F{$P10K_COLOR_SURFACE1}╭─"
+  typeset -g POWERLEVEL9K_MULTILINE_NEWLINE_PROMPT_PREFIX="%F{$P10K_COLOR_SURFACE1}├─"
+  typeset -g POWERLEVEL9K_MULTILINE_LAST_PROMPT_PREFIX="%F{$P10K_COLOR_SURFACE1}╰─"
+  typeset -g POWERLEVEL9K_MULTILINE_FIRST_PROMPT_SUFFIX="%F{$P10K_COLOR_SURFACE1}─╮"
+  typeset -g POWERLEVEL9K_MULTILINE_NEWLINE_PROMPT_SUFFIX="%F{$P10K_COLOR_SURFACE1}─┤"
+  typeset -g POWERLEVEL9K_MULTILINE_LAST_PROMPT_SUFFIX="%F{$P10K_COLOR_SURFACE1}─╯"
 
   # The left end of left prompt.
   typeset -g POWERLEVEL9K_LEFT_PROMPT_FIRST_SEGMENT_START_SYMBOL=' '
@@ -181,9 +181,9 @@
   # Default background color.
   typeset -g POWERLEVEL9K_BACKGROUND=$P10K_COLOR_SURFACE0
   # Separator between same-color segments on the left.
-  typeset -g POWERLEVEL9K_LEFT_SUBSEGMENT_SEPARATOR='%F{#6c7086}\uE0B1'
+  typeset -g POWERLEVEL9K_LEFT_SUBSEGMENT_SEPARATOR="%F{$P10K_COLOR_OVERLAY0}\uE0B1"
   # Separator between same-color segments on the right.
-  typeset -g POWERLEVEL9K_RIGHT_SUBSEGMENT_SEPARATOR='%F{#6c7086}\uE0B3'
+  typeset -g POWERLEVEL9K_RIGHT_SUBSEGMENT_SEPARATOR="%F{$P10K_COLOR_OVERLAY0}\uE0B3"
   # Separator between different-color segments on the left.
   typeset -g POWERLEVEL9K_LEFT_SEGMENT_SEPARATOR='\uE0B0'
   # Separator between different-color segments on the right.
@@ -404,11 +404,16 @@
     fi
     
     # Styling for different parts of Git status.
-    local       meta='%F{#cdd6f4}' # white foreground
-    local      clean='%F{#11111b}' # black foreground
-    local   modified='%F{#11111b}' # black foreground
-    local  untracked='%F{#11111b}' # black foreground
-    local conflicted='%F{#f38ba8}' # red foreground
+    # Crust, like every other foreground in this style: the segment behind it
+    # is an accent, and crust is the one end of the ramp that always contrasts
+    # with one -- dark under Mocha's pastels, light under a light theme's
+    # deepened accents. Which state the repo is in shows in the segment's
+    # background colour, not in the text.
+    local       meta="%F{$P10K_COLOR_CRUST}"
+    local      clean="%F{$P10K_COLOR_CRUST}"
+    local   modified="%F{$P10K_COLOR_CRUST}"
+    local  untracked="%F{$P10K_COLOR_CRUST}"
+    local conflicted="%F{$P10K_COLOR_CRUST}"
 
     local res
 
@@ -519,7 +524,7 @@
   # Custom icon.
   # typeset -g POWERLEVEL9K_VCS_VISUAL_IDENTIFIER_EXPANSION='⭐'
   # Custom prefix.
-  typeset -g POWERLEVEL9K_VCS_PREFIX='%F{#11111b}on '
+  typeset -g POWERLEVEL9K_VCS_PREFIX="%F{$P10K_COLOR_CRUST}on "
 
   # Show status of repositories of these types. You can add svn and/or hg if you are
   # using them. If you do, your prompt may become slow even when your current directory
@@ -586,7 +591,7 @@
   # Custom icon.
   # typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_VISUAL_IDENTIFIER_EXPANSION='⭐'
   # Custom prefix.
-  typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_PREFIX='%F{#11111b}took '
+  typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_PREFIX="%F{$P10K_COLOR_CRUST}took "
 
   #######################[ background_jobs: presence of background jobs ]#######################
   # Don't show the number of background jobs.
@@ -1017,7 +1022,7 @@
   # Custom icon.
   # typeset -g POWERLEVEL9K_CONTEXT_VISUAL_IDENTIFIER_EXPANSION='⭐'
   # Custom prefix.
-  typeset -g POWERLEVEL9K_CONTEXT_PREFIX='%F{#11111b}with '
+  typeset -g POWERLEVEL9K_CONTEXT_PREFIX="%F{$P10K_COLOR_CRUST}with "
 
   ###[ virtualenv: python virtual environment (https://docs.python.org/3/library/venv.html) ]###
   # Python virtual environment color.
@@ -1435,7 +1440,7 @@
   POWERLEVEL9K_KUBECONTEXT_DEFAULT_CONTENT_EXPANSION+='${${:-/$P9K_KUBECONTEXT_NAMESPACE}:#/default}'
 
   # Custom prefix.
-  typeset -g POWERLEVEL9K_KUBECONTEXT_PREFIX='%F{#11111b}at '
+  typeset -g POWERLEVEL9K_KUBECONTEXT_PREFIX="%F{$P10K_COLOR_CRUST}at "
 
 
   ################[ terraform: terraform workspace (https://www.terraform.io) ]#################
@@ -1673,7 +1678,7 @@
   # Custom icon.
   # typeset -g POWERLEVEL9K_TOOLBOX_VISUAL_IDENTIFIER_EXPANSION='⭐'
   # Custom prefix.
-  typeset -g POWERLEVEL9K_TOOLBOX_PREFIX='%F{#11111b}in '
+  typeset -g POWERLEVEL9K_TOOLBOX_PREFIX="%F{$P10K_COLOR_CRUST}in "
 
   ###############################[ public_ip: public IP address ]###############################
   # Public IP color.
@@ -1785,7 +1790,7 @@
   # Custom icon.
   # typeset -g POWERLEVEL9K_TIME_VISUAL_IDENTIFIER_EXPANSION='⭐'
   # Custom prefix.
-  typeset -g POWERLEVEL9K_TIME_PREFIX='%F{#11111b}at '
+  typeset -g POWERLEVEL9K_TIME_PREFIX="%F{$P10K_COLOR_CRUST}at "
 
   # Example of a user-defined prompt segment. Function prompt_example will be called on every
   # prompt if `example` prompt segment is added to POWERLEVEL9K_LEFT_PROMPT_ELEMENTS or
