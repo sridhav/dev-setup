@@ -3,11 +3,13 @@
 -- The OS appearance is the source of truth for light/dark (see sh/theme.sh),
 -- and a *profile* picks which pair of themes light/dark mean:
 --
---   catppuccin  light -> latte       dark -> mocha
---   scleral     light -> kanso pearl dark -> kanagawa dragon
+--   catppuccin     light -> latte                 dark -> mocha
+--   scleral        light -> no clown fiesta light dark -> kanagawa dragon
+--   kanso-scleral  light -> kanso pearl           dark -> kanagawa dragon
 --
--- The scleral pair is chosen for the lowest visible light scatter; its halves
--- come from different families because each is picked on its own merits.
+-- The two scleral profiles are chosen for the lowest visible light scatter;
+-- their halves come from different families because each is picked on its own
+-- merits. They differ only in the light half, which is the one that scatters.
 -- Both are read from the cache `make light` / `make dark` write, so Neovim
 -- never has to shell out.
 local M = {}
@@ -32,22 +34,30 @@ function M.mode()
   return vim.env.DEV_SETUP_THEME == "light" and "light" or "dark"
 end
 
-function M.profile()
-  return read("profile", { catppuccin = true, scleral = true }, "catppuccin")
-end
-
--- profile+mode -> the colorscheme command to run
+-- The profiles this Neovim knows, and what each resolves to. SCHEMES is the
+-- `:colorscheme` name, which is *not* the slug -- `kanagawa-dragon` is the slug
+-- but `kanagawa` is the colourscheme. SLUGS is the slug every per-theme file is
+-- named after; it has to match THEME_PROFILES in sh/lib.sh and
+-- DEV_SETUP_PROFILE_SLUGS in zsh/theme.zsh (THEMES.md).
 local SCHEMES = {
-  catppuccin = { light = "catppuccin", dark = "catppuccin" },
-  scleral    = { light = "kanso-pearl", dark = "kanagawa-dragon" },
+  catppuccin      = { light = "catppuccin",       dark = "catppuccin" },
+  scleral         = { light = "no-clown-fiesta",  dark = "kanagawa-dragon" },
+  ["kanso-scleral"] = { light = "kanso-pearl",    dark = "kanagawa-dragon" },
 }
 
--- profile+mode -> the theme slug every per-theme file is named after
--- (sh/lib.sh THEME_PROFILES, zsh/theme.zsh: keep the three in step).
 local SLUGS = {
-  catppuccin = { light = "latte", dark = "mocha" },
-  scleral    = { light = "kanso-pearl", dark = "kanagawa-dragon" },
+  catppuccin      = { light = "latte",       dark = "mocha" },
+  scleral         = { light = "ncf-light",   dark = "kanagawa-dragon" },
+  ["kanso-scleral"] = { light = "kanso-pearl", dark = "kanagawa-dragon" },
 }
+
+-- Validated against SLUGS rather than a second list, so adding a profile above
+-- is the only edit; an unknown name falls back to Catppuccin.
+function M.profile()
+  local allowed = {}
+  for name in pairs(SLUGS) do allowed[name] = true end
+  return read("profile", allowed, "catppuccin")
+end
 
 function M.slug()
   return (SLUGS[M.profile()] or SLUGS.catppuccin)[M.mode()]
@@ -60,8 +70,8 @@ end
 -- nvim/lua/themes/<slug>.lua by sh/gen-theme.py, with the same keys.
 --
 -- Not keyed off vim.o.background: a colourscheme is free to leave that wrong,
--- and one this profile used to carry did (no-clown-fiesta's light variant
--- applied light colours with 'background' still on "dark"). Anything reading
+-- and the scleral profile's light half does (no-clown-fiesta's light variant
+-- applies light colours with 'background' still on "dark"). Anything reading
 -- the flag then picks its dark defaults over a light page -- lualine's "auto"
 -- theme above all. The cache is the source of truth here, as everywhere else.
 function M.palette()
@@ -173,10 +183,10 @@ function M.apply()
   -- Set before the colorscheme and deliberately not re-asserted after: setting
   -- 'background' once a colorscheme is loaded makes Neovim reset every
   -- highlight group to its built-in default, throwing the theme away. So a
-  -- theme that ignores the flag (no-clown-fiesta's light variant, which this
-  -- profile used to carry, left it on "dark" while painting light) cannot be
-  -- corrected -- which is why nothing here is allowed to trust it. Kanso reads
-  -- it properly; the next theme might not.
+  -- theme that ignores the flag (no-clown-fiesta's light variant, the scleral
+  -- profile's light half, leaves it on "dark" while painting light) cannot be
+  -- corrected -- which is why nothing here is allowed to trust it. Kanso Pearl
+  -- reads it properly; no-clown-fiesta does not, and the next theme might not.
   --
   -- The two bars are drawn on the mantle (M.lualine_theme, M.bufferline), but
   -- the cells neither plugin paints -- the stretch between lualine's middle

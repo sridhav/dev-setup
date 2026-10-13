@@ -2,8 +2,12 @@
 # Switch the setup between Catppuccin Latte (light) and Mocha (dark).
 . "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/lib.sh"
 
-# usage: theme.sh [light|dark] [--dry-run]
-#        theme.sh              prints the current mode and exits
+# usage: theme.sh [light|dark] [--catppuccin|--scleral|--kanso-scleral] [--dry-run]
+#        theme.sh              prints the current mode, profile and slug, then exits
+#
+# With no --profile flag the active one is kept, so `theme.sh light` only moves
+# the mode. The profile names are the first field of THEME_PROFILES (sh/lib.sh);
+# add a row there and a case here to add another.
 #
 # The OS appearance is the source of truth. Ghostty follows it natively (the
 # light:/dark: theme line in ghostty/config), which matters because Ghostty 1.3
@@ -15,16 +19,25 @@ profile=""
 flags=()
 for arg in "$@"; do
   case "$arg" in
-    light|dark)   mode="$arg" ;;
-    --scleral)    profile=scleral ;;
-    --catppuccin) profile=catppuccin ;;
+    light|dark)       mode="$arg" ;;
+    --scleral)        profile=scleral ;;
+    --kanso-scleral)  profile=kanso-scleral ;;
+    --catppuccin)     profile=catppuccin ;;
     *) flags+=("$arg") ;;
   esac
 done
 parse_flags ${flags[@]+"${flags[@]}"}
 
 # No profile asked for: keep whichever is already active.
+want_profile="$profile"
 [[ -n "$profile" ]] || profile="$(theme_profile)"
+
+# A profile with no mode means "switch the profile, keep the mode" -- which is
+# what `make scleral` / `make kanso-scleral` / `make catppuccin` are for. Asking
+# the OS rather than the cache keeps the two in step if something else moved it.
+if [[ -z "$mode" && -n "$want_profile" ]]; then
+  mode="$(detect_appearance)"
+fi
 
 if [[ -z "$mode" ]]; then
   current="$(detect_appearance)"

@@ -78,7 +78,7 @@ Configs are symlinked, so editing `~/.zshrc`, `~/.config/nvim/...` and so on edi
 - **Newer versions:** `make upgrade` (brew + Neovim plugins, which rewrites `lazy-lock.json`), then `make push`.
 - **Check this machine:** `make status`.
 - **Light or dark:** `make light` / `make dark` (`make theme` prints the current one).
-- **Easier on the eyes:** `make light-scleral` / `make dark-scleral` swaps the Catppuccin pair for
+- **Easier on the eyes:** `make scleral` / `make kanso-scleral` swaps the Catppuccin pair for
   Kanso Pearl + Kanagawa Dragon, chosen from Ghostty's 463 themes for how little they scatter.
   `make light` / `make dark` then keep whichever profile is active. It flips the OS appearance,
   which Ghostty follows straight away; Neovim switches when you focus it, and shells already open need `exec zsh`.
@@ -112,7 +112,7 @@ Put them in `~/.zsh.d/<name>.zsh`. The zshrc sources every `*.zsh` file there, a
 
 ## Themes
 
-`make theme` shows the active mode, profile and theme. `make light` / `make dark` switch mode; `make light-scleral` / `make dark-scleral` switch to the low-scatter profile as well.
+`make theme` shows the active mode, profile and theme. `make light` / `make dark` switch mode, keeping the profile. `make catppuccin`, `make scleral` and `make kanso-scleral` switch profile, keeping the mode. `make light-kanso-scleral` and the rest of the `<mode>-<profile>` targets set both at once; `make light profile=scleral` is the general form (`make light --scleral` is not valid — make claims the flag itself).
 
 **[THEMES.md](THEMES.md)** is the guide to the rest: how mode, profile and slug fit together, how to swap a profile's themes for different ones, how to add a profile, and what to check before pushing one.
 
@@ -133,7 +133,8 @@ sh/
   backup.sh               snapshot all configs
   status.sh               uncommitted changes + unlinked configs
   brew-diff.sh            brew packages missing from sh/packages.sh
-  theme.sh [light|dark] [--scleral]   switch mode and theme profile; no argument prints both
+  theme.sh [light|dark] [--catppuccin|--scleral|--kanso-scleral]
+                                     switch mode and/or theme profile; no argument prints both
   gen-theme.py "<theme>" <slug>       generate the per-theme colour files for a Ghostty theme
   remove-iterm2.sh        macOS: move iTerm2 into the backup   (make remove-iterm2)
 ghostty/config            → ~/.config/ghostty/config

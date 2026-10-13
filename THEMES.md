@@ -12,7 +12,44 @@ Three words carry everything:
 | --- | --- | --- |
 | **mode** | `light` or `dark`. The OS appearance is the source of truth. | `~/.cache/dev-setup/flavour` |
 | **profile** | A light/dark *pair* of themes, e.g. `catppuccin` = Latte + Mocha. | `~/.cache/dev-setup/profile` |
-| **slug** | The one theme a mode+profile resolves to: `latte`, `mocha`, `kanso-pearl`, `kanagawa-dragon`. | every per-theme filename |
+| **slug** | The one theme a mode+profile resolves to: `latte`, `mocha`, `ncf-light`, `kanso-pearl`, `kanagawa-dragon`. | every per-theme filename |
+
+The three profiles:
+
+| Profile | Light | Dark |
+| --- | --- | --- |
+| `catppuccin` | Catppuccin Latte (`latte`) | Catppuccin Mocha (`mocha`) |
+| `scleral` | No Clown Fiesta Light (`ncf-light`) | Kanagawa Dragon (`kanagawa-dragon`) |
+| `kanso-scleral` | Kanso Pearl (`kanso-pearl`) | Kanagawa Dragon (`kanagawa-dragon`) |
+
+The two scleral profiles differ only in the light half, which is the half that
+scatters: No Clown Fiesta Light is the most desaturated of the 463 Ghostty
+ships, Kanso Pearl the warmer of the two. They share Kanagawa Dragon for dark,
+so `kanagawa-dragon`'s six files serve both.
+
+### One background, three programs
+
+Ghostty paints the window, tmux paints its bar over the top of it, and Neovim
+paints the pane. All three use the theme's **`base`** — Ghostty because that is
+its theme's `background`, tmux through `@thm_base`, Neovim as its `Normal`
+background — and `sh/gen-theme.py` derives `@thm_base` from that same Ghostty
+`background`, so they agree by construction under every profile and need no
+per-theme upkeep.
+
+The tmux bar is the part that has to be kept honest about this. It draws rounded
+bubbles (`@thm_surface_0`, `@thm_green`, `@thm_pink`) and the cells *between*
+the bubbles are bar, not bubble. Those were `@thm_mantle` — Catppuccin's look, a
+band a whisker under the page — which is 6 levels on a pale theme (`#ecebea`
+against `#f2f1ef` on Kanso Pearl): too little to read as a deliberate band, and
+enough to read as tmux and the terminal disagreeing. Every non-bubble `bg=` in
+`status-style`, `window-status-format`, `window-status-current-format` and
+`status-right` is `@thm_base` for that reason, and so is the dotted rule on
+`status-format[1]`. The bubbles are untouched; they float on the page instead of
+on a strip of their own.
+
+Neovim's bars are a separate decision and deliberately still sit on `mantle`:
+they are drawn *inside* the pane, over a background Neovim itself painted, so
+there is no second program to disagree with.
 
 `THEME_PROFILES` in `sh/lib.sh` is the table that maps the first two to the
 third. **Every per-theme file is named after the slug** — that naming is the
@@ -30,13 +67,26 @@ tree.
 ## Switching, day to day
 
 ```bash
-make theme           # what is active now: mode · profile · slug
-make light           # light, keeping the current profile
-make dark            # dark, keeping the current profile
-make light-scleral   # light + switch profile to scleral
-make dark-scleral    # dark + switch profile to scleral
-make light scleral=1 # same thing; `make light --scleral` is NOT valid (make eats the flag)
+make theme                 # what is active now: mode · profile · slug
+make light                 # light, keeping the current profile
+make dark                  # dark, keeping the current profile
+
+make catppuccin            # switch profile, keeping the current mode
+make scleral
+make kanso-scleral
+
+make light-catppuccin      # both at once
+make dark-catppuccin
+make light-scleral
+make dark-scleral
+make light-kanso-scleral
+make dark-kanso-scleral
+
+make light profile=scleral # same as `make light-scleral`
 ```
+
+`make light --scleral` is **not** valid — make claims the flag itself, which is
+what the `profile=<name>` variable and the paired targets are for.
 
 What picks the change up, and when:
 
@@ -52,13 +102,18 @@ What picks the change up, and when:
 
 ## Swap a profile's themes for different ones
 
-The most likely job: scleral stays the profile, but Kanso Pearl and Kanagawa
-Dragon are replaced by a different pair (or just one of them). Nothing
+The most likely job: `kanso-scleral` stays the profile, but Kanso Pearl and
+Kanagawa Dragon are replaced by a different pair (or just one of them). Nothing
 about the machinery changes — only the row that says what the names are, and the
 files named after the slugs.
 
-Worked example: scleral becomes **Rosé Pine Dawn** (light) + **Rosé Pine**
-(dark), slugs `rose-pine-dawn` and `rose-pine`.
+Worked example: `kanso-scleral` becomes **Rosé Pine Dawn** (light) + **Rosé
+Pine** (dark), slugs `rose-pine-dawn` and `rose-pine`.
+
+A slug shared by two profiles is shared on purpose — `kanagawa-dragon` is the
+dark half of both `scleral` and `kanso-scleral`, and its six files serve both.
+Repointing one profile at a new dark theme does not free the old slug's files
+until nothing else names them.
 
 ```bash
 ghostty +list-themes          # the names must match exactly, spaces and all
@@ -67,8 +122,8 @@ ghostty +list-themes          # the names must match exactly, spaces and all
 **1. `sh/lib.sh` — the row.** `name|ghostty light|ghostty dark|light slug|dark slug`:
 
 ```diff
--  "scleral|Kanso Pearl|Kanagawa Dragon|kanso-pearl|kanagawa-dragon"
-+  "scleral|Rosé Pine Dawn|Rosé Pine|rose-pine-dawn|rose-pine"
+-  "kanso-scleral|Kanso Pearl|Kanagawa Dragon|kanso-pearl|kanagawa-dragon"
++  "kanso-scleral|Rosé Pine Dawn|Rosé Pine|rose-pine-dawn|rose-pine"
 ```
 
 Keep the slugs if you are only swapping which Ghostty theme they point at, and
@@ -97,8 +152,9 @@ sh/steps/10-link-configs.sh      # or `make install`; owner's call, not an agent
 Stale links to the deleted files are harmless (`sh/status.sh` lists them) but
 tidy them up: `rm ~/.config/zsh/syntax-kanso-pearl.zsh` and the k9s skin.
 
-**4. `zsh/theme.zsh` — the slug mapping, in both places:** the block that sets
-`DEV_SETUP_SLUG`/`DEV_SETUP_SYNTAX`/`DEV_SETUP_K9S_SKIN`, and `dev_setup_slug_now()`.
+**4. `zsh/theme.zsh` — the one row** for that profile in
+`DEV_SETUP_PROFILE_SLUGS`. Everything downstream (`DEV_SETUP_SLUG`,
+`DEV_SETUP_SYNTAX`, `DEV_SETUP_K9S_SKIN`, `dev_setup_slug_now()`) reads it.
 
 **5. Neovim.** `SLUGS` in `nvim/lua/config/theme.lua`, `SCHEMES` next to it
 (`:colorscheme` names, which are *not* the slugs — `kanagawa-dragon` is the slug
@@ -129,8 +185,8 @@ Pick a slug per theme: lowercase, hyphenated, short (`kanso-pearl`).
 **2. `sh/lib.sh` — the profile itself.**
 - A row in `THEME_PROFILES`: `"<name>|<ghostty light>|<ghostty dark>|<light slug>|<dark slug>"`.
 - `theme_profile()` validates against a literal list: add the name to its
-  `case "$v" in scleral|catppuccin)` line, or the profile silently falls back to
-  Catppuccin.
+  `case "$v" in scleral|kanso-scleral|catppuccin)` line, or the profile silently
+  falls back to Catppuccin.
 - `LINKS`: one `zsh/syntax-<slug>.zsh|$HOME/.config/zsh/syntax-<slug>.zsh` and one
   `k9s/skins/<slug>.yaml|$K9S_CONFIG_DIR/skins/<slug>.yaml` **per slug** (two of
   each for a profile). The other generated files are read from the repo through
@@ -146,6 +202,14 @@ Six files per theme: `zsh/p10k-palette-<slug>.zsh`, `tmux/theme-<slug>.conf`,
 `zsh/syntax-<slug>.zsh`, `k9s/skins/<slug>.yaml`, `nvim/lua/themes/<slug>.lua`,
 `lazygit/theme-<slug>.yml`.
 
+To tune a generated theme by hand, do **not** edit the six files — put the
+colours in `theme-overrides/<slug>.conf` (`NAME = #rrggbb`, one per line) and
+re-run the generator, which applies them before writing. Re-running then
+re-applies your choices instead of discarding them, so the files stay generated
+(AGENTS.md rule 8) and the diff shows only what you chose. Overrides land after
+the contrast pass, so a colour named there is used exactly as written and is not
+darkened to clear the 6:1 floor. See `theme-overrides/README.md`.
+
 A Ghostty theme is 16 ANSI colours plus fg/bg; the 26 Catppuccin semantic names
 (`base`/`mantle`/`crust`, `text`/`subtext*`, `overlay*`, `surface*`, and the
 accents) are **synthesised** from those — greys interpolated to Catppuccin's own
@@ -156,9 +220,12 @@ because accents ship tuned for a near-white page and the prompt and tmux bubbles
 put them on a mid grey. Eyeball the result anyway.
 
 **4. `sh/theme.sh` — the flag.** Add `--<name>) profile=<name> ;;` to the arg loop.
+A flag with no mode means "switch the profile, keep the mode", which is what the
+bare `make <name>` target below uses.
 
-**5. `Makefile` — the targets.** `light-<name>` and `dark-<name>`, plus both in
-`.PHONY`. One line each, calling `$(S)/theme.sh <mode> --<name>`; no logic here.
+**5. `Makefile` — the targets.** `<name>` (profile only), `light-<name>` and
+`dark-<name>`, plus all three in `.PHONY`. One line each, calling
+`$(S)/theme.sh [<mode>] --<name>`; no logic here.
 
 **6. Neovim.**
 - A plugin file per colourscheme, `nvim/lua/plugins/<name>.lua`: `lazy = false`,
@@ -170,14 +237,21 @@ put them on a mid grey. Eyeball the result anyway.
   `M.bufferline()`, which find `nvim/lua/themes/<slug>.lua` by name.
 - Run `nvim --headless "+Lazy! sync" +qa` and commit `nvim/lazy-lock.json` with it.
 
-**7. `zsh/theme.zsh` — four places, all keyed off the profile name.** Keep them
-in step or the shell and Neovim will disagree:
-- the validation (`[[ "$pf" == scleral ]] || pf=catppuccin`),
-- the slug mapping, which also sets `DEV_SETUP_SYNTAX` and `DEV_SETUP_K9S_SKIN`
-  (Catppuccin's files carry a `catppuccin-` prefix, generated ones are bare slugs),
-- the Powerlevel10k style (below),
-- `dev_setup_slug_now()`, which repeats the mapping for the tool wrappers —
-  it must, because it runs long after the shell started.
+**7. `zsh/theme.zsh` — one row.** `DEV_SETUP_PROFILE_SLUGS` is an associative
+array of `profile -> "<light slug> <dark slug>"`; add a row and everything
+downstream follows it — the validation (`(( ${+DEV_SETUP_PROFILE_SLUGS[$pf]} ))`),
+`DEV_SETUP_SLUG`, `DEV_SETUP_SYNTAX` and `DEV_SETUP_K9S_SKIN` (Catppuccin's
+files carry a `catppuccin-` prefix, generated ones are bare slugs), and
+`dev_setup_slug_now()` / `dev_setup_skin_now()`, which the tool wrappers call
+long after the shell started.
+
+The helpers answer in `$REPLY` rather than on stdout. That is deliberate: this
+file runs under Powerlevel10k's instant prompt and `x="$(f)"` would fork a
+subshell per call for what is a string slice. Only the `_now` wrappers print.
+
+The Powerlevel10k style is the one thing still keyed off the profile *name*
+rather than the table: Catppuccin gets `rainbow`, everything else `classic`
+(step 8).
 
 **8. Pick the prompt style.** `DEV_SETUP_P10K_STYLE` is `rainbow` or `classic`:
 - **rainbow** gives every segment its own accent *background* with crust text.
@@ -188,9 +262,9 @@ in step or the shell and Neovim will disagree:
 
 **9. Docs.** `AGENTS.md`'s layout table and `README.md`'s command list.
 
-## Three traps
+## Four traps
 
-These are the ways this has actually broken. All three look harmless in a diff.
+These are the ways this has actually broken. All four look harmless in a diff.
 
 **Never write a hex into a config.** Prompt styles name colours only through
 `$P10K_COLOR_*`, the tmux bar only through `#{@thm_*}`, Neovim only through
@@ -204,6 +278,41 @@ Neovim bars had this.
 loads) and *before* any `-F` line reads them. Source it later and the lazy lines
 look right while `status-style` keeps Catppuccin's — which is exactly how the bar
 ended up a near-white band over a different background.
+
+**In a tmux `status-format`, `bg=default` is not the terminal's background.**
+It means "this status line's own default style", which is `status-style` — the
+mantle the bar is drawn on. The dotted rule on `status-format[1]` was written
+with `bg=default` meaning "the pane's ground" and got the bar's band instead, so
+the bar rendered two rows tall with a line of dots through it rather than a bar
+with a gap under it. Name the colour — `bg=#{@thm_base}`, or the shell
+substitution `status-format[1]` uses, because `#{client_width}` has to survive
+to draw time.
+
+Reading the option back does **not** catch this: `show -gv` returns the format
+string, `bg=default` and all, which looks right. The only check that sees what
+was painted is the wire. Attach tmux through a pty and read the SGR in front of
+the row:
+
+```bash
+python3 - <<'EOF'
+import os, pty, select, re, time
+pid, fd = pty.fork()
+if pid == 0: os.execvp("tmux", ["tmux", "-L", "check", "attach"])
+buf = b""; t0 = time.time()
+while time.time() - t0 < 3:
+    if select.select([fd], [], [], 0.3)[0]:
+        d = os.read(fd, 65536)
+        if not d: break
+        buf += d
+d = buf.decode("utf8", "replace")
+m = re.search(r"(?:\u00b7 ){3,}", d)          # the dotted row, not the prompt's
+print(repr(d[m.start()-70:m.start()]))         # ...48;2;R;G;Bm just before it
+EOF
+```
+
+Match what that prints against `@thm_base`. Watch out for the shell prompt's own
+filler dots, which are solid `····` where this row is `· · ·` — mistaking one
+for the other reports the wrong colour entirely.
 
 **`vim.o.background` is not trustworthy.** A colourscheme is free to leave it
 wrong, and one this profile carried did: no-clown-fiesta's light variant applied
@@ -223,7 +332,7 @@ Neovim keeps the colours it started with.
 | Ghostty | `~/.config/ghostty/theme.conf` (untracked, `config-file = ?theme.conf` at the end of the tracked config) | the OS appearance; `theme.sh` writes the override |
 | zsh prompt | `zsh/p10k-palette-<slug>.zsh` → `zsh/p10k-{classic,rainbow}.zsh` | `$DEV_SETUP_SLUG` at shell start |
 | zsh syntax highlighting | `$DEV_SETUP_SYNTAX` → `~/.config/zsh/<that file>` | sourced by the zshrc before oh-my-zsh |
-| tmux | `@thm_*`, from catppuccin/tmux or `~/.config/tmux/theme.conf` (a symlink `theme.sh` maintains) | re-sourcing `~/.tmux.conf` |
+| tmux | `@thm_*`, from catppuccin/tmux or `~/.config/tmux/theme.conf` (a symlink `theme.sh` maintains); the bar and its dotted rule sit on `@thm_base`, the same ground Ghostty and Neovim use | re-sourcing `~/.tmux.conf` |
 | Neovim | `nvim/lua/config/theme.lua` → the colourscheme + `nvim/lua/themes/<slug>.lua` | `FocusGained`, then `ColorScheme` for the bars |
 | lazygit | `config.yml` (Mocha) + `theme-<slug>.yml` layered through `$LG_CONFIG_FILE` | the `lazygit` wrapper, per launch |
 | k9s | `$K9S_SKIN` → `skins/<skin>.yaml` | the `k9s` wrapper, per launch |
@@ -245,7 +354,8 @@ The prompt, in a throwaway `HOME` — never the real one — once per profile+mo
 It must print `ok`, with no errors and no "plugin not found":
 
 ```bash
-pf=scleral md=light                      # repeat for every combination
+pf=scleral md=light                      # every profile x mode: catppuccin,
+                                         # scleral, kanso-scleral x light, dark
 T=$(mktemp -d); mkdir -p "$T/.config/zsh" "$T/.zsh.d" "$T/.cache/dev-setup"
 echo $md > "$T/.cache/dev-setup/flavour"; echo $pf > "$T/.cache/dev-setup/profile"
 ln -s "$PWD/zsh/zshrc" "$T/.zshrc"; ln -s "$PWD/zsh/p10k.zsh" "$T/.p10k.zsh"

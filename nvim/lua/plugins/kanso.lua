@@ -1,4 +1,6 @@
--- The light half of the "scleral" profile (sh/theme.sh --scleral).
+-- The light half of the "kanso-scleral" profile (sh/theme.sh --kanso-scleral),
+-- the warmer of the two low-scatter light themes; plain "scleral" keeps No
+-- Clown Fiesta Light.
 --
 -- Kanso Pearl: a warm, low-saturation light theme. Saturated accents are what
 -- cause coloured ghosting when the cornea scatters light, so a muted palette

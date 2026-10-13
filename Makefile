@@ -10,10 +10,10 @@ SHELL := /bin/bash
 
 S := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))/sh
 
-.PHONY: help install force-install dry-run backup update plugins upgrade push status brew-diff version history rollback release personal remove-iterm2 light dark theme light-scleral dark-scleral
+.PHONY: help install force-install dry-run backup update plugins upgrade push status brew-diff version history rollback release personal remove-iterm2 theme light dark catppuccin scleral kanso-scleral light-catppuccin dark-catppuccin light-scleral dark-scleral light-kanso-scleral dark-kanso-scleral
 
 help: ## Show this help
-	@grep -E '^[a-z0-9-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  \033[35m%-14s\033[0m %s\n", $$1, $$2}'
+	@grep -E '^[a-z0-9-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  \033[35m%-20s\033[0m %s\n", $$1, $$2}'
 
 install: ## First-time setup: install everything missing, link configs
 	@$(S)/install.sh
@@ -45,17 +45,42 @@ status: ## Show uncommitted changes and any configs that aren't linked
 brew-diff: ## List Homebrew packages on this machine that are missing from sh/packages.sh
 	@$(S)/brew-diff.sh
 
-light: ## Light mode, keeping the active theme profile (add scleral=1 for Kanso Pearl)
-	@$(S)/theme.sh light $(if $(scleral),--scleral,)
+# Mode only, profile untouched. `profile=<name>` switches both in one go;
+# `make light --catppuccin` is NOT valid, make claims the flag itself.
+light: ## Light mode, keeping the active theme profile (add profile=<name> to switch both)
+	@$(S)/theme.sh light $(if $(profile),--$(profile),)
 
-dark: ## Dark mode, keeping the active theme profile (add scleral=1 for Kanagawa Dragon)
-	@$(S)/theme.sh dark $(if $(scleral),--scleral,)
+dark: ## Dark mode, keeping the active theme profile (add profile=<name> to switch both)
+	@$(S)/theme.sh dark $(if $(profile),--$(profile),)
 
-light-scleral: ## Light mode, Kanso Pearl (lowest light scatter)
+# Profile only, mode untouched.
+catppuccin: ## Catppuccin profile (Latte / Mocha), keeping the current mode
+	@$(S)/theme.sh --catppuccin
+
+scleral: ## Scleral profile (No Clown Fiesta Light / Kanagawa Dragon), keeping the current mode
+	@$(S)/theme.sh --scleral
+
+kanso-scleral: ## Kanso scleral profile (Kanso Pearl / Kanagawa Dragon), keeping the current mode
+	@$(S)/theme.sh --kanso-scleral
+
+# Both at once.
+light-catppuccin: ## Light mode, Catppuccin Latte
+	@$(S)/theme.sh light --catppuccin
+
+dark-catppuccin: ## Dark mode, Catppuccin Mocha
+	@$(S)/theme.sh dark --catppuccin
+
+light-scleral: ## Light mode, No Clown Fiesta Light (lowest light scatter)
 	@$(S)/theme.sh light --scleral
 
 dark-scleral: ## Dark mode, Kanagawa Dragon (lowest halation)
 	@$(S)/theme.sh dark --scleral
+
+light-kanso-scleral: ## Light mode, Kanso Pearl (warmer low-scatter light)
+	@$(S)/theme.sh light --kanso-scleral
+
+dark-kanso-scleral: ## Dark mode, Kanagawa Dragon (lowest halation)
+	@$(S)/theme.sh dark --kanso-scleral
 
 theme: ## Show the current mode, profile and theme
 	@$(S)/theme.sh

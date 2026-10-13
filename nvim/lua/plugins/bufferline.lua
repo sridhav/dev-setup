@@ -7,9 +7,9 @@ local function make_opts()
 		-- Colours for whichever theme is active: Catppuccin's bufferline port
 		-- under that profile, a palette-built set under any other
 		-- (lua/config/theme.lua). Taking Catppuccin's unconditionally is what
-		-- painted a Mocha-black tab bar over the light scleral theme: that
-		-- theme left 'background' on "dark", so the port handed back its
-		-- dark flavour.
+		-- painted a Mocha-black tab bar over the light scleral theme:
+		-- no-clown-fiesta light leaves 'background' on "dark", so the port
+		-- handed back its dark flavour.
 		highlights = require("config.theme").bufferline(),
 		options = {
 			-- Ours win over the colourscheme's. bufferline is "themable" by
@@ -30,8 +30,11 @@ local function make_opts()
 			diagnostics = "nvim_lsp",
 			always_show_bufferline = false,
 			-- Start the tabs after the file tree instead of drawing over it.
+			-- The entry stays (that is what reserves the width); only its label
+			-- goes, because the explorer already names itself in its own border
+			-- title and two "Explorer"s stacked is one too many.
 			offsets = {
-				{ filetype = "snacks_layout_box", text = "Explorer", highlight = "Directory", text_align = "left" },
+				{ filetype = "snacks_layout_box", text = "", highlight = "Directory", text_align = "left" },
 			},
 		},
 	}
