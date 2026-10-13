@@ -14,11 +14,11 @@
 # directory per cluster named after its full ARN.
 #
 # Kubeconfig is untouched on purpose: k9s reads $KUBECONFIG or ~/.kube/config.
-export K9S_SKIN="catppuccin-${DEV_SETUP_FLAVOUR:-mocha}"
+export K9S_SKIN="${DEV_SETUP_K9S_SKIN:-catppuccin-${DEV_SETUP_FLAVOUR:-mocha}}"
 
 k9s() {
-  if (( $+functions[dev_setup_flavour_now] )); then
-    K9S_SKIN="catppuccin-$(dev_setup_flavour_now)" command k9s "$@"
+  if (( $+functions[dev_setup_skin_now] )); then
+    K9S_SKIN="$(dev_setup_skin_now)" command k9s "$@"
   else
     command k9s "$@"
   fi

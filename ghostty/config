@@ -70,3 +70,11 @@
   # --- Per-OS settings (keybindings, window chrome) ---
   # `?` = optional: Ghostty still starts if the file is missing.
   config-file = ?platform.conf
+
+  # --- Theme profile override (machine-local, untracked) ---
+  # sh/theme.sh writes this when a profile other than the default is chosen
+  # (`--scleral`). It comes last so its `theme =` wins over the line above.
+  # This config is a tracked symlink, so the theme cannot be written into it
+  # directly: every machine's tree would go dirty and `make update` refuses
+  # to run on a dirty tree.
+  config-file = ?theme.conf

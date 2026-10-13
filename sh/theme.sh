@@ -11,23 +11,30 @@
 # than rewrite anyone's config, this flips the one signal Ghostty already
 # watches and every other tool reads the same thing.
 mode=""
+profile=""
 flags=()
 for arg in "$@"; do
   case "$arg" in
-    light|dark) mode="$arg" ;;
+    light|dark)   mode="$arg" ;;
+    --scleral)    profile=scleral ;;
+    --catppuccin) profile=catppuccin ;;
     *) flags+=("$arg") ;;
   esac
 done
 parse_flags ${flags[@]+"${flags[@]}"}
 
+# No profile asked for: keep whichever is already active.
+[[ -n "$profile" ]] || profile="$(theme_profile)"
+
 if [[ -z "$mode" ]]; then
   current="$(detect_appearance)"
-  printf '%s (Catppuccin %s)\n' "$current" "$(flavour_for "$current")"
+  printf '%s · %s · %s\n' "$current" "$profile" "$(slug_for "$profile" "$current")"
   exit 0
 fi
 
-flavour="$(flavour_for "$mode")"
-step "Theme: $mode — Catppuccin ${flavour}"
+slug="$(slug_for "$profile" "$mode")"
+gtheme="$(profile_field "$profile" "$([[ $mode == light ]] && echo 2 || echo 3)")"
+step "Theme: $mode — $profile ($slug)"
 
 # --- 1. the OS appearance, which Ghostty follows with no reload --------------
 if [[ "$(detect_appearance)" == "$mode" ]]; then
@@ -54,6 +61,40 @@ else
   ok "cached for new shells ($THEME_CACHE)"
 fi
 
+# --- 2b. the profile, and Ghostty's theme override --------------------------
+# ghostty/config is a tracked symlink, so the theme cannot be written into it:
+# every machine's tree would go dirty and `make update` refuses that. Instead it
+# ends with `config-file = ?theme.conf`, and this writes that file -- untracked,
+# machine-local, and last-wins over the default in the tracked config.
+if ((DRY_RUN)); then
+  info "would write $profile to $THEME_PROFILE_CACHE"
+  info "would set ghostty theme to: $gtheme"
+else
+  mkdir -p "$(dirname "$THEME_PROFILE_CACHE")"
+  printf '%s\n' "$profile" > "$THEME_PROFILE_CACHE"
+  mkdir -p "$HOME/.config/ghostty"
+  {
+    printf '# Written by sh/theme.sh -- not tracked, safe to delete.\n'
+    printf '# Profile %s, %s mode.\n' "$profile" "$mode"
+    printf 'theme = %s\n' "$gtheme"
+  } > "$HOME/.config/ghostty/theme.conf"
+  ok "profile $profile · ghostty theme $gtheme"
+fi
+
+# tmux's bar is built from catppuccin's @thm_* names, so a non-Catppuccin
+# profile supplies its own set; tmux/tmux.conf sources this if it exists.
+if [[ "$profile" == catppuccin ]]; then
+  if ((DRY_RUN)); then info "would remove ~/.config/tmux/theme.conf"
+  else rm -f "$HOME/.config/tmux/theme.conf"; fi
+else
+  if ((DRY_RUN)); then info "would point ~/.config/tmux/theme.conf at tmux/theme-$slug.conf"
+  else
+    mkdir -p "$HOME/.config/tmux"
+    ln -sfn "$DOTFILES/tmux/theme-$slug.conf" "$HOME/.config/tmux/theme.conf"
+    ok "tmux colours ← tmux/theme-$slug.conf"
+  fi
+fi
+
 # --- 3. what is already running ---------------------------------------------
 # tmux re-reads the flavour when the config is sourced again. Only the default
 # socket: a server started with `tmux -L <name>` has to be reloaded by hand.
@@ -69,5 +110,6 @@ fi
 # launch (the wrappers in zsh/zsh.d), so they are right even from a shell that
 # was already open. Only the prompt itself is fixed at shell startup.
 info "Ghostty follows the OS straight away. Neovim switches when you focus it."
+info "Already-open Ghostty windows need one reload: Cmd+Shift+, (theme.conf changed)"
 info "k9s and lazygit are right from their next launch, in any shell."
 info "Only the prompt of an already-open shell needs: exec zsh"

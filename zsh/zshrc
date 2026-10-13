@@ -32,13 +32,17 @@ plugins=(
 
 # Catppuccin everywhere: syntax-highlighting styles must be set before the
 # plugin loads, and autosuggestions use the flavour's overlay0 instead of grey 8.
-[[ -f ~/.config/zsh/catppuccin-syntax-highlighting-${DEV_SETUP_FLAVOUR:-mocha}.zsh ]] \
-  && source ~/.config/zsh/catppuccin-syntax-highlighting-${DEV_SETUP_FLAVOUR:-mocha}.zsh
+# The autosuggest default is set first so a generated theme file can override it.
 if [[ "${DEV_SETUP_FLAVOUR:-mocha}" == latte ]]; then
   ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#9ca0b0"   # Latte overlay0
 else
   ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#6c7086"   # Mocha overlay0
 fi
+# $DEV_SETUP_SYNTAX names the file for the active theme: Catppuccin's hand-made
+# one, or a generated syntax-<slug>.zsh for another profile.
+_dev_syntax="${DEV_SETUP_SYNTAX:-catppuccin-syntax-highlighting-${DEV_SETUP_FLAVOUR:-mocha}.zsh}"
+[[ -f ~/.config/zsh/$_dev_syntax ]] && source ~/.config/zsh/$_dev_syntax
+unset _dev_syntax
 
 # The catppuccin-powerlevel10k-themes plugin reads these while oh-my-zsh loads,
 # so they must be set before the source line below.

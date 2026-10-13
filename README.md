@@ -77,7 +77,10 @@ Configs are symlinked, so editing `~/.zshrc`, `~/.config/nvim/...` and so on edi
 - **New zsh plugin:** add it to `plugins=(...)` in `zsh/zshrc`. If it doesn't ship with oh-my-zsh, also add `"name|git-url"` to `OMZ_PLUGINS` in `sh/lib.sh`. Step 07 stops with an error if any plugin in the zshrc isn't installed.
 - **Newer versions:** `make upgrade` (brew + Neovim plugins, which rewrites `lazy-lock.json`), then `make push`.
 - **Check this machine:** `make status`.
-- **Light or dark:** `make light` / `make dark` (`make theme` prints the current one). It flips the OS appearance,
+- **Light or dark:** `make light` / `make dark` (`make theme` prints the current one).
+- **Easier on the eyes:** `make light-scleral` / `make dark-scleral` swaps the Catppuccin pair for
+  No Clown Fiesta Light + Kanagawa Dragon, the least-scattering pair of Ghostty's 463 themes.
+  `make light` / `make dark` then keep whichever profile is active. It flips the OS appearance,
   which Ghostty follows straight away; Neovim switches when you focus it, and shells already open need `exec zsh`.
 
 ## Version control
@@ -124,7 +127,8 @@ sh/
   backup.sh               snapshot all configs
   status.sh               uncommitted changes + unlinked configs
   brew-diff.sh            brew packages missing from sh/packages.sh
-  theme.sh [light|dark]   switch flavour; no argument prints the current one   (make light / make dark)
+  theme.sh [light|dark] [--scleral]   switch mode and theme profile; no argument prints both
+  gen-theme.py "<theme>" <slug>       generate the per-theme colour files for a Ghostty theme
   remove-iterm2.sh        macOS: move iTerm2 into the backup   (make remove-iterm2)
 ghostty/config            → ~/.config/ghostty/config
 nvim/                     → ~/.config/nvim

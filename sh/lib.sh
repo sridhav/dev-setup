@@ -111,7 +111,48 @@ detect_appearance() {
   echo dark
 }
 
-# light -> latte, dark -> mocha. The only place that mapping is written down.
+# ---- profiles -------------------------------------------------------------
+# A profile is a light/dark pair of themes. "catppuccin" is the original and
+# stays hand-made; "scleral" is picked for lowest visible light scatter (crisp
+# letters with a glow over them), which is why its dark half is a different
+# family -- No Clown Fiesta's own dark is harsh.
+#
+#  name|ghostty light|ghostty dark|light slug|dark slug
+THEME_PROFILES=(
+  "catppuccin|Catppuccin Latte|Catppuccin Mocha|latte|mocha"
+  "scleral|No Clown Fiesta Light|Kanagawa Dragon|ncf-light|kanagawa-dragon"
+)
+THEME_PROFILE_CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/dev-setup/profile"
+
+# The active profile name; "catppuccin" unless one was chosen.
+theme_profile() {
+  local v=""
+  [[ -r "$THEME_PROFILE_CACHE" ]] && read -r v < "$THEME_PROFILE_CACHE" 2>/dev/null
+  case "$v" in scleral|catppuccin) echo "$v" ;; *) echo catppuccin ;; esac
+}
+
+# field N (1-5) of a profile's row
+profile_field() { # profile n
+  local row rest i=1
+  for row in "${THEME_PROFILES[@]}"; do
+    if [[ "${row%%|*}" == "$1" ]]; then
+      rest="$row"
+      while (( i < $2 )); do rest="${rest#*|}"; i=$((i+1)); done
+      echo "${rest%%|*}"; return 0
+    fi
+  done
+  return 1
+}
+
+# The theme slug for a profile + mode, e.g. scleral+light -> ncf-light.
+# Everything per-theme is named after it: zsh/p10k-palette-<slug>.zsh,
+# tmux/theme-<slug>.conf, k9s/skins/<slug>.yaml, lazygit/theme-<slug>.yml.
+slug_for() { # profile mode
+  if [[ "$2" == light ]]; then profile_field "$1" 4; else profile_field "$1" 5; fi
+}
+
+# light -> latte, dark -> mocha, for the default profile. Kept because the
+# Catppuccin files are named by flavour.
 flavour_for() { case "$1" in light) echo latte ;; *) echo mocha ;; esac; }
 
 # Formulae for this OS: the shared list, plus the macOS-only ones on a Mac.
@@ -149,6 +190,8 @@ LINKS=(
   "zsh/theme.zsh|$HOME/.config/zsh/theme.zsh"
   "zsh/catppuccin-syntax-highlighting-mocha.zsh|$HOME/.config/zsh/catppuccin-syntax-highlighting-mocha.zsh"
   "zsh/catppuccin-syntax-highlighting-latte.zsh|$HOME/.config/zsh/catppuccin-syntax-highlighting-latte.zsh"
+  "zsh/syntax-ncf-light.zsh|$HOME/.config/zsh/syntax-ncf-light.zsh"
+  "zsh/syntax-kanagawa-dragon.zsh|$HOME/.config/zsh/syntax-kanagawa-dragon.zsh"
   "zsh/zsh.d/brew.zsh|$HOME/.zsh.d/brew.zsh"
   "zsh/zsh.d/history.zsh|$HOME/.zsh.d/history.zsh"
   "zsh/zsh.d/path.zsh|$HOME/.zsh.d/path.zsh"
@@ -170,6 +213,8 @@ LINKS=(
   # zsh/zsh.d/k9s.zsh points K9S_SKIN at this file instead.
   "k9s/skins/catppuccin-mocha.yaml|$K9S_CONFIG_DIR/skins/catppuccin-mocha.yaml"
   "k9s/skins/catppuccin-latte.yaml|$K9S_CONFIG_DIR/skins/catppuccin-latte.yaml"
+  "k9s/skins/ncf-light.yaml|$K9S_CONFIG_DIR/skins/ncf-light.yaml"
+  "k9s/skins/kanagawa-dragon.yaml|$K9S_CONFIG_DIR/skins/kanagawa-dragon.yaml"
   "opencode/tui.json|$HOME/.config/opencode/tui.json"
   "sesh/sesh.toml|$HOME/.config/sesh/sesh.toml"
 )

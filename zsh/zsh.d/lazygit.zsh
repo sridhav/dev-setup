@@ -9,14 +9,17 @@
 # As with k9s, the wrapper re-reads the flavour at launch so `make light` reaches
 # an already-open shell; the export is what Neovim's <leader>gg (snacks lazygit)
 # inherits, since that does not go through this function.
-if [[ "$DEV_SETUP_FLAVOUR" == latte && -n "$DEV_SETUP_DIR" ]]; then
-  export LG_CONFIG_FILE="$DEV_SETUP_DIR/lazygit/config.yml,$DEV_SETUP_DIR/lazygit/theme-latte.yml"
+# config.yml carries Mocha, so only a non-Mocha theme needs an overlay.
+if [[ -n "$DEV_SETUP_DIR" && -n "$DEV_SETUP_SLUG" && "$DEV_SETUP_SLUG" != mocha ]]; then
+  export LG_CONFIG_FILE="$DEV_SETUP_DIR/lazygit/config.yml,$DEV_SETUP_DIR/lazygit/theme-$DEV_SETUP_SLUG.yml"
 fi
 
 lazygit() {
-  if [[ -n "$DEV_SETUP_DIR" ]] && (( $+functions[dev_setup_flavour_now] )); then
-    local cfg="$DEV_SETUP_DIR/lazygit/config.yml"
-    [[ "$(dev_setup_flavour_now)" == latte ]] && cfg="$cfg,$DEV_SETUP_DIR/lazygit/theme-latte.yml"
+  if [[ -n "$DEV_SETUP_DIR" ]] && (( $+functions[dev_setup_slug_now] )); then
+    local cfg="$DEV_SETUP_DIR/lazygit/config.yml" sl
+    sl="$(dev_setup_slug_now)"
+    [[ "$sl" != mocha && -r "$DEV_SETUP_DIR/lazygit/theme-$sl.yml" ]] \
+      && cfg="$cfg,$DEV_SETUP_DIR/lazygit/theme-$sl.yml"
     LG_CONFIG_FILE="$cfg" command lazygit "$@"
   else
     command lazygit "$@"

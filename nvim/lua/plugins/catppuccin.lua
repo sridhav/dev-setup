@@ -1,35 +1,12 @@
--- Catppuccin: Latte when the OS is in light mode, Mocha when it is dark.
+-- Catppuccin: Latte in light mode, Mocha in dark -- the default profile.
+-- Which colorscheme actually gets applied is decided in lua/config/theme.lua,
+-- because the scleral profile swaps in a different pair.
 --
 -- `background` makes the flavour follow vim.o.background, so switching themes
 -- is just setting that. The OS appearance is the source of truth for the whole
 -- setup (see sh/theme.sh); this reads the flavour that `make light` / `make
 -- dark` cached, falling back to $DEV_SETUP_THEME from the shell and then to
 -- dark, so a fresh machine with no cache still looks right.
-local cache = vim.env.XDG_CACHE_HOME or (vim.env.HOME .. "/.cache")
-cache = cache .. "/dev-setup/flavour"
-
-local function detect()
-	local f = io.open(cache, "r")
-	if f then
-		local mode = (f:read("l") or ""):gsub("%s", "")
-		f:close()
-		if mode == "light" or mode == "dark" then
-			return mode
-		end
-	end
-	return vim.env.DEV_SETUP_THEME == "light" and "light" or "dark"
-end
-
--- Re-apply only on a real change: setting background always recompiles the
--- colorscheme, which is wasted work on every focus event.
-local function sync()
-	local mode = detect()
-	if vim.o.background ~= mode then
-		vim.o.background = mode
-		vim.cmd.colorscheme("catppuccin")
-	end
-end
-
 return {
 	"catppuccin/nvim",
 	name = "catppuccin",
@@ -56,15 +33,16 @@ return {
 	},
 	config = function(_, opts)
 		require("catppuccin").setup(opts)
-		vim.o.background = detect()
-		vim.cmd.colorscheme("catppuccin")
+		local theme = require("config.theme")
+		theme.apply()
 
-		-- Pick up `make light` / `make dark` without restarting Neovim. tmux's
-		-- `focus-events on` is what lets FocusGained fire inside a pane.
+		-- Pick up `make light` / `make dark` (and a profile change) without
+		-- restarting. tmux's `focus-events on` is what lets FocusGained fire
+		-- inside a pane.
 		vim.api.nvim_create_autocmd({ "FocusGained", "VimResume" }, {
 			group = vim.api.nvim_create_augroup("dev_setup_theme", { clear = true }),
 			desc = "Follow the OS light/dark switch",
-			callback = sync,
+			callback = theme.sync,
 		})
 	end,
 }

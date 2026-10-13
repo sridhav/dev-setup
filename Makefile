@@ -10,7 +10,7 @@ SHELL := /bin/bash
 
 S := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))/sh
 
-.PHONY: help install force-install dry-run backup update plugins upgrade push status brew-diff version history rollback release personal remove-iterm2 light dark theme
+.PHONY: help install force-install dry-run backup update plugins upgrade push status brew-diff version history rollback release personal remove-iterm2 light dark theme light-scleral dark-scleral
 
 help: ## Show this help
 	@grep -E '^[a-z0-9-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  \033[35m%-14s\033[0m %s\n", $$1, $$2}'
@@ -45,13 +45,19 @@ status: ## Show uncommitted changes and any configs that aren't linked
 brew-diff: ## List Homebrew packages on this machine that are missing from sh/packages.sh
 	@$(S)/brew-diff.sh
 
-light: ## Switch everything to Catppuccin Latte (light mode)
-	@$(S)/theme.sh light
+light: ## Light mode, keeping the active theme profile (add scleral=1 for No Clown Fiesta)
+	@$(S)/theme.sh light $(if $(scleral),--scleral,)
 
-dark: ## Switch everything to Catppuccin Mocha (dark mode)
-	@$(S)/theme.sh dark
+dark: ## Dark mode, keeping the active theme profile (add scleral=1 for Kanagawa Dragon)
+	@$(S)/theme.sh dark $(if $(scleral),--scleral,)
 
-theme: ## Show whether the setup is currently light or dark
+light-scleral: ## Light mode, No Clown Fiesta Light (lowest light scatter)
+	@$(S)/theme.sh light --scleral
+
+dark-scleral: ## Dark mode, Kanagawa Dragon (lowest halation)
+	@$(S)/theme.sh dark --scleral
+
+theme: ## Show the current mode, profile and theme
 	@$(S)/theme.sh
 
 version: ## Show which version this machine is on and whether it's behind

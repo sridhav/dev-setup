@@ -37,6 +37,24 @@ export DEV_SETUP_DIR="${${${(%):-%x}:A:h}:h}"
 
   export DEV_SETUP_THEME="$mode"
   [[ "$mode" == light ]] && export DEV_SETUP_FLAVOUR=latte || export DEV_SETUP_FLAVOUR=mocha
+
+  # Which theme profile: catppuccin (the default) or scleral.
+  local pf="" pcache="${XDG_CACHE_HOME:-$HOME/.cache}/dev-setup/profile"
+  [[ -r "$pcache" ]] && read -r pf < "$pcache"
+  [[ "$pf" == scleral ]] || pf=catppuccin
+  export DEV_SETUP_PROFILE="$pf"
+
+  # The slug every per-theme file is named after.
+  if [[ "$pf" == scleral ]]; then
+    [[ "$mode" == light ]] && DEV_SETUP_SLUG=ncf-light || DEV_SETUP_SLUG=kanagawa-dragon
+    DEV_SETUP_SYNTAX="syntax-$DEV_SETUP_SLUG.zsh"
+    DEV_SETUP_K9S_SKIN="$DEV_SETUP_SLUG"
+  else
+    DEV_SETUP_SLUG="$DEV_SETUP_FLAVOUR"
+    DEV_SETUP_SYNTAX="catppuccin-syntax-highlighting-$DEV_SETUP_SLUG.zsh"
+    DEV_SETUP_K9S_SKIN="catppuccin-$DEV_SETUP_SLUG"
+  fi
+  export DEV_SETUP_SLUG DEV_SETUP_SYNTAX DEV_SETUP_K9S_SKIN
 }
 
 # The flavour *now*, rather than when this shell started. Tools that read their
@@ -44,8 +62,25 @@ export DEV_SETUP_DIR="${${${(%):-%x}:A:h}:h}"
 # in an already-open shell would otherwise keep giving them the old flavour.
 # One file read, no fork, so it is cheap enough to call per launch.
 dev_setup_flavour_now() {
-  local mode=""
-  [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/dev-setup/flavour" ]] \
-    && read -r mode < "${XDG_CACHE_HOME:-$HOME/.cache}/dev-setup/flavour"
+  local mode="" c="${XDG_CACHE_HOME:-$HOME/.cache}/dev-setup"
+  [[ -r "$c/flavour" ]] && read -r mode < "$c/flavour"
   [[ "$mode" == light ]] && print latte || print mocha
+}
+
+# The active theme slug at launch time: latte/mocha, or the scleral pair.
+dev_setup_slug_now() {
+  local mode="" pf="" c="${XDG_CACHE_HOME:-$HOME/.cache}/dev-setup"
+  [[ -r "$c/flavour" ]] && read -r mode < "$c/flavour"
+  [[ -r "$c/profile" ]] && read -r pf < "$c/profile"
+  if [[ "$pf" == scleral ]]; then
+    [[ "$mode" == light ]] && print ncf-light || print kanagawa-dragon
+  else
+    [[ "$mode" == light ]] && print latte || print mocha
+  fi
+}
+
+# The k9s skin name for that slug.
+dev_setup_skin_now() {
+  local s; s="$(dev_setup_slug_now)"
+  case "$s" in latte|mocha) print "catppuccin-$s" ;; *) print "$s" ;; esac
 }
