@@ -7,11 +7,19 @@ local function make_opts()
 		-- Colours for whichever theme is active: Catppuccin's bufferline port
 		-- under that profile, a palette-built set under any other
 		-- (lua/config/theme.lua). Taking Catppuccin's unconditionally is what
-		-- painted a Mocha-black tab bar over the light scleral theme:
-		-- no-clown-fiesta light leaves 'background' on "dark", so the port
-		-- handed back its dark flavour.
+		-- painted a Mocha-black tab bar over the light scleral theme: that
+		-- theme left 'background' on "dark", so the port handed back its
+		-- dark flavour.
 		highlights = require("config.theme").bufferline(),
 		options = {
+			-- Ours win over the colourscheme's. bufferline is "themable" by
+			-- default, which means it registers its highlights with
+			-- `default = true` and any group a colourscheme already defines
+			-- stays put -- kanso.nvim ships BufferLineBufferSelected with no
+			-- background, which left the open tab unlifted. We supply a full
+			-- palette-built set for every profile, so there is nothing to
+			-- defer to.
+			themable = false,
 			-- Snacks.bufdelete keeps the window layout when a buffer closes.
 			close_command = function(n)
 				Snacks.bufdelete(n)

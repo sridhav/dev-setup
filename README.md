@@ -79,7 +79,7 @@ Configs are symlinked, so editing `~/.zshrc`, `~/.config/nvim/...` and so on edi
 - **Check this machine:** `make status`.
 - **Light or dark:** `make light` / `make dark` (`make theme` prints the current one).
 - **Easier on the eyes:** `make light-scleral` / `make dark-scleral` swaps the Catppuccin pair for
-  No Clown Fiesta Light + Kanagawa Dragon, the least-scattering pair of Ghostty's 463 themes.
+  Kanso Pearl + Kanagawa Dragon, chosen from Ghostty's 463 themes for how little they scatter.
   `make light` / `make dark` then keep whichever profile is active. It flips the OS appearance,
   which Ghostty follows straight away; Neovim switches when you focus it, and shells already open need `exec zsh`.
 

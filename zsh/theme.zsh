@@ -46,7 +46,7 @@ export DEV_SETUP_DIR="${${${(%):-%x}:A:h}:h}"
 
   # The slug every per-theme file is named after.
   if [[ "$pf" == scleral ]]; then
-    [[ "$mode" == light ]] && DEV_SETUP_SLUG=ncf-light || DEV_SETUP_SLUG=kanagawa-dragon
+    [[ "$mode" == light ]] && DEV_SETUP_SLUG=kanso-pearl || DEV_SETUP_SLUG=kanagawa-dragon
     DEV_SETUP_SYNTAX="syntax-$DEV_SETUP_SLUG.zsh"
     DEV_SETUP_K9S_SKIN="$DEV_SETUP_SLUG"
   else
@@ -58,10 +58,10 @@ export DEV_SETUP_DIR="${${${(%):-%x}:A:h}:h}"
   #
   # "rainbow" gives every segment its own coloured background with light text
   # on top, which needs saturated accents to read -- Catppuccin has them. The
-  # scleral profile deliberately does not: No Clown Fiesta is the most
-  # desaturated palette there is, and as rainbow backgrounds its mid-tones come
-  # out murky with barely-legible text. "classic" puts the accents on as *text*
-  # over one surface instead, which is exactly what a quiet palette wants.
+  # scleral profile deliberately does not: its palettes are muted by design, and
+  # as rainbow backgrounds their mid-tones come out murky with barely-legible
+  # text. "classic" puts the accents on as *text* over one surface instead,
+  # which is exactly what a quiet palette wants.
   if [[ "$pf" == scleral ]]; then
     export DEV_SETUP_P10K_STYLE=classic
   else
@@ -87,7 +87,7 @@ dev_setup_slug_now() {
   [[ -r "$c/flavour" ]] && read -r mode < "$c/flavour"
   [[ -r "$c/profile" ]] && read -r pf < "$c/profile"
   if [[ "$pf" == scleral ]]; then
-    [[ "$mode" == light ]] && print ncf-light || print kanagawa-dragon
+    [[ "$mode" == light ]] && print kanso-pearl || print kanagawa-dragon
   else
     [[ "$mode" == light ]] && print latte || print mocha
   fi

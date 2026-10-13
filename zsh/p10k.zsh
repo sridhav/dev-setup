@@ -10,7 +10,7 @@
 _p10k_here="${${(%):-%x}:A:h}"
 
 # The slug is the theme, not just the flavour: latte / mocha for Catppuccin,
-# ncf-light / kanagawa-dragon for the scleral profile. Every profile ships the
+# kanso-pearl / kanagawa-dragon for the scleral profile. Every profile ships the
 # same 26 P10K_COLOR_* names (sh/gen-theme.py generates them), so the prompt
 # keeps its exact shape and only the colours move.
 _p10k_slug="${DEV_SETUP_SLUG:-${DEV_SETUP_FLAVOUR:-mocha}}"

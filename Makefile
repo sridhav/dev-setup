@@ -45,13 +45,13 @@ status: ## Show uncommitted changes and any configs that aren't linked
 brew-diff: ## List Homebrew packages on this machine that are missing from sh/packages.sh
 	@$(S)/brew-diff.sh
 
-light: ## Light mode, keeping the active theme profile (add scleral=1 for No Clown Fiesta)
+light: ## Light mode, keeping the active theme profile (add scleral=1 for Kanso Pearl)
 	@$(S)/theme.sh light $(if $(scleral),--scleral,)
 
 dark: ## Dark mode, keeping the active theme profile (add scleral=1 for Kanagawa Dragon)
 	@$(S)/theme.sh dark $(if $(scleral),--scleral,)
 
-light-scleral: ## Light mode, No Clown Fiesta Light (lowest light scatter)
+light-scleral: ## Light mode, Kanso Pearl (lowest light scatter)
 	@$(S)/theme.sh light --scleral
 
 dark-scleral: ## Dark mode, Kanagawa Dragon (lowest halation)

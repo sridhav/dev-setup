@@ -107,7 +107,7 @@ local function make_opts()
 	-- folder peach, position teal. Only the mode bubble follows the mode.
 	-- The palette of whichever theme is active, under any profile -- not
 	-- catppuccin.palettes, which would hand a Catppuccin flavour's colours
-	-- to a bar drawn over No Clown Fiesta or Kanagawa (lua/config/theme.lua).
+	-- to a bar drawn over Kanso or Kanagawa (lua/config/theme.lua).
 	local dev_theme = require("config.theme")
 	local C = dev_theme.palette()
 	local branch_color = { fg = C.mauve }
@@ -127,8 +127,8 @@ local function make_opts()
 		options = {
 			-- Catppuccin ships a lualine theme of its own and "auto" finds it.
 			-- Nothing else does, and "auto" then falls back to a *dark*
-			-- default whenever 'background' says dark -- which no-clown-fiesta
-			-- light leaves it saying. Hence the explicit table: a black bar
+			-- default whenever 'background' says dark, which a light theme is
+			-- free to leave it saying. Hence the explicit table: a black bar
 			-- with light gaps showing through between its sections was that
 			-- fallback, not the colourscheme.
 			theme = dev_theme.profile() == "catppuccin" and "auto" or dev_theme.lualine_theme(),

@@ -12,7 +12,7 @@ Three words carry everything:
 | --- | --- | --- |
 | **mode** | `light` or `dark`. The OS appearance is the source of truth. | `~/.cache/dev-setup/flavour` |
 | **profile** | A light/dark *pair* of themes, e.g. `catppuccin` = Latte + Mocha. | `~/.cache/dev-setup/profile` |
-| **slug** | The one theme a mode+profile resolves to: `latte`, `mocha`, `ncf-light`, `kanagawa-dragon`. | every per-theme filename |
+| **slug** | The one theme a mode+profile resolves to: `latte`, `mocha`, `kanso-pearl`, `kanagawa-dragon`. | every per-theme filename |
 
 `THEME_PROFILES` in `sh/lib.sh` is the table that maps the first two to the
 third. **Every per-theme file is named after the slug** — that naming is the
@@ -52,8 +52,8 @@ What picks the change up, and when:
 
 ## Swap a profile's themes for different ones
 
-The most likely job: scleral stays the profile, but No Clown Fiesta Light and
-Kanagawa Dragon are replaced by a different pair (or just one of them). Nothing
+The most likely job: scleral stays the profile, but Kanso Pearl and Kanagawa
+Dragon are replaced by a different pair (or just one of them). Nothing
 about the machinery changes — only the row that says what the names are, and the
 files named after the slugs.
 
@@ -67,7 +67,7 @@ ghostty +list-themes          # the names must match exactly, spaces and all
 **1. `sh/lib.sh` — the row.** `name|ghostty light|ghostty dark|light slug|dark slug`:
 
 ```diff
--  "scleral|No Clown Fiesta Light|Kanagawa Dragon|ncf-light|kanagawa-dragon"
+-  "scleral|Kanso Pearl|Kanagawa Dragon|kanso-pearl|kanagawa-dragon"
 +  "scleral|Rosé Pine Dawn|Rosé Pine|rose-pine-dawn|rose-pine"
 ```
 
@@ -80,9 +80,9 @@ them — that is the rest of this list.
 ```bash
 sh/gen-theme.py "Rosé Pine Dawn" rose-pine-dawn
 sh/gen-theme.py "Rosé Pine"      rose-pine
-git rm zsh/p10k-palette-ncf-light.zsh zsh/syntax-ncf-light.zsh \
-       tmux/theme-ncf-light.conf k9s/skins/ncf-light.yaml \
-       nvim/lua/themes/ncf-light.lua lazygit/theme-ncf-light.yml
+git rm zsh/p10k-palette-kanso-pearl.zsh zsh/syntax-kanso-pearl.zsh \
+       tmux/theme-kanso-pearl.conf k9s/skins/kanso-pearl.yaml \
+       nvim/lua/themes/kanso-pearl.lua lazygit/theme-kanso-pearl.yml
 #   ... and the same six for the old dark slug
 ```
 
@@ -95,7 +95,7 @@ sh/steps/10-link-configs.sh      # or `make install`; owner's call, not an agent
 ```
 
 Stale links to the deleted files are harmless (`sh/status.sh` lists them) but
-tidy them up: `rm ~/.config/zsh/syntax-ncf-light.zsh` and the k9s skin.
+tidy them up: `rm ~/.config/zsh/syntax-kanso-pearl.zsh` and the k9s skin.
 
 **4. `zsh/theme.zsh` — the slug mapping, in both places:** the block that sets
 `DEV_SETUP_SLUG`/`DEV_SETUP_SYNTAX`/`DEV_SETUP_K9S_SKIN`, and `dev_setup_slug_now()`.
@@ -124,7 +124,7 @@ In order. Anything later depends on something earlier.
 
 **1. Pick the pair.** `ghostty +list-themes` previews all 463. Judge both halves
 in the terminal before going further — the generator can fix contrast, not taste.
-Pick a slug per theme: lowercase, hyphenated, short (`ncf-light`).
+Pick a slug per theme: lowercase, hyphenated, short (`kanso-pearl`).
 
 **2. `sh/lib.sh` — the profile itself.**
 - A row in `THEME_PROFILES`: `"<name>|<ghostty light>|<ghostty dark>|<light slug>|<dark slug>"`.
@@ -205,10 +205,11 @@ loads) and *before* any `-F` line reads them. Source it later and the lazy lines
 look right while `status-style` keeps Catppuccin's — which is exactly how the bar
 ended up a near-white band over a different background.
 
-**`vim.o.background` is not trustworthy.** no-clown-fiesta's light variant (which
-upstream calls "under development") leaves it on `dark` while applying light
-colours, and it cannot be corrected: setting `background` after a colourscheme
-resets every highlight to Neovim's built-in defaults. So nothing in this setup
+**`vim.o.background` is not trustworthy.** A colourscheme is free to leave it
+wrong, and one this profile carried did: no-clown-fiesta's light variant applied
+light colours with `background` still on `dark`. It cannot be corrected after
+the fact either — setting `background` once a colourscheme is loaded resets
+every highlight to Neovim's built-in defaults. So nothing in this setup
 may key off it — not the palette, not lualine's `theme = "auto"` (its fallback is
 chosen by that flag, which is why the bar went black), not a plugin's own
 shading. The cache is the source of truth inside Neovim too. Anything that

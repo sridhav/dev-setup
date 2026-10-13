@@ -114,13 +114,14 @@ detect_appearance() {
 # ---- profiles -------------------------------------------------------------
 # A profile is a light/dark pair of themes. "catppuccin" is the original and
 # stays hand-made; "scleral" is picked for lowest visible light scatter (crisp
-# letters with a glow over them), which is why its dark half is a different
-# family -- No Clown Fiesta's own dark is harsh.
+# letters with a glow over them). Its two halves come from different families
+# on purpose: each one is chosen for how little it scatters, not for matching
+# the other.
 #
 #  name|ghostty light|ghostty dark|light slug|dark slug
 THEME_PROFILES=(
   "catppuccin|Catppuccin Latte|Catppuccin Mocha|latte|mocha"
-  "scleral|No Clown Fiesta Light|Kanagawa Dragon|ncf-light|kanagawa-dragon"
+  "scleral|Kanso Pearl|Kanagawa Dragon|kanso-pearl|kanagawa-dragon"
 )
 THEME_PROFILE_CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/dev-setup/profile"
 
@@ -144,7 +145,7 @@ profile_field() { # profile n
   return 1
 }
 
-# The theme slug for a profile + mode, e.g. scleral+light -> ncf-light.
+# The theme slug for a profile + mode, e.g. scleral+light -> kanso-pearl.
 # Everything per-theme is named after it: zsh/p10k-palette-<slug>.zsh,
 # tmux/theme-<slug>.conf, k9s/skins/<slug>.yaml, lazygit/theme-<slug>.yml.
 slug_for() { # profile mode
@@ -190,7 +191,7 @@ LINKS=(
   "zsh/theme.zsh|$HOME/.config/zsh/theme.zsh"
   "zsh/catppuccin-syntax-highlighting-mocha.zsh|$HOME/.config/zsh/catppuccin-syntax-highlighting-mocha.zsh"
   "zsh/catppuccin-syntax-highlighting-latte.zsh|$HOME/.config/zsh/catppuccin-syntax-highlighting-latte.zsh"
-  "zsh/syntax-ncf-light.zsh|$HOME/.config/zsh/syntax-ncf-light.zsh"
+  "zsh/syntax-kanso-pearl.zsh|$HOME/.config/zsh/syntax-kanso-pearl.zsh"
   "zsh/syntax-kanagawa-dragon.zsh|$HOME/.config/zsh/syntax-kanagawa-dragon.zsh"
   "zsh/zsh.d/brew.zsh|$HOME/.zsh.d/brew.zsh"
   "zsh/zsh.d/history.zsh|$HOME/.zsh.d/history.zsh"
@@ -213,7 +214,7 @@ LINKS=(
   # zsh/zsh.d/k9s.zsh points K9S_SKIN at this file instead.
   "k9s/skins/catppuccin-mocha.yaml|$K9S_CONFIG_DIR/skins/catppuccin-mocha.yaml"
   "k9s/skins/catppuccin-latte.yaml|$K9S_CONFIG_DIR/skins/catppuccin-latte.yaml"
-  "k9s/skins/ncf-light.yaml|$K9S_CONFIG_DIR/skins/ncf-light.yaml"
+  "k9s/skins/kanso-pearl.yaml|$K9S_CONFIG_DIR/skins/kanso-pearl.yaml"
   "k9s/skins/kanagawa-dragon.yaml|$K9S_CONFIG_DIR/skins/kanagawa-dragon.yaml"
   "opencode/tui.json|$HOME/.config/opencode/tui.json"
   "sesh/sesh.toml|$HOME/.config/sesh/sesh.toml"

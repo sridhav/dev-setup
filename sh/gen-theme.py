@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Generate the per-theme colour files from a Ghostty theme.
 
-    sh/gen-theme.py "No Clown Fiesta Light" ncf-light
+    sh/gen-theme.py "Kanso Pearl" kanso-pearl
 
 Ghostty ships 463 themes as plain files holding 16 ANSI colours plus
 background/foreground. The rest of this setup is written against Catppuccin's

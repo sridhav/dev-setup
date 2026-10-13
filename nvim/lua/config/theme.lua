@@ -3,11 +3,11 @@
 -- The OS appearance is the source of truth for light/dark (see sh/theme.sh),
 -- and a *profile* picks which pair of themes light/dark mean:
 --
---   catppuccin  light -> latte           dark -> mocha
---   scleral     light -> no-clown-fiesta dark -> kanagawa dragon
+--   catppuccin  light -> latte       dark -> mocha
+--   scleral     light -> kanso pearl dark -> kanagawa dragon
 --
--- The scleral pair is chosen for the lowest visible light scatter, which is why
--- its dark half is a different family: No Clown Fiesta's own dark is harsh.
+-- The scleral pair is chosen for the lowest visible light scatter; its halves
+-- come from different families because each is picked on its own merits.
 -- Both are read from the cache `make light` / `make dark` write, so Neovim
 -- never has to shell out.
 local M = {}
@@ -39,14 +39,14 @@ end
 -- profile+mode -> the colorscheme command to run
 local SCHEMES = {
   catppuccin = { light = "catppuccin", dark = "catppuccin" },
-  scleral    = { light = "no-clown-fiesta", dark = "kanagawa-dragon" },
+  scleral    = { light = "kanso-pearl", dark = "kanagawa-dragon" },
 }
 
 -- profile+mode -> the theme slug every per-theme file is named after
 -- (sh/lib.sh THEME_PROFILES, zsh/theme.zsh: keep the three in step).
 local SLUGS = {
   catppuccin = { light = "latte", dark = "mocha" },
-  scleral    = { light = "ncf-light", dark = "kanagawa-dragon" },
+  scleral    = { light = "kanso-pearl", dark = "kanagawa-dragon" },
 }
 
 function M.slug()
@@ -59,10 +59,11 @@ end
 -- Catppuccin publishes its own palettes; everything else is generated into
 -- nvim/lua/themes/<slug>.lua by sh/gen-theme.py, with the same keys.
 --
--- Not keyed off vim.o.background: no-clown-fiesta's light variant leaves that
--- on "dark" (see M.apply below), which is exactly what sends plugins that read
--- it -- lualine's "auto" theme above all -- to their dark defaults over a light
--- colourscheme. The cache is the source of truth here, as everywhere else.
+-- Not keyed off vim.o.background: a colourscheme is free to leave that wrong,
+-- and one this profile used to carry did (no-clown-fiesta's light variant
+-- applied light colours with 'background' still on "dark"). Anything reading
+-- the flag then picks its dark defaults over a light page -- lualine's "auto"
+-- theme above all. The cache is the source of truth here, as everywhere else.
 function M.palette()
   local slug = M.slug()
   if slug == "latte" or slug == "mocha" then
@@ -169,12 +170,13 @@ function M.apply()
   -- which is always installed.
   local ok = pcall(vim.cmd.colorscheme, scheme)
   if not ok then pcall(vim.cmd.colorscheme, "catppuccin") end
-  -- Deliberately NOT re-asserted afterwards. no-clown-fiesta's light variant
-  -- (upstream calls it "under development") leaves 'background' on "dark" even
-  -- though it applies light colours -- but setting 'background' after a
-  -- colorscheme makes Neovim reset every highlight group to its built-in
-  -- default, which throws the theme away entirely. Wrong flag, right colours
-  -- beats right flag, no theme.
+  -- Set before the colorscheme and deliberately not re-asserted after: setting
+  -- 'background' once a colorscheme is loaded makes Neovim reset every
+  -- highlight group to its built-in default, throwing the theme away. So a
+  -- theme that ignores the flag (no-clown-fiesta's light variant, which this
+  -- profile used to carry, left it on "dark" while painting light) cannot be
+  -- corrected -- which is why nothing here is allowed to trust it. Kanso reads
+  -- it properly; the next theme might not.
   --
   -- The two bars are drawn on the mantle (M.lualine_theme, M.bufferline), but
   -- the cells neither plugin paints -- the stretch between lualine's middle
