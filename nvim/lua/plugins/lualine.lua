@@ -107,7 +107,8 @@ return {
 		-- from trouble's LSP symbols.
 		-- One color per kind of item, the same in the tmux bar: branch mauve,
 		-- folder peach, position teal. Only the mode bubble follows the mode.
-		local C = require("catppuccin.palettes").get_palette("mocha")
+		-- No argument: the palette of whichever flavour is active (Latte or Mocha).
+		local C = require("catppuccin.palettes").get_palette()
 		local branch_color = { fg = C.mauve }
 		local folder_color = { fg = C.peach }
 		local end_color = { fg = C.crust, bg = C.teal, gui = "bold" }

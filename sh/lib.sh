@@ -72,6 +72,48 @@ else
   GHOSTTY_PLATFORM="ghostty/linux.conf"
 fi
 
+# ------------------------------------------------------------------ theme ---
+# Catppuccin Latte (light) or Mocha (dark). The OS appearance is the single
+# source of truth: Ghostty follows it natively (the light:/dark: theme line in
+# ghostty/config) with no reload, so keying everything else off the same signal
+# means a newly opened window is always already correct. sh/theme.sh flips it.
+#
+# THEME_CACHE is what interactive shells read, so a prompt never has to fork
+# `defaults` (~20ms a shell on macOS). sh/theme.sh writes it; zsh/theme.zsh
+# falls back to detect_appearance when it is missing or stale.
+THEME_CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/dev-setup/flavour"
+
+# Ask the OS: echoes "light" or "dark". Never fails; anything unknown is dark.
+detect_appearance() {
+  local style scheme gtk
+  if is_macos; then
+    # The key does not exist at all in Light mode, hence the 2>/dev/null.
+    style="$(defaults read -g AppleInterfaceStyle 2>/dev/null || true)"
+    if [[ "$style" == Dark ]]; then echo dark; else echo light; fi
+    return 0
+  fi
+  if command -v gsettings >/dev/null 2>&1; then
+    scheme="$(gsettings get org.gnome.desktop.interface color-scheme 2>/dev/null || true)"
+    case "$scheme" in
+      *prefer-light*) echo light; return 0 ;;
+      *prefer-dark*)  echo dark;  return 0 ;;
+    esac
+    # "default" leaves it to the GTK theme, so read that instead (Mint).
+    # gsettings quotes its output, and an unset theme comes back as '' -- strip
+    # the quotes so that reads as empty and falls through to the default below.
+    gtk="$(gsettings get org.gnome.desktop.interface gtk-theme 2>/dev/null || true)"
+    gtk="${gtk//\'/}"
+    case "$gtk" in
+      *[Dd]ark*) echo dark; return 0 ;;
+      ?*)        echo light; return 0 ;;
+    esac
+  fi
+  echo dark
+}
+
+# light -> latte, dark -> mocha. The only place that mapping is written down.
+flavour_for() { case "$1" in light) echo latte ;; *) echo mocha ;; esac; }
+
 # Formulae for this OS: the shared list, plus the macOS-only ones on a Mac.
 BREW_FORMULAE=("${FORMULAE[@]}")
 if is_macos; then BREW_FORMULAE+=("${MACOS_FORMULAE[@]}"); fi
@@ -103,7 +145,10 @@ NODE_VERSION="24"
 LINKS=(
   "zsh/zshrc|$HOME/.zshrc"
   "zsh/p10k.zsh|$HOME/.p10k.zsh"
-  "zsh/catppuccin-syntax-highlighting.zsh|$HOME/.config/zsh/catppuccin-syntax-highlighting.zsh"
+  # Flavour-aware: zsh/theme.zsh decides which of these the zshrc sources.
+  "zsh/theme.zsh|$HOME/.config/zsh/theme.zsh"
+  "zsh/catppuccin-syntax-highlighting-mocha.zsh|$HOME/.config/zsh/catppuccin-syntax-highlighting-mocha.zsh"
+  "zsh/catppuccin-syntax-highlighting-latte.zsh|$HOME/.config/zsh/catppuccin-syntax-highlighting-latte.zsh"
   "zsh/zsh.d/brew.zsh|$HOME/.zsh.d/brew.zsh"
   "zsh/zsh.d/history.zsh|$HOME/.zsh.d/history.zsh"
   "zsh/zsh.d/path.zsh|$HOME/.zsh.d/path.zsh"
@@ -111,6 +156,7 @@ LINKS=(
   "zsh/zsh.d/dev-setup.zsh|$HOME/.zsh.d/dev-setup.zsh"
   "zsh/zsh.d/nvm.zsh|$HOME/.zsh.d/nvm.zsh"
   "zsh/zsh.d/k9s.zsh|$HOME/.zsh.d/k9s.zsh"
+  "zsh/zsh.d/lazygit.zsh|$HOME/.zsh.d/lazygit.zsh"
   "zsh/zsh.d/zoxide.zsh|$HOME/.zsh.d/zoxide.zsh"
   "zsh/zsh.d/sesh.zsh|$HOME/.zsh.d/sesh.zsh"
   "ghostty/config|$HOME/.config/ghostty/config"
@@ -123,6 +169,7 @@ LINKS=(
   # which would dirty the tree on every machine and leak cluster names.
   # zsh/zsh.d/k9s.zsh points K9S_SKIN at this file instead.
   "k9s/skins/catppuccin-mocha.yaml|$K9S_CONFIG_DIR/skins/catppuccin-mocha.yaml"
+  "k9s/skins/catppuccin-latte.yaml|$K9S_CONFIG_DIR/skins/catppuccin-latte.yaml"
   "opencode/tui.json|$HOME/.config/opencode/tui.json"
   "sesh/sesh.toml|$HOME/.config/sesh/sesh.toml"
 )

@@ -1,6 +1,6 @@
 # dev-setup
 
-Ghostty, Neovim, oh-my-zsh + Powerlevel10k, and tmux, all in Catppuccin Mocha, set up the same way on every machine: **macOS**, **Ubuntu** and **Linux Mint** (desktop).
+Ghostty, Neovim, oh-my-zsh + Powerlevel10k, and tmux, all in Catppuccin — Mocha in dark mode, Latte in light (`make light` / `make dark`) — set up the same way on every machine: **macOS**, **Ubuntu** and **Linux Mint** (desktop).
 
 ## New Mac
 
@@ -77,6 +77,8 @@ Configs are symlinked, so editing `~/.zshrc`, `~/.config/nvim/...` and so on edi
 - **New zsh plugin:** add it to `plugins=(...)` in `zsh/zshrc`. If it doesn't ship with oh-my-zsh, also add `"name|git-url"` to `OMZ_PLUGINS` in `sh/lib.sh`. Step 07 stops with an error if any plugin in the zshrc isn't installed.
 - **Newer versions:** `make upgrade` (brew + Neovim plugins, which rewrites `lazy-lock.json`), then `make push`.
 - **Check this machine:** `make status`.
+- **Light or dark:** `make light` / `make dark` (`make theme` prints the current one). It flips the OS appearance,
+  which Ghostty follows straight away; Neovim switches when you focus it, and shells already open need `exec zsh`.
 
 ## Version control
 
@@ -122,13 +124,15 @@ sh/
   backup.sh               snapshot all configs
   status.sh               uncommitted changes + unlinked configs
   brew-diff.sh            brew packages missing from sh/packages.sh
+  theme.sh [light|dark]   switch flavour; no argument prints the current one   (make light / make dark)
   remove-iterm2.sh        macOS: move iTerm2 into the backup   (make remove-iterm2)
 ghostty/config            → ~/.config/ghostty/config
 nvim/                     → ~/.config/nvim
 zsh/zshrc                 → ~/.zshrc
-zsh/p10k.zsh              → ~/.p10k.zsh   (loads p10k-classic.zsh or p10k-rainbow.zsh, Catppuccin Mocha)
+zsh/p10k.zsh              → ~/.p10k.zsh   (loads the flavour palette, then p10k-classic.zsh or p10k-rainbow.zsh)
+zsh/theme.zsh             → ~/.config/zsh/theme.zsh   (light or dark, read by everything below)
 zsh/zsh.d/*.zsh           → ~/.zsh.d/
-zsh/catppuccin-syntax-highlighting.zsh → ~/.config/zsh/
+zsh/catppuccin-syntax-highlighting-{mocha,latte}.zsh → ~/.config/zsh/
 tmux/tmux.conf            → ~/.tmux.conf
 lazygit/config.yml        → ~/Library/Application Support/lazygit/config.yml
 k9s/skins/*.yaml          → ~/Library/Application Support/k9s/skins/  (Linux: ~/.config/k9s/)

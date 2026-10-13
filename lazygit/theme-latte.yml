@@ -1,0 +1,37 @@
+# Catppuccin Latte overlay for lazygit, layered over config.yml (which holds
+# the Mocha theme) when the OS is in light mode. zsh/zsh.d/lazygit.zsh adds
+# this file to $LG_CONFIG_FILE; lazygit merges its configs in order, so every
+# key here wins over the same key in config.yml.
+#
+# Keep the keys in step with config.yml: a colour only listed there would stay
+# Mocha in light mode.
+gui:
+  theme:
+    activeBorderColor:
+      - '#1e66f5'
+      - bold
+    inactiveBorderColor:
+      - '#6c6f85'
+    searchingActiveBorderColor:
+      - '#df8e1d'
+    optionsTextColor:
+      - '#1e66f5'
+    selectedLineBgColor:
+      - '#ccd0da'
+    inactiveViewSelectedLineBgColor:
+      - '#9ca0b0'
+    cherryPickedCommitFgColor:
+      - '#1e66f5'
+    cherryPickedCommitBgColor:
+      - '#bcc0cc'
+    markedBaseCommitFgColor:
+      - '#1e66f5'
+    markedBaseCommitBgColor:
+      - '#df8e1d'
+    unstagedChangesColor:
+      - '#d20f39'
+    defaultFgColor:
+      - '#4c4f69'
+
+  authorColors:
+    '*': '#7287fd'

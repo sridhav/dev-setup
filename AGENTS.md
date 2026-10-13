@@ -4,7 +4,7 @@ Guide for AI agents working in this repo. Read it before changing anything.
 
 ## What this repo is
 
-One dev setup shared across all of the owner's machines (**macOS**, **Ubuntu**, **Linux Mint** desktops): Ghostty, Neovim, oh-my-zsh + Powerlevel10k, and tmux, all themed **Catppuccin Mocha**. Each machine clones this repo and runs `make install`. The configs are **symlinked** into `~`, so editing `~/.zshrc`, `~/.config/nvim/…` and so on edits this repo directly.
+One dev setup shared across all of the owner's machines (**macOS**, **Ubuntu**, **Linux Mint** desktops): Ghostty, Neovim, oh-my-zsh + Powerlevel10k, and tmux, all themed **Catppuccin** — Mocha in dark mode, Latte in light, switched with `make light` / `make dark`. Each machine clones this repo and runs `make install`. The configs are **symlinked** into `~`, so editing `~/.zshrc`, `~/.config/nvim/…` and so on edits this repo directly.
 
 Changes reach the other machines by git: `make push` on one, `make update` on each of the others.
 
@@ -13,27 +13,30 @@ Changes reach the other machines by git: `make push` on one, `make update` on ea
 | Path | Purpose |
 | --- | --- |
 | `sh/packages.sh` | The only package lists: `FORMULAE` (Homebrew, macOS + Linux), `MACOS_FORMULAE`, `CASKS` (macOS apps/fonts), `APT_PACKAGES` (Ubuntu/Mint basics). |
-| `sh/lib.sh` | Shared settings (`OMZ_PLUGINS`, `OMZ_THEMES`, `LINKS`, `BACKUP_PATHS`, `NVM_VERSION`, `NODE_VERSION`), OS detection and per-OS paths (`OS`, `is_macos`, `is_linux`, `FONT_DIR`, `JETBRAINS_FONT`, `LAZYGIT_CONFIG`, `GHOSTTY_PLATFORM`, `BREW_FORMULAE`), and helpers (`step`, `ok`, `skip`, `info`, `warn`, `run`, `as_root`, `apt_installed`, `set_aside`, `git_clone`). |
+| `sh/lib.sh` | Shared settings (`OMZ_PLUGINS`, `OMZ_THEMES`, `LINKS`, `BACKUP_PATHS`, `NVM_VERSION`, `NODE_VERSION`), OS detection and per-OS paths (`OS`, `is_macos`, `is_linux`, `FONT_DIR`, `JETBRAINS_FONT`, `LAZYGIT_CONFIG`, `GHOSTTY_PLATFORM`, `BREW_FORMULAE`), theme detection (`THEME_CACHE`, `detect_appearance`, `flavour_for`), and helpers (`step`, `ok`, `skip`, `info`, `warn`, `run`, `as_root`, `apt_installed`, `set_aside`, `git_clone`). |
 | `sh/install.sh` | Runs `sh/steps/[0-9][0-9]-*.sh` in filename order. Flags: `--dry-run`, `--force`. |
 | `sh/steps/NN-name.sh` | One install step per file. Each one can run on its own. |
 | `sh/{update,plugins,upgrade,push,backup,status,brew-diff}.sh` | The day-to-day commands. |
 | `sh/remove-iterm2.sh` | `make remove-iterm2`. Deliberately **not** an install step: it removes an app the setup never installed, so it only runs when asked. Moves iTerm2 into `~/.dev-setup-backup/<timestamp>/removed/`, never deletes. |
+| `sh/theme.sh` | `make light` / `make dark` / `make theme`. Flips the OS appearance (macOS `osascript`, Linux `gsettings`) and caches the mode in `~/.cache/dev-setup/flavour`, then re-sources tmux. Ghostty follows the OS with no reload, which is why the OS is the signal: Ghostty 1.3 has no CLI reload, only the `reload_config` keybind. |
+| `zsh/theme.zsh` → `~/.config/zsh/theme.zsh` | Sets `DEV_SETUP_THEME` (light/dark), `DEV_SETUP_FLAVOUR` (latte/mocha) and `DEV_SETUP_DIR` from that cache. Sourced near the top of the zshrc, **not** from `~/.zsh.d`, because the flavour has to be known before oh-my-zsh loads. Must stay silent (instant prompt). |
+| `zsh/p10k-palette-{mocha,latte}.zsh` | The `P10K_COLOR_*` palette, sourced by `zsh/p10k.zsh` before the style file. The style files name colors only through these variables, so one palette swap recolors both `classic` and `rainbow`. |
 | `sh/{version,history,rollback,release}.sh` | Version control: git is the history and GitHub `origin/main` is the latest. `update.sh` refuses to run on a dirty tree (except when `nvim/lazy-lock.json` is the only change: that is local plugin drift, so it resets it) and only fast-forwards. After `make upgrade`, `make push` before `make update`. |
 | `zsh/zsh.d/dev-setup.zsh` | Daily background `git fetch`; shows "N update(s) available" after the first prompt. Must never print during shell startup (Powerlevel10k instant prompt) and must never apply updates itself. |
 | `Makefile` | One-line wrappers around `sh/`. No logic lives here. |
 | `zsh/zshrc` → `~/.zshrc` | `plugins=(...)` here is the **source of truth** for zsh plugins. |
-| `zsh/p10k.zsh` → `~/.p10k.zsh` | Prompt loader: sources `zsh/p10k-<theme>.zsh` (`classic` or `rainbow`, both Catppuccin Mocha) for the `zstyle ':catppuccin:p10k' theme` in the zshrc. |
+| `zsh/p10k.zsh` → `~/.p10k.zsh` | Prompt loader: sources the flavour palette, then `zsh/p10k-<theme>.zsh` (`classic` or `rainbow`) for the `zstyle ':catppuccin:p10k' theme` in the zshrc. |
 | `zsh/zsh.d/*.zsh` → `~/.zsh.d/` | Shell snippets, sourced by the zshrc via a glob. |
-| `zsh/catppuccin-syntax-highlighting.zsh` → `~/.config/zsh/` | zsh-syntax-highlighting colors. Must load *before* oh-my-zsh. |
+| `zsh/catppuccin-syntax-highlighting-{mocha,latte}.zsh` → `~/.config/zsh/` | zsh-syntax-highlighting colors, one file per flavour; the zshrc sources the one `$DEV_SETUP_FLAVOUR` names. Must load *before* oh-my-zsh. Keep the two in step. |
 | `ghostty/config` → `~/.config/ghostty/config` | Ghostty settings shared by all OSes. Includes `platform.conf` at the end. |
 | `ghostty/{macos,linux}.conf` → `~/.config/ghostty/platform.conf` | Per-OS keybindings and window settings. Keep both files' actions in sync; on Linux Cmd becomes Ctrl+Shift and Cmd+Shift becomes Ctrl+Shift+Alt. |
 | (Ghostty font) | **Requires the JetBrainsMono Nerd Font Mono font** (macOS: cask `font-jetbrains-mono-nerd-font`; Linux: Nerd Fonts release → `~/.local/share/fonts`); step 04 fails if it's missing. Check with `ghostty +validate-config --config-file=ghostty/config`. |
 | `nvim/` → `~/.config/nvim` | Neovim (lazy.nvim). `nvim/lazy-lock.json` pins plugin versions for every machine. `nvim/CHEATSHEET.md` (opened by `<leader>k`) is the **one cheat sheet for every key**: Neovim, tmux and Ghostty (Mac and Linux columns). Update it whenever you change a keymap in any of them. One plugin per file in `nvim/lua/plugins/`; settings, keymaps and autocmds not tied to a plugin go in `nvim/lua/config/{options,keymaps,autocmds}.lua`. External tools the plugins need (`lazygit`, `ripgrep`, `fd`, `tree-sitter-cli`) go in `sh/packages.sh`; linters, formatters, LSP servers and debug adapters go in the mason lists in `nvim/lua/plugins/lsp.lua`. |
 | `tmux/tmux.conf` → `~/.tmux.conf` | tmux + tpm. Its `set -g @plugin` lines are the source of truth for tmux plugins; step 11 installs any that are missing. |
-| `lazygit/config.yml` → `$LAZYGIT_CONFIG` (macOS `~/Library/Application Support/lazygit/`, Linux `~/.config/lazygit/`) | lazygit, Catppuccin Mocha (blue accent). Used by Neovim's `<leader>gg`. |
-| `k9s/skins/catppuccin-mocha.yaml` → `$K9S_CONFIG_DIR/skins/` (macOS `~/Library/Application Support/k9s/`, Linux `~/.config/k9s/`) | k9s skin, Catppuccin Mocha. Only the skin is tracked; `zsh/zsh.d/k9s.zsh` sets `K9S_SKIN` to select it, which is why no k9s config file is needed. Do **not** track the rest of that directory: k9s rewrites `config.yaml` itself (so a symlinked tracked file would leave every machine dirty, and `update.sh` refuses to run on a dirty tree), and `clusters/` holds one directory per cluster **named after its full ARN**. Kubeconfig is never managed: k9s reads `$KUBECONFIG` or `~/.kube/config`. |
+| `lazygit/config.yml` → `$LAZYGIT_CONFIG` (macOS `~/Library/Application Support/lazygit/`, Linux `~/.config/lazygit/`) | lazygit, Catppuccin Mocha (blue accent) — the dark flavour, and the fallback when `$LG_CONFIG_FILE` is unset. `lazygit/theme-latte.yml` is layered over it in light mode by `zsh/zsh.d/lazygit.zsh`; keep the two files' keys in step. Used by Neovim's `<leader>gg`. |
+| `k9s/skins/catppuccin-{mocha,latte}.yaml` → `$K9S_CONFIG_DIR/skins/` (macOS `~/Library/Application Support/k9s/`, Linux `~/.config/k9s/`) | k9s skins, one per Catppuccin flavour. Only the skins are tracked; `zsh/zsh.d/k9s.zsh` sets `K9S_SKIN` to `catppuccin-$DEV_SETUP_FLAVOUR`, which is why no k9s config file is needed. Do **not** track the rest of that directory: k9s rewrites `config.yaml` itself (so a symlinked tracked file would leave every machine dirty, and `update.sh` refuses to run on a dirty tree), and `clusters/` holds one directory per cluster **named after its full ARN**. Kubeconfig is never managed: k9s reads `$KUBECONFIG` or `~/.kube/config`. |
 | `sesh/sesh.toml` → `~/.config/sesh/sesh.toml` | sesh, the tmux session picker (`Ctrl-s o`, bound in `tmux/tmux.conf`), built-in picker so no fzf. Needs zoxide (`zsh/zsh.d/zoxide.zsh`) for its folder list. `zsh/zsh.d/sesh.zsh` adds Alt-s in the shell. Sessions opened through sesh are named after the git repo, plain `tmux` ones keep numbers; either way the tmux bar shows a session *number* (ID + 1), which the owner prefers over names. Machine-specific project paths don't belong here. |
-| `opencode/tui.json` → `~/.config/opencode/tui.json` | opencode TUI theme (`catppuccin` = Mocha). Do not put `opencode.json` here: providers and MCP tokens stay machine-only at `~/.config/opencode/opencode.json` (untracked). |
+| `opencode/tui.json` → `~/.config/opencode/tui.json` | opencode TUI theme: `catppuccin` with `"mode": "system"`, so opencode follows the terminal itself and this file never has to change per flavour. Do not put `opencode.json` here: providers and MCP tokens stay machine-only at `~/.config/opencode/opencode.json` (untracked). |
 
 ## Rules (don't break these)
 
@@ -51,7 +54,7 @@ Changes reach the other machines by git: `make push` on one, `make update` on ea
    parse_flags "$@"
    ```
    (Top-level scripts in `sh/` use `/lib.sh` instead of `/../lib.sh`.)
-8. **Catppuccin Mocha everywhere.** Any new tool gets Mocha colors (the official `catppuccin/<tool>` port, if one exists).
+8. **Catppuccin everywhere, both flavours.** Mocha is dark, Latte is light, and `make light` / `make dark` (`sh/theme.sh`) switch between them. Any new tool gets the official `catppuccin/<tool>` port, if one exists, in **both** flavours — a tool that only has Mocha colors will stay dark in light mode. The OS appearance is the single source of truth (Ghostty follows it natively; nothing else may rewrite a tracked config to switch).
 9. **Single source of truth.** Packages only in `sh/packages.sh`. Plugins, links and versions only in `sh/lib.sh`. Don't copy these lists into the Makefile, README, or other scripts; read them from those files.
 
 ## Common tasks
@@ -87,9 +90,15 @@ Changes reach the other machines by git: `make push` on one, `make update` on ea
 - Use `skip`/`run`/`ok`, and call `set_aside <path>` before the existence check if `--force` should reinstall it.
 - Update the step list in `README.md`.
 
+**Add a tool that has colors**
+- Give it both flavours. If it takes a skin/theme *name* from the environment, key that off `$DEV_SETUP_FLAVOUR` (see `zsh/zsh.d/k9s.zsh`).
+- If it only takes config *files*, ship the dark theme in the tracked config and layer the light one over it (`lazygit/theme-latte.yml` via `$LG_CONFIG_FILE`, see `zsh/zsh.d/lazygit.zsh`). Never have `theme.sh` rewrite a tracked file: every machine's tree would go dirty and `make update` refuses to run on a dirty tree.
+- If it can follow the terminal or the OS by itself, prefer that and track one config (`opencode/tui.json` uses `"mode": "system"`).
+- Anything long-running needs a way to pick the change up: tmux is re-sourced by `theme.sh`, Neovim re-checks on `FocusGained`.
+
 **Change the prompt**
 - Switch style with `zstyle ':catppuccin:p10k' 'theme'` in `zsh/zshrc` (`classic` is active; `rainbow` is kept). Edit `zsh/p10k-classic.zsh` / `zsh/p10k-rainbow.zsh` for the prompt itself.
-- Never run `p10k configure`: it overwrites `~/.p10k.zsh` (the loader) with stock 256-color output. If a new wizard layout is wanted, save it as `zsh/p10k-<name>.zsh` and swap every color for the `P10K_COLOR_*` Mocha palette.
+- Never run `p10k configure`: it overwrites `~/.p10k.zsh` (the loader) with stock 256-color output. If a new wizard layout is wanted, save it as `zsh/p10k-<name>.zsh` and swap every color for a `P10K_COLOR_*` name, never a hex, so both flavours keep working.
 - The `zstyle ':catppuccin:p10k'` lines in `zsh/zshrc` must stay *above* `source $ZSH/oh-my-zsh.sh`, because the plugin reads them while oh-my-zsh loads.
 
 ## Verify before committing
@@ -113,7 +122,20 @@ T=$(mktemp -d) && mkdir -p "$T/.config/zsh" "$T/.zsh.d" \
   && HOME=$T ZDOTDIR=$T zsh -i -c 'echo ok' ; rm -rf "$T"
 ```
 
-Expect `ok` with no errors or "plugin not found" warnings.
+Expect `ok` with no errors or "plugin not found" warnings. Add `DEV_SETUP_FLAVOUR=latte` to the final `zsh` for the light flavour, and check both.
+
+If you changed anything themed, check both flavours load and that dark is unchanged:
+
+```bash
+sh/theme.sh                                     # current mode
+ghostty +validate-config --config-file=ghostty/config
+for m in dark light; do                         # tmux, on a throwaway socket
+  T=$(mktemp -d)/c; mkdir -p "$T/dev-setup"; echo $m > "$T/dev-setup/flavour"
+  XDG_CACHE_HOME=$T tmux -L themetest -f tmux/tmux.conf new-session -d \
+    && XDG_CACHE_HOME=$T tmux -L themetest show -gv @catppuccin_flavor \
+    && XDG_CACHE_HOME=$T tmux -L themetest kill-server
+done
+```
 
 If you changed anything Linux-related (a step's `is_linux` branch, `APT_PACKAGES`, `ghostty/linux.conf`), test it in an `ubuntu:24.04` container as a normal user with passwordless sudo: `sh/install.sh --dry-run`, then a real `make install` twice (the second run must change nothing, and `git status` must stay clean). From a Mac with colima:
 - Reach the daemon with `DOCKER_HOST=unix://$HOME/.colima/<profile>/docker.sock` and an empty `DOCKER_CONFIG` dir if the credential helper fails.

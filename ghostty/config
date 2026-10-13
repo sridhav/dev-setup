@@ -16,8 +16,12 @@
   adjust-cell-height = 2
 
   # --- Theme and Colors ---
-  # Catppuccin with automatic light/dark switching
-  theme = Catppuccin Mocha
+  # Catppuccin, following the OS appearance with no reload: Ghostty applies the
+  # matching side the moment the system flips, which is what `make light` /
+  # `make dark` (sh/theme.sh) do. Ghostty 1.3 has no CLI reload — reload_config
+  # is only a keybind — so this native form is the only way to switch it from a
+  # script. Everything else in the setup keys off the same OS signal.
+  theme = light:Catppuccin Latte,dark:Catppuccin Mocha
 
   # --- Window and Appearance ---
   background-opacity = 1.0

@@ -1,4 +1,4 @@
-# k9s: Catppuccin Mocha.
+# k9s: Catppuccin, Latte or Mocha following $DEV_SETUP_FLAVOUR (zsh/theme.zsh).
 #
 # K9S_SKIN picks the skin without k9s's own config file being involved, so the
 # repo only has to track skins/, which k9s never writes.
@@ -9,4 +9,4 @@
 # directory per cluster named after its full ARN.
 #
 # Kubeconfig is untouched on purpose: k9s reads $KUBECONFIG or ~/.kube/config.
-export K9S_SKIN="catppuccin-mocha"
+export K9S_SKIN="catppuccin-${DEV_SETUP_FLAVOUR:-mocha}"
