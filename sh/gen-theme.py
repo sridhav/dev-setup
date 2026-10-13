@@ -109,6 +109,24 @@ def palette(name):
       "ROSEWATER": mix(P[1], fg, 0.65), "LAVENDER": mix(P[4], P[5], 0.40),
       "SAPPHIRE": mix(P[4], P[6], 0.35), "SKY": mix(P[6], P[4], 0.25),
     }
+
+    # On a light theme the accents arrive as mid-tone colours meant to be read
+    # against a near-white page -- but the prompt and the tmux bubbles put them
+    # on SURFACE0, a mid grey, where mid-on-mid is no contrast at all. (Left
+    # alone, No Clown Fiesta Light gave 1.5:1 for the clock and 1.7:1 for the
+    # directory: invisible. Catppuccin Latte has the same weakness at ~2.3:1;
+    # Mocha escapes it only because its accents are light on a dark surface.)
+    #
+    # So darken each accent until it clears 4.5:1 against SURFACE0. It costs
+    # some fidelity to the upstream theme and the result is a deeper, more
+    # saturated-looking set -- which is how light themes are supposed to work,
+    # and the trade is worth making for legibility.
+    if light:
+        need = (lum(c["SURFACE0"]) + 0.05) / 4.5 - 0.05
+        for k in ("BLUE","LAVENDER","SAPPHIRE","SKY","TEAL","GREEN","YELLOW","PEACH",
+                  "RED","MAROON","PINK","FLAMINGO","ROSEWATER","MAUVE"):
+            if lum(c[k]) > need:
+                c[k] = at_lum(c[k], max(need, 0.02))
     return c, P, bg, fg
 
 ORDER = ["BASE","MANTLE","CRUST","TEXT","SUBTEXT1","SUBTEXT0","OVERLAY2","OVERLAY1","OVERLAY0",

@@ -6,51 +6,51 @@ k9s:
   body:
     fgColor: '#151515'
     bgColor: '#e1e1e1'
-    logoColor: '#aa759f'
+    logoColor: '#664660'
   prompt:
     fgColor: '#151515'
     bgColor: '#dbdbdb'
-    suggestColor: '#8ba1bf'
+    suggestColor: '#465161'
   help:
     fgColor: '#151515'
     bgColor: '#e1e1e1'
-    sectionColor: '#677940'
-    keyColor: '#8ba1bf'
-    numKeyColor: '#925d47'
+    sectionColor: '#48552d'
+    keyColor: '#465161'
+    numKeyColor: '#6f4736'
   frame:
     title:
-      fgColor: '#3e5f66'
+      fgColor: '#38555c'
       bgColor: '#e1e1e1'
-      highlightColor: '#a06983'
-      counterColor: '#b89058'
-      filterColor: '#677940'
+      highlightColor: '#6a4657'
+      counterColor: '#624d2f'
+      filterColor: '#48552d'
     border:
-      fgColor: '#aa759f'
-      focusColor: '#978fb2'
+      fgColor: '#664660'
+      focusColor: '#524e60'
     menu:
       fgColor: '#151515'
-      keyColor: '#a06983'
-      numKeyColor: '#a06983'
+      keyColor: '#6a4657'
+      numKeyColor: '#6a4657'
     crumbs:
       fgColor: '#d7d7d7'
       bgColor: '#b4b4b4'
-      activeColor: '#a2724e'
+      activeColor: '#684a32'
     status:
-      newColor: '#3e5f66'
-      modifyColor: '#8ba1bf'
-      addColor: '#677940'
-      errorColor: '#874e42'
-      highlightColor: '#a2724e'
-      killColor: '#925d47'
+      newColor: '#38555c'
+      modifyColor: '#465161'
+      addColor: '#48552d'
+      errorColor: '#754439'
+      highlightColor: '#684a32'
+      killColor: '#6f4736'
       completedColor: '#858585'
   info:
-    fgColor: '#a2724e'
+    fgColor: '#684a32'
     sectionColor: '#151515'
   views:
     charts:
       bgColor: '#e1e1e1'
-      defaultDialColors: ['#8ba1bf','#874e42']
-      defaultChartColors: ['#8ba1bf','#874e42']
+      defaultDialColors: ['#465161','#754439']
+      defaultChartColors: ['#465161','#754439']
     table:
       fgColor: '#151515'
       bgColor: '#e1e1e1'
@@ -59,14 +59,14 @@ k9s:
       header:
         fgColor: '#151515'
         bgColor: '#e1e1e1'
-        sorterColor: '#3e5f66'
+        sorterColor: '#38555c'
     xray:
       fgColor: '#151515'
       bgColor: '#e1e1e1'
       cursorColor: '#b4b4b4'
-      graphicColor: '#8ba1bf'
+      graphicColor: '#465161'
     yaml:
-      keyColor: '#8ba1bf'
+      keyColor: '#465161'
       colonColor: '#858585'
       valueColor: '#151515'
     logs:

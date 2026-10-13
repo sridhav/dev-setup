@@ -54,6 +54,20 @@ export DEV_SETUP_DIR="${${${(%):-%x}:A:h}:h}"
     DEV_SETUP_SYNTAX="catppuccin-syntax-highlighting-$DEV_SETUP_SLUG.zsh"
     DEV_SETUP_K9S_SKIN="catppuccin-$DEV_SETUP_SLUG"
   fi
+  # Which Powerlevel10k style suits the palette.
+  #
+  # "rainbow" gives every segment its own coloured background with light text
+  # on top, which needs saturated accents to read -- Catppuccin has them. The
+  # scleral profile deliberately does not: No Clown Fiesta is the most
+  # desaturated palette there is, and as rainbow backgrounds its mid-tones come
+  # out murky with barely-legible text. "classic" puts the accents on as *text*
+  # over one surface instead, which is exactly what a quiet palette wants.
+  if [[ "$pf" == scleral ]]; then
+    export DEV_SETUP_P10K_STYLE=classic
+  else
+    export DEV_SETUP_P10K_STYLE=rainbow
+  fi
+
   export DEV_SETUP_SLUG DEV_SETUP_SYNTAX DEV_SETUP_K9S_SKIN
 }
 

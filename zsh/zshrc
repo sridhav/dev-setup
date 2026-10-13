@@ -46,7 +46,9 @@ unset _dev_syntax
 
 # The catppuccin-powerlevel10k-themes plugin reads these while oh-my-zsh loads,
 # so they must be set before the source line below.
-zstyle ':catppuccin:p10k' 'theme' 'rainbow'   # or 'classic' (zsh/p10k-<theme>.zsh)
+# Style follows the profile (zsh/theme.zsh): rainbow for Catppuccin's saturated
+# accents, classic for the quieter scleral palette. Override by hardcoding one.
+zstyle ':catppuccin:p10k' 'theme' "${DEV_SETUP_P10K_STYLE:-rainbow}"   # rainbow | classic
 zstyle ':catppuccin:p10k' 'flavour' "${DEV_SETUP_FLAVOUR:-mocha}"
 
 source $ZSH/oh-my-zsh.sh
