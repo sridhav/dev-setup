@@ -42,6 +42,33 @@ def rgb(h):
 def mix(a, b, f):
     x, y = rgb(a), rgb(b)
     return hx(tuple(max(0, min(255, round(x[i] + (y[i]-x[i])*f))) for i in range(3)))
+def lum(c):
+    def f(v):
+        v /= 255.0
+        return v/12.92 if v <= 0.03928 else ((v+0.055)/1.055)**2.4
+    r, g, b = rgb(c)
+    return 0.2126*f(r) + 0.7152*f(g) + 0.0722*f(b)
+
+def at_lum(c, target):
+    """The colour c moved toward black or white until it hits `target`
+    luminance, keeping its hue. Blending by a fixed percentage does not work:
+    5% black is a big luminance step on a mid grey and almost none on a
+    near-black, which is what made the generated tmux bar a muddy band on a
+    light theme and invisible on a dark one."""
+    target = max(0.0, min(1.0, target))
+    cur = lum(c)
+    if abs(cur - target) < 1e-4: return c
+    dark = target < cur
+    towards = "#000000" if dark else "#ffffff"
+    lo, hi = 0.0, 1.0
+    for _ in range(30):
+        mid = (lo + hi) / 2
+        # Blending toward black lowers luminance as mid grows, toward white it
+        # raises it -- so which half to keep depends on the direction.
+        if (lum(mix(c, towards, mid)) > target) == dark: lo = mid
+        else: hi = mid
+    return mix(c, towards, (lo + hi) / 2)
+
 def shade(c, f):                      # f<0 darker, f>0 lighter
     return mix(c, "#000000" if f < 0 else "#ffffff", abs(f))
 
@@ -53,13 +80,27 @@ def palette(name):
     for i in P:
         if not P[i].startswith("#"): P[i] = "#" + P[i]
 
-    # greys: mantle/crust always sit a step darker than base; the text and
-    # surface ramps interpolate between foreground and background.
+    # Greys, by target luminance rather than by blend percentage.
+    #
+    # The tmux bar is drawn as: terminal ground (base), a bar band (mantle) and
+    # raised bubbles (surface_0). What makes it read is the *ratio* between
+    # those three, and Catppuccin sets the reference: on Latte the bar sits a
+    # whisker under the ground and the bubbles drop well below it; on Mocha the
+    # bar is invisible against the ground and the bubbles lift slightly. Match
+    # those proportions instead of nudging by a fixed percentage.
+    Lb = lum(bg)
+    light = Lb > 0.4
+    if light:                       # Latte: 0.879 -> 0.815 bar -> 0.632 bubble
+        mant, crus = Lb*0.945, Lb*0.90
+        s0, s1, s2 = Lb*0.72, Lb*0.60, Lb*0.50
+    else:                           # Mocha: 0.0137 -> 0.0085 bar -> 0.0245 bubble
+        mant, crus = Lb*0.62, Lb*0.42
+        s0, s1, s2 = Lb+0.011, Lb+0.024, Lb+0.042
     c = {
-      "BASE": bg, "MANTLE": shade(bg, -0.05), "CRUST": shade(bg, -0.10),
+      "BASE": bg, "MANTLE": at_lum(bg, mant), "CRUST": at_lum(bg, crus),
       "TEXT": fg, "SUBTEXT1": mix(fg, bg, 0.12), "SUBTEXT0": mix(fg, bg, 0.22),
       "OVERLAY2": mix(fg, bg, 0.35), "OVERLAY1": mix(fg, bg, 0.45), "OVERLAY0": mix(fg, bg, 0.55),
-      "SURFACE2": mix(fg, bg, 0.68), "SURFACE1": mix(fg, bg, 0.78), "SURFACE0": mix(fg, bg, 0.88),
+      "SURFACE2": at_lum(bg, s2), "SURFACE1": at_lum(bg, s1), "SURFACE0": at_lum(bg, s0),
       # accents straight off ANSI where one exists
       "RED": P[1], "GREEN": P[2], "YELLOW": P[3], "BLUE": P[4], "MAUVE": P[5], "TEAL": P[6],
       # and blended for the hues ANSI has no slot for

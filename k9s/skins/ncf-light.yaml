@@ -9,7 +9,7 @@ k9s:
     logoColor: '#aa759f'
   prompt:
     fgColor: '#151515'
-    bgColor: '#d6d6d6'
+    bgColor: '#dbdbdb'
     suggestColor: '#8ba1bf'
   help:
     fgColor: '#151515'
@@ -32,7 +32,7 @@ k9s:
       keyColor: '#a06983'
       numKeyColor: '#a06983'
     crumbs:
-      fgColor: '#cacaca'
+      fgColor: '#d7d7d7'
       bgColor: '#b4b4b4'
       activeColor: '#a2724e'
     status:
@@ -54,7 +54,7 @@ k9s:
     table:
       fgColor: '#151515'
       bgColor: '#e1e1e1'
-      cursorFgColor: '#cacaca'
+      cursorFgColor: '#d7d7d7'
       cursorBgColor: '#b4b4b4'
       header:
         fgColor: '#151515'

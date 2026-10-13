@@ -95,6 +95,47 @@ else
   fi
 fi
 
+# --- 2c. Claude Code --------------------------------------------------------
+# Claude Code keeps its theme in ~/.claude.json (what /config writes). With no
+# theme set it defaults to dark, which is why its input box stayed black on a
+# light terminal. The file is Claude's own state and holds a lot besides the
+# theme, so it is rewritten atomically and every other key is preserved.
+#
+# opencode needs nothing: opencode/tui.json sets "mode": "system", which the
+# docs describe as following the terminal, and the machine-local opencode.json
+# does not override it.
+claude_cfg="$HOME/.claude.json"
+if [[ -r "$claude_cfg" ]] && command -v python3 >/dev/null 2>&1; then
+  if ((DRY_RUN)); then
+    info "would set Claude Code theme to $mode"
+  elif python3 - "$claude_cfg" "$mode" <<'PYEOF'
+import json, os, sys, tempfile
+path, mode = sys.argv[1], sys.argv[2]
+try:
+    with open(path) as fh: cfg = json.load(fh)
+except Exception:
+    sys.exit(1)
+if cfg.get("theme") == mode:
+    sys.exit(2)                      # already right; say nothing
+cfg["theme"] = mode
+d = os.path.dirname(path) or "."
+fd, tmp = tempfile.mkstemp(dir=d, prefix=".claude-theme-")
+try:
+    with os.fdopen(fd, "w") as fh: json.dump(cfg, fh, indent=2)
+    os.replace(tmp, path)            # atomic: never a half-written state file
+except Exception:
+    os.path.exists(tmp) and os.unlink(tmp); sys.exit(1)
+PYEOF
+  then
+    ok "Claude Code theme → $mode (restart Claude Code to see it)"
+  else
+    case $? in
+      2) skip "Claude Code theme is $mode" ;;
+      *) warn "could not set the Claude Code theme in $claude_cfg" ;;
+    esac
+  fi
+fi
+
 # --- 3. what is already running ---------------------------------------------
 # tmux re-reads the flavour when the config is sourced again. Only the default
 # socket: a server started with `tmux -L <name>` has to be reloaded by hand.
@@ -111,5 +152,5 @@ fi
 # was already open. Only the prompt itself is fixed at shell startup.
 info "Ghostty follows the OS straight away. Neovim switches when you focus it."
 info "Already-open Ghostty windows need one reload: Cmd+Shift+, (theme.conf changed)"
-info "k9s and lazygit are right from their next launch, in any shell."
+info "k9s, lazygit and opencode are right from their next launch."
 info "Only the prompt of an already-open shell needs: exec zsh"
