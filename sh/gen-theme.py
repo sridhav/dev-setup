@@ -122,11 +122,24 @@ def palette(name):
     # saturated-looking set -- which is how light themes are supposed to work,
     # and the trade is worth making for legibility.
     if light:
-        need = (lum(c["SURFACE0"]) + 0.05) / 4.5 - 0.05
+        # 6:1, not the 4.5:1 minimum. These are small glyphs -- a branch name,
+        # a clock -- and at 4.5 they technically pass while still reading as
+        # washed out, which is the whole problem this profile exists to avoid.
+        need = (lum(c["SURFACE0"]) + 0.05) / 6.0 - 0.05
         for k in ("BLUE","LAVENDER","SAPPHIRE","SKY","TEAL","GREEN","YELLOW","PEACH",
                   "RED","MAROON","PINK","FLAMINGO","ROSEWATER","MAUVE"):
             if lum(c[k]) > need:
                 c[k] = at_lum(c[k], max(need, 0.02))
+        # The overlay greys are the dim-text ramp -- comments above all, which
+        # sit on the terminal ground, not on a prompt segment, so they are
+        # measured against BASE. Interpolating them toward the background left
+        # overlay0 at 2.1:1 on a light theme: invisible. Pin them to real
+        # ratios, keeping Catppuccin's ordering where overlay0 is the faintest
+        # and overlay2 the strongest.
+        for k, target in (("OVERLAY0", 4.8), ("OVERLAY1", 6.0), ("OVERLAY2", 7.5)):
+            want = (lum(c["BASE"]) + 0.05) / target - 0.05
+            if lum(c[k]) > want:
+                c[k] = at_lum(c[k], max(want, 0.02))
     return c, P, bg, fg
 
 ORDER = ["BASE","MANTLE","CRUST","TEXT","SUBTEXT1","SUBTEXT0","OVERLAY2","OVERLAY1","OVERLAY0",
