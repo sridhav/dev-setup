@@ -38,3 +38,14 @@ export DEV_SETUP_DIR="${${${(%):-%x}:A:h}:h}"
   export DEV_SETUP_THEME="$mode"
   [[ "$mode" == light ]] && export DEV_SETUP_FLAVOUR=latte || export DEV_SETUP_FLAVOUR=mocha
 }
+
+# The flavour *now*, rather than when this shell started. Tools that read their
+# theme from the environment are launched long after startup, so `make light`
+# in an already-open shell would otherwise keep giving them the old flavour.
+# One file read, no fork, so it is cheap enough to call per launch.
+dev_setup_flavour_now() {
+  local mode=""
+  [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/dev-setup/flavour" ]] \
+    && read -r mode < "${XDG_CACHE_HOME:-$HOME/.cache}/dev-setup/flavour"
+  [[ "$mode" == light ]] && print latte || print mocha
+}

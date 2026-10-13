@@ -65,6 +65,9 @@ else
 fi
 
 # Neovim re-checks on FocusGained (nvim/lua/plugins/catppuccin.lua), so clicking
-# back into a window is enough; k9s and lazygit read the env on next launch.
+# back into a window is enough. k9s and lazygit re-read the flavour as they
+# launch (the wrappers in zsh/zsh.d), so they are right even from a shell that
+# was already open. Only the prompt itself is fixed at shell startup.
 info "Ghostty follows the OS straight away. Neovim switches when you focus it."
-info "Shells already open keep their prompt until: exec zsh"
+info "k9s and lazygit are right from their next launch, in any shell."
+info "Only the prompt of an already-open shell needs: exec zsh"
