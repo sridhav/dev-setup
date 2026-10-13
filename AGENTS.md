@@ -98,7 +98,7 @@ Changes reach the other machines by git: `make push` on one, `make update` on ea
 - A tool that reads its theme from the environment needs a shell wrapper too: the exported variable is fixed when the shell starts, so `make light` would not reach a tool launched from an already-open shell. Call `dev_setup_flavour_now` in the wrapper (see `zsh/zsh.d/k9s.zsh`, `zsh/zsh.d/lazygit.zsh`) and keep the export for subprocesses that bypass it, like Neovim's `<leader>gg`.
 
 **Change the prompt**
-- Switch style with `zstyle ':catppuccin:p10k' 'theme'` in `zsh/zshrc` (`classic` is active; `rainbow` is kept). Edit `zsh/p10k-classic.zsh` / `zsh/p10k-rainbow.zsh` for the prompt itself.
+- Switch style with `zstyle ':catppuccin:p10k' 'theme'` in `zsh/zshrc` (`rainbow` is active; `classic` is kept). Edit `zsh/p10k-classic.zsh` / `zsh/p10k-rainbow.zsh` for the prompt itself. `rainbow` gives each segment its own pastel background from the palette, which is the Catppuccin look; `classic` colors the text over one surface background.
 - Never run `p10k configure`: it overwrites `~/.p10k.zsh` (the loader) with stock 256-color output. If a new wizard layout is wanted, save it as `zsh/p10k-<name>.zsh` and swap every color for a `P10K_COLOR_*` name, never a hex, so both flavours keep working.
 - The `zstyle ':catppuccin:p10k'` lines in `zsh/zshrc` must stay *above* `source $ZSH/oh-my-zsh.sh`, because the plugin reads them while oh-my-zsh loads.
 
