@@ -10,7 +10,7 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 	end,
 })
 
--- Pick up files changed on disk by something else (Claude, opencode, git).
+-- Pick up files changed on disk by something else (git, an AI CLI, another editor).
 -- 'autoread' is on by default, but it only acts when Neovim actually stats the
 -- file; a buffer sitting on screen never does. These events make it check.
 -- tmux's `focus-events on` is what lets FocusGained fire inside a pane.

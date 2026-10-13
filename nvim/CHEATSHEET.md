@@ -131,36 +131,6 @@ It's a picker: start typing in the tree to filter it, `Esc` to stop.
 | `<leader>th` | Toggle inlay hints (parameter names, types) |
 | `Ctrl-f` / `Ctrl-b` | Scroll the hover docs popup |
 
-## AI agents (Claude Code and opencode)
-
-Two agents, two prefixes. Each needs its CLI: `opencode` comes from `sh/packages.sh`, `claude` from install step 16.
-
-**Claude Code** (`<leader>c`, sharing the prefix with the LSP keys). It sees the selection and the diagnostics, and its edits arrive as a diff to accept or reject.
-
-| Key | Does |
-|---|---|
-| `<leader>cc` | Toggle the Claude split |
-| `<leader>cf` | Jump into the Claude split |
-| `<leader>cr` / `<leader>cC` | Pick a past session / continue the last one |
-| `<leader>cm` | Switch model |
-| `<leader>cb` | Add this buffer to the conversation |
-| `<leader>cs` | Send the selection (visual); in the file tree, add the file under the cursor |
-| `<leader>cA` / `<leader>cd` | Accept / reject Claude's diff |
-
-**opencode** (`<leader>o`). Prompts carry editor context: `@this` is the selection, or the cursor when there is none. Also `@buffer`, `@buffers`, `@diagnostics`, `@marks`, `@quickfix`, `@visible`.
-
-| Key | Does |
-|---|---|
-| `<leader>oa` | Ask about the selection or cursor (`@this`) |
-| `<leader>oA` | Ask, nothing prefilled |
-| `<leader>os` | Pick a prompt (explain, fix, review, test, optimize, document, implement) |
-| `<leader>oc` | Run an opencode command |
-| `<leader>oo` + motion | Send that range (`<leader>oo_` is this line; `.` repeats it) |
-| `<leader>ot` | Toggle the opencode terminal (`<Esc><Esc>` first to leave it) |
-| `<Up>` / `<Tab>` (in the ask box) | Earlier prompts / complete an `@context` |
-
-Buffers reload themselves as opencode edits them. opencode reads files from disk, so save before asking about unwritten changes.
-
 ## Errors and warnings
 
 | Key | Does |

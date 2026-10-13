@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Claude Code CLI, used by nvim/lua/plugins/claudecode.lua (<leader>c*).
+# Claude Code CLI.
 . "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../lib.sh"
 parse_flags "$@"
 

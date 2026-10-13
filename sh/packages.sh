@@ -10,7 +10,7 @@ FORMULAE=(
   lazygit ripgrep fd   # Neovim: <leader>gg (lazygit), the snacks picker's grep (rg) and file search (fd)
   kubernetes-cli k9s libpq
   sesh zoxide   # tmux project picker (Ctrl-s o); zoxide remembers the folders you visit for it
-  opencode   # AI coding agent; Neovim talks to it via nvim/lua/plugins/opencode.lua (<leader>o*)
+  opencode   # AI coding agent (terminal; themed via opencode/tui.json)
 )
 
 # macOS only: Docker runs in a colima VM there. Linux gets native Docker Engine
