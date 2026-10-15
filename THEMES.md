@@ -34,7 +34,9 @@ paints the pane. All three use the theme's **`base`** — Ghostty because that i
 its theme's `background`, tmux through `@thm_base`, Neovim as its `Normal`
 background — and `sh/gen-theme.py` derives `@thm_base` from that same Ghostty
 `background`, so they agree by construction under every profile and need no
-per-theme upkeep.
+per-theme upkeep. Catppuccin is the exception to the *name*: its tmux plugin
+calls the ground `@thm_bg`, so `tmux/tmux.conf` mirrors it onto `@thm_base`
+right after tpm (fifth trap below) and the bar names one thing throughout.
 
 The tmux bar is the part that has to be kept honest about this. It draws rounded
 bubbles (`@thm_surface_0`, `@thm_green`, `@thm_pink`) and the cells *between*
@@ -262,9 +264,9 @@ rather than the table: Catppuccin gets `rainbow`, everything else `classic`
 
 **9. Docs.** `AGENTS.md`'s layout table and `README.md`'s command list.
 
-## Four traps
+## Six traps
 
-These are the ways this has actually broken. All four look harmless in a diff.
+These are the ways this has actually broken. All six look harmless in a diff.
 
 **Never write a hex into a config.** Prompt styles name colours only through
 `$P10K_COLOR_*`, the tmux bar only through `#{@thm_*}`, Neovim only through
@@ -313,6 +315,61 @@ EOF
 Match what that prints against `@thm_base`. Watch out for the shell prompt's own
 filler dots, which are solid `····` where this row is `· · ·` — mistaking one
 for the other reports the wrong colour entirely.
+
+**catppuccin/tmux calls the background `@thm_bg`, not `@thm_base`.** Its theme
+files set 25 of the 26 semantic names; the ground is `@thm_bg`. The generated
+profiles (`tmux/theme-<slug>.conf`) use the Catppuccin *palette* name, `base`,
+like every other file in this repo does. So a bar written against `@thm_base`
+worked under `scleral` and `kanso-scleral` and silently fell apart under
+Catppuccin: `#{@thm_base}` expanded to nothing, `set -gF status-style
+"bg=,fg=#cdd6f4"` is an invalid style which tmux refuses, leaving catppuccin's
+own `@thm_mantle` band — and the dotted rule's `bg=` fell back to `default`,
+which is that same band (the trap above). The bar came out as two rows of
+mantle floating on a base-coloured page.
+
+`tmux/tmux.conf` mirrors the name once, right after tpm and before the profile
+is sourced, so everything below can say one thing:
+
+```tmux
+set -gF @thm_base "#{@thm_bg}"
+```
+
+An unset `@thm_*` never raises anything louder than an empty expansion, so the
+check is to read the option back, not to look for an error:
+
+```bash
+tmux show -gv @thm_base        # "invalid option" = this trap
+tmux show -gv status-style     # must be bg=<that>, not @thm_mantle
+```
+
+**Every `@thm_*` catppuccin sets is `set -ogq`, so a re-source changes
+nothing.** `-o` means "don't overwrite what is already set". `sh/theme.sh`
+switches a running tmux by re-sourcing `~/.tmux.conf`, which re-runs tpm — and
+the second load found every colour already set and kept it. A running server
+therefore kept whatever flavour it *started* with: `make light` moved the OS,
+Ghostty and Neovim while the bar stayed Mocha until tmux was restarted, and a
+profile switch left the old profile's palette behind under the new one's name.
+
+The plugin's own answer is `@catppuccin_reset`, which unsets the lot before
+re-reading the theme. It unsets *itself* at the end of that block, so it has to
+be set on every load, before tpm:
+
+```tmux
+set -g @catppuccin_reset "true"
+```
+
+Its reset list is exactly the 25 names its themes set, which is why the
+`@thm_base` mirror above has to be unconditional: `base` is the one name the
+reset does not clear, so a stale one from the previous profile would survive.
+
+Check it on a live server, not a fresh one — a fresh one passes either way:
+
+```bash
+tmux -L t -f tmux/tmux.conf new-session -d          # dark
+echo light > "$XDG_CACHE_HOME/dev-setup/flavour"
+tmux -L t source-file tmux/tmux.conf
+tmux -L t show -gv status-style                     # must be Latte's now
+```
 
 **`vim.o.background` is not trustworthy.** A colourscheme is free to leave it
 wrong, and one this profile carried did: no-clown-fiesta's light variant applied
