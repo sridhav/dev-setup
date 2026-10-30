@@ -3,13 +3,14 @@
   # ============================================
   # File: ~/.config/ghostty/config
   # Reload: Cmd+Shift+, (macOS) / Ctrl+Shift+, (Linux)
-  # Shared by every machine. OS-specific keybindings and window settings live
-  # in macos.conf / linux.conf, linked as ~/.config/ghostty/platform.conf and
-  # included at the bottom of this file.
+  # Shared by every machine. OS-specific keybindings, font size and window
+  # settings live in macos.conf / linux.conf, linked as
+  # ~/.config/ghostty/platform.conf and included at the bottom of this file.
   # View options: ghostty +show-config --default --docs
 
   # --- Typography ---
   font-family = "JetBrainsMono Nerd Font Mono"
+  # macOS value; linux.conf drops it to 12 (points land ~1/3 larger at 96dpi).
   font-size = 14
   # Removes the dark fringes around colored text on dark backgrounds.
   alpha-blending = linear-corrected
