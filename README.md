@@ -83,8 +83,8 @@ Configs are symlinked, so editing `~/.zshrc`, `~/.config/nvim/...` and so on edi
   `make light` / `make dark` then keep whichever profile is active. It flips the OS appearance,
   which Ghostty follows straight away; Neovim switches when you focus it, and shells already open need `exec zsh`.
 - **Built for keratoconus:** `make light-cornea` switches to Cornea Light / Dark, designed in this repo to research-based
-  contrast and colour targets rather than picked from a list. **[CORNEA.md](CORNEA.md)** has the rules, the evidence, and
-  the screen settings for lenses in and out.
+  contrast and colour targets rather than picked from a list. **[CORNEA.md](CORNEA.md)** has the rules, the evidence,
+  the screen settings for lenses in and out, and the Dell UltraSharp monitor settings.
 
 ## Version control
 

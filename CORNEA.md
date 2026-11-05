@@ -82,6 +82,29 @@ Saturated blue on dark gave the most accommodative lag of any colour tested.
 | Blue-light filters / Night Shift | Comfort only | same | No effect on eye strain (Cochrane 2023, 17 randomised trials) |
 | Breaks | 20-20-20: every 20 min, 20 s at 20 ft; blink fully | **critical** | Screen work lowers blink rate; matters for the lens's tear reservoir |
 
+### Dell UltraSharp
+
+The on-screen menu (joystick or buttons under the screen) is the same across
+UltraSharp models. Set the monitor itself, not only macOS:
+
+| Menu setting | Set to | Why |
+| --- | --- | --- |
+| Preset Mode | **Standard** | Vivid, Movie and Game push colour and contrast past what text needs |
+| Brightness | **25–35%** in a normal room, **10–20%** in a dim one | White should look like paper beside it, not a lamp |
+| Contrast | Default (about 75) | Higher mostly adds glare |
+| Sharpness | Default (50), **never higher** | Sharpening draws bright edges around letters, which adds to the bloom |
+| Dynamic Contrast / Smart HDR / HDR | **Off** | They change brightness on their own |
+| ComfortView / ComfortView Plus | Either | Warmer colour only; no effect on eye strain |
+| Response Time | **Normal** | "Fast" leaves faint ghost edges on scrolling text |
+
+UltraSharps are flicker-free when dimmed, so low brightness costs nothing.
+
+On the Mac: **System Settings → Displays → the Dell**, pick a size toward
+"Larger Text" (on a 27" 4K, "looks like 2560×1440"; larger on lenses-out
+days), and set the MacBook's own screen about as bright as the Dell so the eye
+is not re-adapting between them. Top edge at or just below eye level, an arm's
+length away, no window behind it or reflected in it.
+
 Fonts with low-vision design intent exist with Nerd Font builds, if JetBrains
 Mono ever feels wrong. There is no peer-reviewed study of either:
 
