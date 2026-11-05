@@ -24,6 +24,7 @@ typeset -gA DEV_SETUP_PROFILE_SLUGS=(
   catppuccin    "latte mocha"
   scleral       "ncf-light kanagawa-dragon"
   kanso-scleral "kanso-pearl kanagawa-dragon"
+  cornea        "cornea-light cornea-dark"
 )
 
 # These three answer in $REPLY rather than on stdout, zsh's convention for a

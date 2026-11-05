@@ -23,7 +23,10 @@ to the lines actually chosen by hand. Names are the 26 in ORDER below.
 """
 import os, re, sys, json
 
-DIRS = ["/Applications/Ghostty.app/Contents/Resources/ghostty/themes",
+# The repo's own themes first: ghostty/themes holds the ones designed here rather
+# than shipped by Ghostty (Cornea Light/Dark), and a name there wins.
+DIRS = [os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "ghostty", "themes"),
+        "/Applications/Ghostty.app/Contents/Resources/ghostty/themes",
         "/usr/share/ghostty/themes", "/usr/local/share/ghostty/themes"]
 
 def load(name):

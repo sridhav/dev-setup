@@ -1,0 +1,29 @@
+# Cornea Dark: designed for keratoconus (CORNEA.md), not picked from a list.
+# The full 26-colour palette is theme-overrides/cornea-dark.conf; this file is its
+# 16 ANSI slots, which is what Ghostty and sh/gen-theme.py read. The bright
+# colours repeat the normal ones on purpose: six hues, no more.
+palette = 0=#34322f
+palette = 1=#edada7
+palette = 2=#9dc89d
+palette = 3=#d8b887
+palette = 4=#9ac0ec
+palette = 5=#cfb2e3
+palette = 6=#7ec9cd
+palette = 7=#c0bdb9
+palette = 8=#b3b0ad
+palette = 9=#edada7
+palette = 10=#9dc89d
+palette = 11=#d8b887
+palette = 12=#9ac0ec
+palette = 13=#cfb2e3
+palette = 14=#7ec9cd
+palette = 15=#d3cfcc
+background = #1f1d1b
+foreground = #d3cfcc
+cursor-color = #d3cfcc
+cursor-text = #1f1d1b
+selection-background = #34322f
+selection-foreground = #d3cfcc
+# A floor for colours this theme does not choose: a program that asks for a
+# 256-colour grey near the page gets lifted to 3:1 instead of vanishing.
+minimum-contrast = 3

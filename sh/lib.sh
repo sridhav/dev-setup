@@ -120,11 +120,16 @@ detect_appearance() {
 # that scatters -- "scleral" keeps No Clown Fiesta Light, "kanso-scleral" is the
 # warmer Kanso Pearl -- and share Kanagawa Dragon for dark.
 #
+# "cornea" is the one designed rather than picked: Cornea Light/Dark live in
+# ghostty/themes and are built to the keratoconus targets in CORNEA.md (APCA
+# contrast floors and caps, six low-chroma hues). Light is the default to use.
+#
 #  name|ghostty light|ghostty dark|light slug|dark slug
 THEME_PROFILES=(
   "catppuccin|Catppuccin Latte|Catppuccin Mocha|latte|mocha"
   "scleral|No Clown Fiesta Light|Kanagawa Dragon|ncf-light|kanagawa-dragon"
   "kanso-scleral|Kanso Pearl|Kanagawa Dragon|kanso-pearl|kanagawa-dragon"
+  "cornea|Cornea Light|Cornea Dark|cornea-light|cornea-dark"
 )
 THEME_PROFILE_CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/dev-setup/profile"
 
@@ -132,7 +137,7 @@ THEME_PROFILE_CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/dev-setup/profile"
 theme_profile() {
   local v=""
   [[ -r "$THEME_PROFILE_CACHE" ]] && read -r v < "$THEME_PROFILE_CACHE" 2>/dev/null
-  case "$v" in scleral|kanso-scleral|catppuccin) echo "$v" ;; *) echo catppuccin ;; esac
+  case "$v" in scleral|kanso-scleral|cornea|catppuccin) echo "$v" ;; *) echo catppuccin ;; esac
 }
 
 # field N (1-5) of a profile's row
@@ -197,6 +202,8 @@ LINKS=(
   "zsh/syntax-ncf-light.zsh|$HOME/.config/zsh/syntax-ncf-light.zsh"
   "zsh/syntax-kanso-pearl.zsh|$HOME/.config/zsh/syntax-kanso-pearl.zsh"
   "zsh/syntax-kanagawa-dragon.zsh|$HOME/.config/zsh/syntax-kanagawa-dragon.zsh"
+  "zsh/syntax-cornea-light.zsh|$HOME/.config/zsh/syntax-cornea-light.zsh"
+  "zsh/syntax-cornea-dark.zsh|$HOME/.config/zsh/syntax-cornea-dark.zsh"
   "zsh/zsh.d/brew.zsh|$HOME/.zsh.d/brew.zsh"
   "zsh/zsh.d/history.zsh|$HOME/.zsh.d/history.zsh"
   "zsh/zsh.d/path.zsh|$HOME/.zsh.d/path.zsh"
@@ -221,6 +228,8 @@ LINKS=(
   "k9s/skins/ncf-light.yaml|$K9S_CONFIG_DIR/skins/ncf-light.yaml"
   "k9s/skins/kanso-pearl.yaml|$K9S_CONFIG_DIR/skins/kanso-pearl.yaml"
   "k9s/skins/kanagawa-dragon.yaml|$K9S_CONFIG_DIR/skins/kanagawa-dragon.yaml"
+  "k9s/skins/cornea-light.yaml|$K9S_CONFIG_DIR/skins/cornea-light.yaml"
+  "k9s/skins/cornea-dark.yaml|$K9S_CONFIG_DIR/skins/cornea-dark.yaml"
   "opencode/tui.json|$HOME/.config/opencode/tui.json"
   "sesh/sesh.toml|$HOME/.config/sesh/sesh.toml"
 )

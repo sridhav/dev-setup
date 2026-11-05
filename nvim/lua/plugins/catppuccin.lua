@@ -32,8 +32,11 @@ return {
 		},
 	},
 	config = function(_, opts)
-		require("catppuccin").setup(opts)
 		local theme = require("config.theme")
+		-- Kept for theme.apply(), which re-runs setup with a profile's palette
+		-- swapped in (the cornea profile) and back again without it.
+		theme.catppuccin_opts = opts
+		require("catppuccin").setup(opts)
 		theme.apply()
 
 		-- Pick up `make light` / `make dark` (and a profile change) without

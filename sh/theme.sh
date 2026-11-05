@@ -2,7 +2,7 @@
 # Switch the setup between Catppuccin Latte (light) and Mocha (dark).
 . "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/lib.sh"
 
-# usage: theme.sh [light|dark] [--catppuccin|--scleral|--kanso-scleral] [--dry-run]
+# usage: theme.sh [light|dark] [--catppuccin|--scleral|--kanso-scleral|--cornea] [--dry-run]
 #        theme.sh              prints the current mode, profile and slug, then exits
 #
 # With no --profile flag the active one is kept, so `theme.sh light` only moves
@@ -22,6 +22,7 @@ for arg in "$@"; do
     light|dark)       mode="$arg" ;;
     --scleral)        profile=scleral ;;
     --kanso-scleral)  profile=kanso-scleral ;;
+    --cornea)         profile=cornea ;;
     --catppuccin)     profile=catppuccin ;;
     *) flags+=("$arg") ;;
   esac
@@ -47,6 +48,10 @@ fi
 
 slug="$(slug_for "$profile" "$mode")"
 gtheme="$(profile_field "$profile" "$([[ $mode == light ]] && echo 2 || echo 3)")"
+# A theme designed in this repo (ghostty/themes) is not one Ghostty ships, and
+# Ghostty only finds it by name in ~/.config/ghostty/themes -- so name it by
+# absolute path instead, which Ghostty also accepts, and no link is needed.
+[[ -f "$DOTFILES/ghostty/themes/$gtheme" ]] && gtheme="$DOTFILES/ghostty/themes/$gtheme"
 step "Theme: $mode — $profile ($slug)"
 
 # --- 1. the OS appearance, which Ghostty follows with no reload --------------

@@ -10,7 +10,7 @@ SHELL := /bin/bash
 
 S := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))/sh
 
-.PHONY: help install force-install dry-run backup update plugins upgrade push status brew-diff version history rollback release personal remove-iterm2 theme light dark catppuccin scleral kanso-scleral light-catppuccin dark-catppuccin light-scleral dark-scleral light-kanso-scleral dark-kanso-scleral
+.PHONY: help install force-install dry-run backup update plugins upgrade push status brew-diff version history rollback release personal remove-iterm2 theme light dark catppuccin scleral kanso-scleral light-catppuccin dark-catppuccin light-scleral dark-scleral light-kanso-scleral dark-kanso-scleral cornea light-cornea dark-cornea
 
 help: ## Show this help
 	@grep -E '^[a-z0-9-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  \033[35m%-20s\033[0m %s\n", $$1, $$2}'
@@ -63,6 +63,9 @@ scleral: ## Scleral profile (No Clown Fiesta Light / Kanagawa Dragon), keeping t
 kanso-scleral: ## Kanso scleral profile (Kanso Pearl / Kanagawa Dragon), keeping the current mode
 	@$(S)/theme.sh --kanso-scleral
 
+cornea: ## Cornea profile (Cornea Light / Dark, built for keratoconus), keeping the current mode
+	@$(S)/theme.sh --cornea
+
 # Both at once.
 light-catppuccin: ## Light mode, Catppuccin Latte
 	@$(S)/theme.sh light --catppuccin
@@ -81,6 +84,12 @@ light-kanso-scleral: ## Light mode, Kanso Pearl (warmer low-scatter light)
 
 dark-kanso-scleral: ## Dark mode, Kanagawa Dragon (lowest halation)
 	@$(S)/theme.sh dark --kanso-scleral
+
+light-cornea: ## Light mode, Cornea Light (the default to use; see CORNEA.md)
+	@$(S)/theme.sh light --cornea
+
+dark-cornea: ## Dark mode, Cornea Dark (for a lit room, lenses in)
+	@$(S)/theme.sh dark --cornea
 
 theme: ## Show the current mode, profile and theme
 	@$(S)/theme.sh

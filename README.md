@@ -82,6 +82,9 @@ Configs are symlinked, so editing `~/.zshrc`, `~/.config/nvim/...` and so on edi
   Kanso Pearl + Kanagawa Dragon, chosen from Ghostty's 463 themes for how little they scatter.
   `make light` / `make dark` then keep whichever profile is active. It flips the OS appearance,
   which Ghostty follows straight away; Neovim switches when you focus it, and shells already open need `exec zsh`.
+- **Built for keratoconus:** `make light-cornea` switches to Cornea Light / Dark, designed in this repo to research-based
+  contrast and colour targets rather than picked from a list. **[CORNEA.md](CORNEA.md)** has the rules, the evidence, and
+  the screen settings for lenses in and out.
 
 ## Version control
 
@@ -112,7 +115,7 @@ Put them in `~/.zsh.d/<name>.zsh`. The zshrc sources every `*.zsh` file there, a
 
 ## Themes
 
-`make theme` shows the active mode, profile and theme. `make light` / `make dark` switch mode, keeping the profile. `make catppuccin`, `make scleral` and `make kanso-scleral` switch profile, keeping the mode. `make light-kanso-scleral` and the rest of the `<mode>-<profile>` targets set both at once; `make light profile=scleral` is the general form (`make light --scleral` is not valid — make claims the flag itself).
+`make theme` shows the active mode, profile and theme. `make light` / `make dark` switch mode, keeping the profile. `make catppuccin`, `make scleral`, `make kanso-scleral` and `make cornea` switch profile, keeping the mode. `make light-kanso-scleral` and the rest of the `<mode>-<profile>` targets set both at once; `make light profile=scleral` is the general form (`make light --scleral` is not valid — make claims the flag itself).
 
 **[THEMES.md](THEMES.md)** is the guide to the rest: how mode, profile and slug fit together, how to swap a profile's themes for different ones, how to add a profile, and what to check before pushing one.
 
@@ -133,9 +136,10 @@ sh/
   backup.sh               snapshot all configs
   status.sh               uncommitted changes + unlinked configs
   brew-diff.sh            brew packages missing from sh/packages.sh
-  theme.sh [light|dark] [--catppuccin|--scleral|--kanso-scleral]
+  theme.sh [light|dark] [--catppuccin|--scleral|--kanso-scleral|--cornea]
                                      switch mode and/or theme profile; no argument prints both
   gen-theme.py "<theme>" <slug>       generate the per-theme colour files for a Ghostty theme
+  check-cornea.py         check the cornea palettes against CORNEA.md's targets
   remove-iterm2.sh        macOS: move iTerm2 into the backup   (make remove-iterm2)
 ghostty/config            → ~/.config/ghostty/config
 nvim/                     → ~/.config/nvim

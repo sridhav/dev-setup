@@ -12,7 +12,7 @@ Three words carry everything:
 | --- | --- | --- |
 | **mode** | `light` or `dark`. The OS appearance is the source of truth. | `~/.cache/dev-setup/flavour` |
 | **profile** | A light/dark *pair* of themes, e.g. `catppuccin` = Latte + Mocha. | `~/.cache/dev-setup/profile` |
-| **slug** | The one theme a mode+profile resolves to: `latte`, `mocha`, `ncf-light`, `kanso-pearl`, `kanagawa-dragon`. | every per-theme filename |
+| **slug** | The one theme a mode+profile resolves to: `latte`, `mocha`, `ncf-light`, `kanso-pearl`, `kanagawa-dragon`, `cornea-light`, `cornea-dark`. | every per-theme filename |
 
 The three profiles:
 
@@ -21,6 +21,14 @@ The three profiles:
 | `catppuccin` | Catppuccin Latte (`latte`) | Catppuccin Mocha (`mocha`) |
 | `scleral` | No Clown Fiesta Light (`ncf-light`) | Kanagawa Dragon (`kanagawa-dragon`) |
 | `kanso-scleral` | Kanso Pearl (`kanso-pearl`) | Kanagawa Dragon (`kanagawa-dragon`) |
+| `cornea` | Cornea Light (`cornea-light`) | Cornea Dark (`cornea-dark`) |
+
+`cornea` is the one profile **designed** rather than picked. Its two Ghostty
+themes live in `ghostty/themes/` (the generator looks there first, and
+`sh/theme.sh` names them by absolute path), all 26 colours are pinned in
+`theme-overrides/cornea-*.conf`, and Neovim wears catppuccin.nvim with that
+palette poured in. The rules it is built to, and the research behind them, are
+in **[CORNEA.md](CORNEA.md)**; `sh/check-cornea.py` must pass after any change.
 
 The two scleral profiles differ only in the light half, which is the half that
 scatters: No Clown Fiesta Light is the most desaturated of the 463 Ghostty

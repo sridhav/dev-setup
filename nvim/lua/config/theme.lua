@@ -6,6 +6,7 @@
 --   catppuccin     light -> latte                 dark -> mocha
 --   scleral        light -> no clown fiesta light dark -> kanagawa dragon
 --   kanso-scleral  light -> kanso pearl           dark -> kanagawa dragon
+--   cornea         light -> cornea light          dark -> cornea dark
 --
 -- The two scleral profiles are chosen for the lowest visible light scatter;
 -- their halves come from different families because each is picked on its own
@@ -43,12 +44,41 @@ local SCHEMES = {
   catppuccin      = { light = "catppuccin",       dark = "catppuccin" },
   scleral         = { light = "no-clown-fiesta",  dark = "kanagawa-dragon" },
   ["kanso-scleral"] = { light = "kanso-pearl",    dark = "kanagawa-dragon" },
+  cornea          = { light = "catppuccin",       dark = "catppuccin" },
 }
+
+-- Profiles whose themes were designed in this repo (ghostty/themes, CORNEA.md)
+-- and so have no Neovim plugin of their own. They wear catppuccin.nvim with
+-- the generated palette poured into it through color_overrides: Catppuccin's
+-- highlight coverage, none of Catppuccin's colours. M.apply then adjusts what
+-- Catppuccin's own choices get wrong for these targets (see tune_designed).
+local ON_CATPPUCCIN = { cornea = true }
+
+-- Done after the colorscheme rather than through catppuccin's no_italic and
+-- custom_highlights: its compiler captures the options table the first time it
+-- loads, so a second setup() changes the palette (read fresh) but not those.
+--   * No italics. A slanted stroke is one more thing for an irregular cornea
+--     to smear, and the palette already separates comments by contrast.
+--   * Line numbers on overlay0, the faintest *text* slot (APCA Lc 63 light,
+--     -43 dark). Catppuccin draws them in surface1, a background tone: Lc ~14
+--     here, under the Lc 30 floor for anything meant to be read.
+local function tune_designed(c)
+  for name, hl in pairs(vim.api.nvim_get_hl(0, {})) do
+    if hl.italic and not hl.link then
+      hl.italic = false
+      vim.api.nvim_set_hl(0, name, hl)
+    end
+  end
+  vim.api.nvim_set_hl(0, "LineNr", { fg = c.overlay0 })
+  vim.api.nvim_set_hl(0, "LineNrAbove", { fg = c.overlay0 })
+  vim.api.nvim_set_hl(0, "LineNrBelow", { fg = c.overlay0 })
+end
 
 local SLUGS = {
   catppuccin      = { light = "latte",       dark = "mocha" },
   scleral         = { light = "ncf-light",   dark = "kanagawa-dragon" },
   ["kanso-scleral"] = { light = "kanso-pearl", dark = "kanagawa-dragon" },
+  cornea          = { light = "cornea-light", dark = "cornea-dark" },
 }
 
 -- Validated against SLUGS rather than a second list, so adding a profile above
@@ -176,6 +206,20 @@ function M.apply()
   -- Set it first, for the colorschemes that pick their variant from it...
   vim.o.background = mode
   local scheme = (SCHEMES[profile] or SCHEMES.catppuccin)[mode]
+  -- Catppuccin is set up afresh on every apply, so leaving the cornea profile
+  -- takes its palette back out. The compiled cache is keyed on these options,
+  -- so this costs a recompile only when they actually change.
+  local ok_ctp, ctp = pcall(require, "catppuccin")
+  if ok_ctp and M.catppuccin_opts then
+    local opts = M.catppuccin_opts
+    if ON_CATPPUCCIN[profile] then
+      local flavour = mode == "light" and "latte" or "mocha"
+      opts = vim.tbl_deep_extend("force", opts, {
+        color_overrides = { [flavour] = M.palette() },
+      })
+    end
+    ctp.setup(opts)
+  end
   -- A missing colorscheme must not break startup: fall back to catppuccin,
   -- which is always installed.
   local ok = pcall(vim.cmd.colorscheme, scheme)
@@ -194,6 +238,7 @@ function M.apply()
   -- colourscheme's own they were a paler shade than the bar, which is the gap
   -- that appeared and disappeared with the length of the middle section.
   local c = M.palette()
+  if ON_CATPPUCCIN[profile] then tune_designed(c) end
   vim.api.nvim_set_hl(0, "StatusLine", { fg = c.text, bg = c.mantle })
   vim.api.nvim_set_hl(0, "StatusLineNC", { fg = c.overlay1, bg = c.mantle })
   vim.api.nvim_set_hl(0, "TabLineFill", { fg = c.overlay0, bg = c.mantle })
